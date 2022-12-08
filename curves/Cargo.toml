@@ -1,0 +1,3 @@
+[workspace]
+
+members = ["ark_sub_bls12_381"]
