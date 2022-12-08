@@ -27,35 +27,6 @@ pub trait HostFunctions: 'static {
     fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
 }
 
-// pub struct Host {}
-
-// impl HostFunctions for Host {
-// 	fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_multi_miller_loop(a, b)
-// 	}
-// 	fn bls12_381_final_exponentiation(f12: &[u8]) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_final_exponentiation(f12)
-// 	}
-// 	fn bls12_381_bigint_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_bigint_msm_g1(bases, bigints)
-// 	}
-// 	fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_mul_projective_g1(base, scalar)
-// 	}
-// 	fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_mul_affine_g1(base, scalar)
-// 	}
-// 	fn bls12_381_bigint_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_bigint_msm_g2(bases, bigints)
-// 	}
-// 	fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_mul_projective_g2(base, scalar)
-// 	}
-// 	fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-// 		sp_io::crypto::bls12_381_mul_affine_g2(base, scalar)
-// 	}
-// }
-
 impl<H: HostFunctions> Bls12Parameters for Parameters<H> {
     const X: &'static [u64] = &[0xd201000000010000];
     const X_IS_NEGATIVE: bool = true;
