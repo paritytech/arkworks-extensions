@@ -141,9 +141,9 @@ impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
         }
     }
 
-    fn msm_bigint(
+    fn msm(
         bases: &[Affine<Self>],
-        bigints: &[<<Self as CurveConfig>::ScalarField as PrimeField>::BigInt],
+        scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Projective<Self> {
         let bases: Vec<Vec<u8>> = bases
             .into_iter()
@@ -155,7 +155,7 @@ impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
                 serialized
             })
             .collect();
-        let bigints: Vec<Vec<u8>> = bigints
+        let scalars: Vec<Vec<u8>> = scalars
             .into_iter()
             .map(|elem| {
                 let mut serialized = vec![0; elem.serialized_size(Compress::Yes)];
@@ -165,7 +165,7 @@ impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
                 serialized
             })
             .collect();
-        let result = H::bls12_381_bigint_msm_g1(bases, bigints);
+        let result = H::bls12_381_msm_g1(bases, scalars);
         let cursor = Cursor::new(&result[..]);
         let result = Self::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()
