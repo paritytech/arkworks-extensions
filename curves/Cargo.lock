@@ -26,10 +26,39 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-algebra-test-templates"
+version = "0.4.0-alpha.7"
+source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e86d168b5a4ba67bd97cacdc963a2f3"
+dependencies = [
+ "ark-ec 0.4.0-alpha.7",
+ "ark-ff 0.4.0-alpha.7",
+ "ark-serialize 0.4.0-alpha.7",
+ "ark-std 0.4.0-alpha",
+ "hex",
+ "num-bigint",
+ "num-integer",
+ "num-traits",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "ark-bls12-377"
+version = "0.4.0-alpha.1"
+source = "git+https://github.com/arkworks-rs/curves#0d2142c001c732c2a5e503b41156806b440d764c"
+dependencies = [
+ "ark-ec 0.4.0-alpha.7",
+ "ark-ff 0.4.0-alpha.7",
+ "ark-std 0.4.0-alpha",
+]
+
+[[package]]
 name = "ark-bls12-381"
 version = "0.3.0"
 dependencies = [
- "ark-algebra-test-templates",
+ "ark-algebra-test-templates 0.3.0",
  "ark-bls12-381 0.4.0-alpha.1",
  "ark-ec 0.4.0-alpha.7",
  "ark-ff 0.4.0-alpha.7",
@@ -46,6 +75,18 @@ source = "git+https://github.com/arkworks-rs/curves#0d2142c001c732c2a5e503b41156
 dependencies = [
  "ark-ec 0.4.0-alpha.7",
  "ark-ff 0.4.0-alpha.7",
+ "ark-serialize 0.4.0-alpha.7",
+ "ark-std 0.4.0-alpha",
+]
+
+[[package]]
+name = "ark-curve-constraint-tests"
+version = "0.4.0-alpha.1"
+dependencies = [
+ "ark-ec 0.4.0-alpha.7",
+ "ark-ff 0.4.0-alpha.7",
+ "ark-r1cs-std",
+ "ark-relations 0.4.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-serialize 0.4.0-alpha.7",
  "ark-std 0.4.0-alpha",
 ]
@@ -189,6 +230,44 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-r1cs-std"
+version = "0.4.0-alpha.3"
+source = "git+https://github.com/arkworks-rs/r1cs-std/#054969fbcee949b9030bbc166865cba1d527517e"
+dependencies = [
+ "ark-ec 0.4.0-alpha.7",
+ "ark-ff 0.4.0-alpha.7",
+ "ark-relations 0.4.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-std 0.4.0-alpha",
+ "derivative",
+ "num-bigint",
+ "num-integer",
+ "num-traits",
+ "tracing",
+]
+
+[[package]]
+name = "ark-relations"
+version = "0.4.0-alpha.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d8fcbb7957519f1fd4de397d22360b236840c3e426f39999e34c63be9dfe7d1b"
+dependencies = [
+ "ark-ff 0.4.0-alpha.7",
+ "ark-std 0.4.0-alpha",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "ark-relations"
+version = "0.4.0-alpha.1"
+source = "git+https://github.com/arkworks-rs/snark#7106dc87b35620173c67d5cbab81f3255599dffd"
+dependencies = [
+ "ark-ff 0.4.0-alpha.7",
+ "ark-std 0.4.0-alpha",
+ "tracing",
+]
+
+[[package]]
 name = "ark-serialize"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -246,10 +325,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
+name = "block-buffer"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "69cce20737498f97b993470a6e536b8523f0af7892a4f928cceb1ac5e52ebe7e"
+dependencies = [
+ "generic-array",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
+name = "cpufeatures"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "28d997bd5e24a5928dd43e46dc529867e207907fe0b239c3477d924f7f2ca320"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "crypto-common"
@@ -287,6 +384,7 @@ version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8168378f4e5023e7218c89c891c0fd8ecdb5e5e4f18cb78f38cf245dd021e76f"
 dependencies = [
+ "block-buffer",
  "crypto-common",
 ]
 
@@ -329,6 +427,18 @@ checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
 dependencies = [
  "either",
 ]
+
+[[package]]
+name = "itoa"
+version = "1.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fad582f4b9e86b6caa621cabeb0963332d92eea04729ab12892c2533951e6440"
+
+[[package]]
+name = "libc"
+version = "0.2.139"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "201de327520df007757c1f0adce6e827fe8562fbc28bfd9c15571c66ca1f5f79"
 
 [[package]]
 name = "num-bigint"
@@ -381,6 +491,12 @@ dependencies = [
  "thiserror",
  "ucd-trie",
 ]
+
+[[package]]
+name = "pin-project-lite"
+version = "0.2.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0a7ae3ac2f1173085d398531c705756c94a4c56843785df85a60c1a0afac116"
 
 [[package]]
 name = "ppv-lite86"
@@ -451,6 +567,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ryu"
+version = "1.0.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b4b9743ed687d4b4bcedf9ff5eaa7398495ae14e61cba0a295704edbc7decde"
+
+[[package]]
 name = "semver"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -472,6 +594,61 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00b0bef5b7f9e0df16536d3961cfb6e84331c065b4066afb39768d0e319411f7"
 dependencies = [
  "pest",
+]
+
+[[package]]
+name = "serde"
+version = "1.0.152"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb7d1f0d3021d347a83e556fc4683dea2ea09d87bccdf88ff5c12545d89d5efb"
+
+[[package]]
+name = "serde_derive"
+version = "1.0.152"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af487d118eecd09402d70a5d72551860e788df87b464af30e5ea6a38c75c541e"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "serde_json"
+version = "1.0.91"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "877c235533714907a8c2464236f5c4b2a17262ef1bd71f38f35ea592c8da6883"
+dependencies = [
+ "itoa",
+ "ryu",
+ "serde",
+]
+
+[[package]]
+name = "sha2"
+version = "0.10.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "82e6b795fe2e3b1e845bafcb27aa35405c4d47cdfc92af5fc8d3002f76cebdc0"
+dependencies = [
+ "cfg-if",
+ "cpufeatures",
+ "digest 0.10.6",
+]
+
+[[package]]
+name = "sp-ark-bls12-377"
+version = "0.4.0-alpha.1"
+dependencies = [
+ "ark-algebra-test-templates 0.4.0-alpha.7",
+ "ark-bls12-377",
+ "ark-curve-constraint-tests",
+ "ark-ec 0.4.0-alpha.7",
+ "ark-ff 0.4.0-alpha.7",
+ "ark-models",
+ "ark-r1cs-std",
+ "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
+ "ark-serialize 0.4.0-alpha.7",
+ "ark-std 0.4.0-alpha",
 ]
 
 [[package]]
@@ -518,6 +695,48 @@ dependencies = [
 ]
 
 [[package]]
+name = "tracing"
+version = "0.1.37"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ce8c33a8d48bd45d624a6e523445fd21ec13d3653cd51f681abf67418f54eb8"
+dependencies = [
+ "cfg-if",
+ "pin-project-lite",
+ "tracing-attributes",
+ "tracing-core",
+]
+
+[[package]]
+name = "tracing-attributes"
+version = "0.1.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4017f8f45139870ca7e672686113917c71c7a6e02d4924eda67186083c03081a"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "tracing-core"
+version = "0.1.30"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24eb03ba0eab1fd845050058ce5e616558e8f8d8fca633e6b163fe25c797213a"
+dependencies = [
+ "once_cell",
+ "valuable",
+]
+
+[[package]]
+name = "tracing-subscriber"
+version = "0.2.25"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0e0d2eaa99c3c2e41547cfa109e910a68ea03823cccad4a0525dcbc9b01e8c71"
+dependencies = [
+ "tracing-core",
+]
+
+[[package]]
 name = "typenum"
 version = "1.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -540,6 +759,12 @@ name = "unicode-xid"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f962df74c8c05a667b5ee8bcf162993134c104e96440b663c8daa176dc772d8c"
+
+[[package]]
+name = "valuable"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "830b7e5d4d90034032940e4ace0d9a9a057e7a45cd94e6c007832e39edb82f6d"
 
 [[package]]
 name = "version_check"
@@ -569,16 +794,6 @@ dependencies = [
 ]
 
 [[patch.unused]]
-name = "ark-algebra-test-templates"
-version = "0.4.0-alpha.7"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e86d168b5a4ba67bd97cacdc963a2f3"
-
-[[patch.unused]]
-name = "ark-bls12-377"
-version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#0d2142c001c732c2a5e503b41156806b440d764c"
-
-[[patch.unused]]
 name = "ark-bw6-761"
 version = "0.4.0-alpha.1"
 source = "git+https://github.com/arkworks-rs/curves#0d2142c001c732c2a5e503b41156806b440d764c"
@@ -592,8 +807,3 @@ source = "git+https://github.com/arkworks-rs/curves#0d2142c001c732c2a5e503b41156
 name = "ark-ed-on-bls12-381"
 version = "0.4.0-alpha.1"
 source = "git+https://github.com/arkworks-rs/curves#0d2142c001c732c2a5e503b41156806b440d764c"
-
-[[patch.unused]]
-name = "ark-r1cs-std"
-version = "0.4.0-alpha.3"
-source = "git+https://github.com/arkworks-rs/r1cs-std/#054969fbcee949b9030bbc166865cba1d527517e"

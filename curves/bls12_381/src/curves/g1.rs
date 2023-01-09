@@ -1,13 +1,13 @@
 use crate::*;
 use ark_ec::{models::CurveConfig, AffineRepr, Group};
 use ark_ff::{Field, MontFp, PrimeField, Zero};
-use ark_serialize::{CanonicalSerialize, Compress, SerializationError, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec, vec::Vec, One};
 use ark_models::{
     bls12,
     bls12::Bls12Config,
     short_weierstrass::{Affine, Projective, SWCurveConfig},
 };
+use ark_serialize::{CanonicalSerialize, Compress, SerializationError, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec, vec::Vec, One};
 
 use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
@@ -73,11 +73,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         // Section 5 of https://eprint.iacr.org/2019/403.pdf.
         //
         // It is enough to multiply by (1 - x), instead of (x - 1)^2 / 3
-        let h_eff = one_minus_x(
-            crate::Config::<H>::X_IS_NEGATIVE,
-            crate::Config::<H>::X,
-        )
-        .into_bigint();
+        let h_eff =
+            one_minus_x(crate::Config::<H>::X_IS_NEGATIVE, crate::Config::<H>::X).into_bigint();
         Config::<H>::mul_affine(&p, h_eff.as_ref()).into()
     }
 

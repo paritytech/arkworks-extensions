@@ -1,11 +1,10 @@
 use ark_ec::AffineRepr;
 use ark_ff::{BigInteger384, PrimeField};
-use ark_serialize::SerializationError;
 use ark_models::short_weierstrass::Affine;
+use ark_serialize::SerializationError;
 
 use crate::{
-    g1::Config as G1Config, g2::Config as G2Config, Fq, Fq2, G1Affine, G2Affine,
-    HostFunctions,
+    g1::Config as G1Config, g2::Config as G2Config, Fq, Fq2, G1Affine, G2Affine, HostFunctions,
 };
 
 pub const G1_SERIALIZED_SIZE: usize = 48;
