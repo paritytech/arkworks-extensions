@@ -2067,6 +2067,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "sp-ark-ed-on-bls12-377"
+version = "0.4.0-alpha.1"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-curve-constraint-tests",
+ "ark-ec",
+ "ark-ed-on-bls12-377",
+ "ark-ff",
+ "ark-models",
+ "ark-r1cs-std",
+ "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
+ "ark-serialize",
+ "ark-std",
+ "sp-ark-bls12-377",
+ "sp-io",
+]
+
+[[package]]
 name = "sp-arkworks"
 version = "0.0.1"
 source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#7aca27453ae3c8f196aef85febe538a1f1d97da0"
