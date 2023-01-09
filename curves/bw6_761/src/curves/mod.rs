@@ -1,6 +1,5 @@
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
 use ark_models::{
-    bw6,
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
@@ -123,7 +122,7 @@ impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
 
 pub type BW6_761<H> = BW6<Config<H>>;
 
-pub type G1Affine<H> = bw6::G1Affine<Config<H>>;
-pub type G1Projective<H> = bw6::G1Projective<Config<H>>;
-pub type G2Affine<H> = bw6::G2Affine<Config<H>>;
-pub type G2Projective<H> = bw6::G2Projective<Config<H>>;
+pub type G1Affine<H> = g1::G1Affine<Config<H>>;
+pub type G1Projective<H> = g1::G1Projective<Config<H>>;
+pub type G2Affine<H> = g2::G2Affine<Config<H>>;
+pub type G2Projective<H> = g2::G2Projective<Config<H>>;
