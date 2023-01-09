@@ -9,6 +9,9 @@ pub mod g1;
 pub mod g2;
 pub(crate) mod util;
 
+// #[cfg(test)]
+// mod tests;
+
 pub use self::{
     g1::{G1Affine, G1Projective},
     g2::{G2Affine, G2Projective},
