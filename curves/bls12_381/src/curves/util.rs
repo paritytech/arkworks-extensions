@@ -1,10 +1,10 @@
 use ark_ec::AffineRepr;
 use ark_ff::{BigInteger384, PrimeField};
 use ark_serialize::SerializationError;
-use ark_sub_models::short_weierstrass::Affine;
+use ark_models::short_weierstrass::Affine;
 
 use crate::{
-    g1::Parameters as G1Parameters, g2::Parameters as G2Parameters, Fq, Fq2, G1Affine, G2Affine,
+    g1::Config as G1Config, g2::Config as G2Config, Fq, Fq2, G1Affine, G2Affine,
     HostFunctions,
 };
 
@@ -93,7 +93,7 @@ pub(crate) fn read_fq_with_offset(
 
 pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G1Parameters<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G1Config<H>>, ark_serialize::SerializationError> {
     let mut bytes = [0u8; G1_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)
@@ -123,7 +123,7 @@ pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
 
 pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G1Parameters<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G1Config<H>>, ark_serialize::SerializationError> {
     let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)
@@ -153,7 +153,7 @@ pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
 
 pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G2Parameters<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G2Config<H>>, ark_serialize::SerializationError> {
     let mut bytes = [0u8; G2_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)
@@ -185,7 +185,7 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
 
 pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G2Parameters<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G2Config<H>>, ark_serialize::SerializationError> {
     let mut bytes = [0u8; 2 * G2_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)

@@ -3,9 +3,9 @@ use ark_ec::{models::CurveConfig, AffineRepr, Group};
 use ark_ff::{Field, MontFp, PrimeField, Zero};
 use ark_serialize::{CanonicalSerialize, Compress, SerializationError, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec, vec::Vec, One};
-use ark_sub_models::{
+use ark_models::{
     bls12,
-    bls12::Bls12Parameters,
+    bls12::Bls12Config,
     short_weierstrass::{Affine, Projective, SWCurveConfig},
 };
 
@@ -13,14 +13,14 @@ use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
 };
 
-pub type G1Affine<H> = bls12::G1Affine<crate::Parameters<H>>;
-pub type G1Projective<H> = bls12::G1Projective<crate::Parameters<H>>;
+pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
+pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
-pub struct Parameters<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions> CurveConfig for Parameters<H> {
+impl<H: HostFunctions> CurveConfig for Config<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -33,7 +33,7 @@ impl<H: HostFunctions> CurveConfig for Parameters<H> {
         MontFp!("52435875175126190458656871551744051925719901746859129887267498875565241663483");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
+impl<H: HostFunctions> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
     const COEFF_A: Fq = Fq::ZERO;
 
@@ -57,12 +57,12 @@ impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
         // An early-out optimization described in Section 6.
         // If uP == P but P != point of infinity, then the point is not in the right
         // subgroup.
-        let x_times_p = p.mul_bigint(crate::Parameters::<H>::X);
+        let x_times_p = p.mul_bigint(crate::Config::<H>::X);
         if x_times_p.eq(p) && !p.infinity {
             return false;
         }
 
-        let minus_x_squared_times_p = x_times_p.mul_bigint(crate::Parameters::<H>::X).neg();
+        let minus_x_squared_times_p = x_times_p.mul_bigint(crate::Config::<H>::X).neg();
         let endomorphism_p = endomorphism(p);
         minus_x_squared_times_p.eq(&endomorphism_p)
     }
@@ -74,11 +74,11 @@ impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
         //
         // It is enough to multiply by (1 - x), instead of (x - 1)^2 / 3
         let h_eff = one_minus_x(
-            crate::Parameters::<H>::X_IS_NEGATIVE,
-            crate::Parameters::<H>::X,
+            crate::Config::<H>::X_IS_NEGATIVE,
+            crate::Config::<H>::X,
         )
         .into_bigint();
-        Parameters::<H>::mul_affine(&p, h_eff.as_ref()).into()
+        Config::<H>::mul_affine(&p, h_eff.as_ref()).into()
     }
 
     fn deserialize_with_mode<R: ark_serialize::Read>(
@@ -144,7 +144,7 @@ impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
     fn msm(
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
-    ) -> Projective<Self> {
+    ) -> Result<Projective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases
             .into_iter()
             .map(|elem| {
@@ -168,7 +168,7 @@ impl<H: HostFunctions> SWCurveConfig for Parameters<H> {
         let result = H::bls12_381_msm_g1(bases, scalars);
         let cursor = Cursor::new(&result[..]);
         let result = Self::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
-        result.into()
+        Ok(result.into())
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -228,7 +228,7 @@ pub const G1_GENERATOR_Y: Fq = MontFp!("1339506544944476473020471379941921221584
 /// BETA is a non-trivial cubic root of unity in Fq.
 pub const BETA: Fq = MontFp!("793479390729215512621379701633421447060886740281060493010456487427281649075476305620758731620350");
 
-pub fn endomorphism<T: HostFunctions>(p: &Affine<Parameters<T>>) -> Affine<Parameters<T>> {
+pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>> {
     // Endomorphism of the points on the curve.
     // endomorphism_p(x,y) = (BETA * x, y)
     // where BETA is a non-trivial cubic root of unity in Fq.
@@ -243,7 +243,7 @@ mod test {
     use super::*;
     use ark_std::{rand::Rng, UniformRand};
 
-    fn sample_unchecked() -> Affine<g1::Parameters> {
+    fn sample_unchecked() -> Affine<g1::Config> {
         let mut rng = ark_std::test_rng();
         loop {
             let x = Fq::rand(&mut rng);
@@ -259,7 +259,7 @@ mod test {
     fn test_cofactor_clearing() {
         const SAMPLES: usize = 100;
         for _ in 0..SAMPLES {
-            let p: Affine<g1::Parameters> = sample_unchecked();
+            let p: Affine<g1::Config> = sample_unchecked();
             let p = p.clear_cofactor();
             assert!(p.is_on_curve());
             assert!(p.is_in_correct_subgroup_assuming_on_curve());

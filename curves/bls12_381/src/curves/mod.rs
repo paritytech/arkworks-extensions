@@ -3,7 +3,7 @@ use ark_ec::pairing::{MillerLoopOutput, Pairing, PairingOutput};
 use ark_ff::Fp12;
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress};
 use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
-use ark_sub_models::bls12::{Bls12, Bls12Parameters, G1Prepared, G2Prepared, TwistType};
+use ark_models::bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType};
 
 pub mod g1;
 pub mod g2;
@@ -14,7 +14,7 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-pub struct Parameters<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
     fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8>;
@@ -27,7 +27,7 @@ pub trait HostFunctions: 'static {
     fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
 }
 
-impl<H: HostFunctions> Bls12Parameters for Parameters<H> {
+impl<H: HostFunctions> Bls12Config for Config<H> {
     const X: &'static [u64] = &[0xd201000000010000];
     const X_IS_NEGATIVE: bool = true;
     const TWIST_TYPE: TwistType = TwistType::M;
@@ -35,8 +35,8 @@ impl<H: HostFunctions> Bls12Parameters for Parameters<H> {
     type Fp2Config = Fq2Config;
     type Fp6Config = Fq6Config;
     type Fp12Config = Fq12Config;
-    type G1Parameters = self::g1::Parameters<H>;
-    type G2Parameters = self::g2::Parameters<H>;
+    type G1Config = self::g1::Config<H>;
+    type G2Config = self::g2::Config<H>;
 
     fn multi_miller_loop(
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
@@ -94,4 +94,4 @@ impl<H: HostFunctions> Bls12Parameters for Parameters<H> {
     }
 }
 
-pub type Bls12_381<H> = Bls12<Parameters<H>>;
+pub type Bls12_381<H> = Bls12<Config<H>>;
