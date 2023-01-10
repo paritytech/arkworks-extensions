@@ -1,10 +1,11 @@
 use crate::*;
-use ark_ec::{models::CurveConfig, AffineRepr, Group};
 use ark_ff::{Field, MontFp, PrimeField, Zero};
 use ark_models::{
     bls12,
     bls12::Bls12Config,
+    models::CurveConfig,
     short_weierstrass::{Affine, Projective, SWCurveConfig},
+    AffineRepr, Group,
 };
 use ark_serialize::{CanonicalSerialize, Compress, SerializationError, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec, vec::Vec, One};

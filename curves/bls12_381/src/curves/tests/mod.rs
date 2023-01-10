@@ -1,6 +1,6 @@
 use ark_algebra_test_templates::*;
 use ark_ff::{fields::Field, One, UniformRand, Zero};
-use ark_models::{pairing::*, AffineRepr, CurveGroup, Group};
+use ark_models::{pairing::*, AffineRepr, CurveGroup, Group, pairing, models::CurveConfig};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, vec::Vec};
 
@@ -42,7 +42,7 @@ impl HostFunctions for Host {
 test_group!(g1; crate::G1Projective<super::Host>; sw);
 test_group!(g2; crate::G2Projective<super::Host>; sw);
 test_group!(pairing_output; PairingOutput<crate::Bls12_381<super::Host>>; msm);
-test_pairing!(pairing; crate::Bls12_381<super::Host>);
+test_pairing!(ark_models::pairing; crate::Bls12_381<super::Host>);
 
 type G1Projective = G1Projective_Host<Host>;
 type G1Affine = G1Affine_Host<Host>;
