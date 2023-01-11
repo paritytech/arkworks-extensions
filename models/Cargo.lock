@@ -74,6 +74,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-models"
+version = "0.3.0"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-serialize",
+ "ark-std",
+ "derivative",
+ "getrandom",
+ "itertools",
+ "num-traits",
+ "rayon",
+ "zeroize",
+]
+
+[[package]]
 name = "ark-poly"
 version = "0.4.0-alpha.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -117,22 +133,6 @@ dependencies = [
  "num-traits",
  "rand",
  "rayon",
-]
-
-[[package]]
-name = "ark-sub-models"
-version = "0.3.0"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-serialize",
- "ark-std",
- "derivative",
- "getrandom",
- "itertools",
- "num-traits",
- "rayon",
- "zeroize",
 ]
 
 [[package]]

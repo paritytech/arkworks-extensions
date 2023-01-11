@@ -1,5 +1,5 @@
 [package]
-name = "ark-sub-models"
+name = "ark-models"
 version = "0.3.0"
 authors = [ "arkworks contributors" ]
 description = "A substrate replacement model for bls12 of ark-ec"
