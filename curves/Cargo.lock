@@ -110,6 +110,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-algebra-test-templates"
+version = "0.4.0-alpha.7"
+source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e86d168b5a4ba67bd97cacdc963a2f3"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-serialize",
+ "ark-std 0.4.0-alpha",
+ "hex",
+ "num-bigint",
+ "num-integer",
+ "num-traits",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "sha2 0.10.6",
+]
+
+[[package]]
 name = "ark-bls12-377"
 version = "0.4.0-alpha.1"
 source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
@@ -2032,7 +2051,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 name = "sp-ark-bls12-377"
 version = "0.4.0-alpha.1"
 dependencies = [
- "ark-algebra-test-templates",
+ "ark-algebra-test-templates 0.4.0-alpha.6",
  "ark-bls12-377",
  "ark-curve-constraint-tests",
  "ark-ec",
@@ -2049,7 +2068,7 @@ dependencies = [
 name = "sp-ark-bls12-381"
 version = "0.4.0-alpha"
 dependencies = [
- "ark-algebra-test-templates",
+ "ark-algebra-test-templates 0.4.0-alpha.6",
  "ark-bls12-381",
  "ark-ec",
  "ark-ff",
@@ -2057,6 +2076,21 @@ dependencies = [
  "ark-serialize",
  "ark-std 0.4.0-alpha",
  "hex",
+ "sp-io",
+]
+
+[[package]]
+name = "sp-ark-bw6-761"
+version = "0.4.0-alpha.1"
+dependencies = [
+ "ark-algebra-test-templates 0.4.0-alpha.7",
+ "ark-bw6-761",
+ "ark-ec",
+ "ark-ff",
+ "ark-models",
+ "ark-serialize",
+ "ark-std 0.4.0-alpha",
+ "sp-ark-bls12-377",
  "sp-io",
 ]
 
@@ -3042,8 +3076,3 @@ dependencies = [
  "syn",
  "synstructure",
 ]
-
-[[patch.unused]]
-name = "ark-algebra-test-templates"
-version = "0.4.0-alpha.7"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e86d168b5a4ba67bd97cacdc963a2f3"
