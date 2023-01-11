@@ -113,7 +113,7 @@ dependencies = [
 [[package]]
 name = "ark-bls12-377"
 version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#bf8c488263b6c21c777c4e12ce34c52e04794a10"
+source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -123,7 +123,7 @@ dependencies = [
 [[package]]
 name = "ark-bls12-381"
 version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#bf8c488263b6c21c777c4e12ce34c52e04794a10"
+source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -134,23 +134,11 @@ dependencies = [
 [[package]]
 name = "ark-bw6-761"
 version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#bf8c488263b6c21c777c4e12ce34c52e04794a10"
+source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
 dependencies = [
  "ark-bls12-377",
  "ark-ec",
  "ark-ff",
- "ark-std",
-]
-
-[[package]]
-name = "ark-curve-constraint-tests"
-version = "0.4.0-alpha.1"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-r1cs-std",
- "ark-relations 0.4.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "ark-serialize",
  "ark-std",
 ]
 
@@ -173,7 +161,7 @@ dependencies = [
 [[package]]
 name = "ark-ed-on-bls12-377"
 version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#bf8c488263b6c21c777c4e12ce34c52e04794a10"
+source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
 dependencies = [
  "ark-bls12-377",
  "ark-ec",
@@ -184,7 +172,7 @@ dependencies = [
 [[package]]
 name = "ark-ed-on-bls12-381"
 version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#bf8c488263b6c21c777c4e12ce34c52e04794a10"
+source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -257,44 +245,6 @@ dependencies = [
  "ark-std",
  "derivative",
  "hashbrown 0.13.1",
-]
-
-[[package]]
-name = "ark-r1cs-std"
-version = "0.4.0-alpha.3"
-source = "git+https://github.com/arkworks-rs/r1cs-std/#054969fbcee949b9030bbc166865cba1d527517e"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-relations 0.4.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "ark-std",
- "derivative",
- "num-bigint",
- "num-integer",
- "num-traits",
- "tracing",
-]
-
-[[package]]
-name = "ark-relations"
-version = "0.4.0-alpha.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8fcbb7957519f1fd4de397d22360b236840c3e426f39999e34c63be9dfe7d1b"
-dependencies = [
- "ark-ff",
- "ark-std",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "ark-relations"
-version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/snark#7106dc87b35620173c67d5cbab81f3255599dffd"
-dependencies = [
- "ark-ff",
- "ark-std",
- "tracing",
 ]
 
 [[package]]
@@ -380,7 +330,7 @@ dependencies = [
  "cfg-if",
  "libc",
  "miniz_oxide",
- "object 0.30.1",
+ "object 0.30.2",
  "rustc-demangle",
 ]
 
@@ -1472,9 +1422,9 @@ dependencies = [
 
 [[package]]
 name = "object"
-version = "0.30.1"
+version = "0.30.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d864c91689fdc196779b98dba0aceac6118594c2df6ee5d943eb6a8df4d107a"
+checksum = "2b8c786513eb403643f2a88c244c2aaa270ef2153f55094587d0c48a3cf22a83"
 dependencies = [
  "memchr",
 ]
@@ -2021,23 +1971,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
-name = "sp-ark-bls12-377"
-version = "0.4.0-alpha.1"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-bls12-377",
- "ark-curve-constraint-tests",
- "ark-ec",
- "ark-ff",
- "ark-models",
- "ark-r1cs-std",
- "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
- "ark-serialize",
- "ark-std",
- "sp-io",
-]
-
-[[package]]
 name = "sp-ark-bls12-381"
 version = "0.4.0-alpha"
 dependencies = [
@@ -2049,57 +1982,6 @@ dependencies = [
  "ark-serialize",
  "ark-std",
  "hex",
- "sp-io",
-]
-
-[[package]]
-name = "sp-ark-bw6-761"
-version = "0.4.0-alpha.1"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-bw6-761",
- "ark-ec",
- "ark-ff",
- "ark-models",
- "ark-serialize",
- "ark-std",
- "sp-ark-bls12-377",
- "sp-io",
-]
-
-[[package]]
-name = "sp-ark-ed-on-bls12-377"
-version = "0.4.0-alpha.1"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-curve-constraint-tests",
- "ark-ec",
- "ark-ed-on-bls12-377",
- "ark-ff",
- "ark-models",
- "ark-r1cs-std",
- "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
- "ark-serialize",
- "ark-std",
- "sp-ark-bls12-377",
- "sp-io",
-]
-
-[[package]]
-name = "sp-ark-ed-on-bls12-381"
-version = "0.4.0-alpha.1"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-curve-constraint-tests",
- "ark-ec",
- "ark-ed-on-bls12-381",
- "ark-ff",
- "ark-models",
- "ark-r1cs-std",
- "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
- "ark-serialize",
- "ark-std",
- "sp-ark-bls12-381",
  "sp-io",
 ]
 
@@ -3085,3 +2967,13 @@ dependencies = [
  "syn",
  "synstructure",
 ]
+
+[[patch.unused]]
+name = "ark-r1cs-std"
+version = "0.4.0-alpha.3"
+source = "git+https://github.com/arkworks-rs/r1cs-std/#054969fbcee949b9030bbc166865cba1d527517e"
+
+[[patch.unused]]
+name = "ark-std"
+version = "0.3.0"
+source = "git+https://github.com/arkworks-rs/std#7019830e89b69aca059ce7848e53bd99a09efbab"

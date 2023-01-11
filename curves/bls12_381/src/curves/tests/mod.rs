@@ -1,8 +1,9 @@
 use ark_algebra_test_templates::*;
 use ark_ff::{fields::Field, One, UniformRand, Zero};
-use ark_models::{pairing::*, AffineRepr, CurveGroup, Group, pairing, models::CurveConfig};
+use ark_models::{models::CurveConfig, pairing, pairing::*, AffineRepr, CurveGroup, Group};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, vec::Vec};
+use ark_ec::{Group, CurveGroup, AffineRepr};
 
 use crate::{
     Bls12_381 as Bls12_381_Host, Fq, Fq2, Fr, G1Affine as G1Affine_Host,
