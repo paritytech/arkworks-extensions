@@ -1,4 +1,4 @@
-use ark_ec::{CurveConfig, AffineRepr, CurveGroup, Group};
+use ark_ec::{AffineRepr, CurveConfig, CurveGroup, Group};
 use ark_ff::{Field, MontFp, Zero};
 use ark_models::{
     bls12,
