@@ -1,7 +1,7 @@
 use ark_ff::MontFp;
 use ark_models::{
-    CurveConfig,
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
+    CurveConfig,
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
