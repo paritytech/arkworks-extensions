@@ -1,10 +1,10 @@
 use ark_ff::{Field, MontFp, Zero};
 use ark_models::{
+    short_weierstrass::Affine,
     {
         short_weierstrass::{Projective, SWCurveConfig},
         CurveConfig,
     },
-    short_weierstrass::Affine,
 };
 use ark_serialize::{CanonicalSerialize, Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
