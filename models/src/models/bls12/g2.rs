@@ -11,12 +11,6 @@ use derivative::Derivative;
 pub type G2Affine<P> = Affine<<P as Bls12Config>::G2Config>;
 pub type G2Projective<P> = Projective<<P as Bls12Config>::G2Config>;
 
-pub(crate) type EllCoeff<P> = (
-    Fp2<<P as Bls12Config>::Fp2Config>,
-    Fp2<<P as Bls12Config>::Fp2Config>,
-    Fp2<<P as Bls12Config>::Fp2Config>,
-);
-
 #[derive(Derivative, CanonicalSerialize, CanonicalDeserialize)]
 #[derivative(
     Clone(bound = "P: Bls12Config"),
