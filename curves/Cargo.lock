@@ -93,13 +93,12 @@ checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
 
 [[package]]
 name = "ark-algebra-test-templates"
-version = "0.4.0-alpha.7"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e86d168b5a4ba67bd97cacdc963a2f3"
+version = "0.4.0-alpha.6"
 dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.3.0",
  "hex",
  "num-bigint",
  "num-integer",
@@ -117,7 +116,7 @@ source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49
 dependencies = [
  "ark-ec",
  "ark-ff",
- "ark-std",
+ "ark-std 0.4.0-alpha",
 ]
 
 [[package]]
@@ -128,7 +127,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.4.0-alpha",
 ]
 
 [[package]]
@@ -139,7 +138,7 @@ dependencies = [
  "ark-bls12-377",
  "ark-ec",
  "ark-ff",
- "ark-std",
+ "ark-std 0.4.0-alpha",
 ]
 
 [[package]]
@@ -150,7 +149,7 @@ dependencies = [
  "ark-ff",
  "ark-poly",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.4.0-alpha",
  "derivative",
  "hashbrown 0.13.1",
  "itertools",
@@ -166,7 +165,7 @@ dependencies = [
  "ark-bls12-377",
  "ark-ec",
  "ark-ff",
- "ark-std",
+ "ark-std 0.4.0-alpha",
 ]
 
 [[package]]
@@ -177,7 +176,7 @@ dependencies = [
  "ark-bls12-381",
  "ark-ec",
  "ark-ff",
- "ark-std",
+ "ark-std 0.4.0-alpha",
 ]
 
 [[package]]
@@ -188,7 +187,7 @@ dependencies = [
  "ark-ff-asm",
  "ark-ff-macros",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.4.0-alpha",
  "derivative",
  "digest 0.10.6",
  "itertools",
@@ -227,7 +226,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.4.0-alpha",
  "derivative",
  "getrandom 0.2.8",
  "itertools",
@@ -242,7 +241,7 @@ source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e
 dependencies = [
  "ark-ff",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.4.0-alpha",
  "derivative",
  "hashbrown 0.13.1",
 ]
@@ -253,7 +252,7 @@ version = "0.4.0-alpha.7"
 source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e86d168b5a4ba67bd97cacdc963a2f3"
 dependencies = [
  "ark-serialize-derive",
- "ark-std",
+ "ark-std 0.4.0-alpha",
  "digest 0.10.6",
  "num-bigint",
 ]
@@ -266,6 +265,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "ark-std"
+version = "0.3.0"
+source = "git+https://github.com/arkworks-rs/std#7019830e89b69aca059ce7848e53bd99a09efbab"
+dependencies = [
+ "num-traits",
+ "rand 0.8.5",
 ]
 
 [[package]]
@@ -1980,7 +1988,7 @@ dependencies = [
  "ark-ff",
  "ark-models",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.4.0-alpha",
  "hex",
  "sp-io",
 ]
@@ -1998,7 +2006,7 @@ dependencies = [
  "ark-ed-on-bls12-381",
  "ark-ff",
  "ark-serialize",
- "ark-std",
+ "ark-std 0.4.0-alpha",
  "better_any",
  "sp-std",
 ]
@@ -2969,11 +2977,11 @@ dependencies = [
 ]
 
 [[patch.unused]]
+name = "ark-algebra-test-templates"
+version = "0.4.0-alpha.7"
+source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#667ec3e82e86d168b5a4ba67bd97cacdc963a2f3"
+
+[[patch.unused]]
 name = "ark-r1cs-std"
 version = "0.4.0-alpha.3"
 source = "git+https://github.com/arkworks-rs/r1cs-std/#054969fbcee949b9030bbc166865cba1d527517e"
-
-[[patch.unused]]
-name = "ark-std"
-version = "0.3.0"
-source = "git+https://github.com/arkworks-rs/std#7019830e89b69aca059ce7848e53bd99a09efbab"
