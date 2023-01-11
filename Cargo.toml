@@ -1,0 +1,17 @@
+[workspace]
+
+members = ["curves/bls12_381", "curves/bls12_377", "curves/bw6_761", "curves/ed_on_bls12_377","curves/ed_on_bls12_381"]
+
+[patch.crates-io]
+ark-std = {git = "https://github.com/arkworks-rs/std" }
+ark-serialize = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }
+ark-ff = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }
+ark-ec = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }
+ark-poly = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }
+ark-algebra-test-templates = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }
+ark-r1cs-std = { git = "https://github.com/arkworks-rs/r1cs-std/" }
+ark-bls12-381 = { git = "https://github.com/arkworks-rs/curves" }
+ark-bls12-377 = { git = "https://github.com/arkworks-rs/curves" }
+ark-bw6-761 = { git = "https://github.com/arkworks-rs/curves" }
+ark-ed-on-bls12-381 = { git = "https://github.com/arkworks-rs/curves" }
+ark-ed-on-bls12-377 = { git = "https://github.com/arkworks-rs/curves" }
