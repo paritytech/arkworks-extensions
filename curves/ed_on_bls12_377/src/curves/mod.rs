@@ -1,6 +1,6 @@
 use ark_ff::MontFp;
 use ark_models::{
-    models::CurveConfig,
+    CurveConfig,
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};

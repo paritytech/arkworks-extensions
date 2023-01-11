@@ -375,7 +375,7 @@ pub mod curves {
 
     pub fn sw_test<P, GG>() -> Result<(), SynthesisError>
     where
-        P: ark_ec::models::short_weierstrass::SWCurveConfig,
+        P: ark_ec::short_weierstrass::SWCurveConfig,
         GG: CurveVar<SWProjective<P>, <P::BaseField as Field>::BasePrimeField>,
         for<'a> &'a GG: GroupOpsBounds<'a, SWProjective<P>, GG>,
     {

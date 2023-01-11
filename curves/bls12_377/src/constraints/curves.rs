@@ -26,7 +26,7 @@ pub type G2PreparedVar = bls12::G2PreparedVar<Config>;
 
 #[test]
 fn test() {
-    use ark_ec::models::bls12::Bls12Config;
+    use ark_ec::bls12::Bls12Config;
     ark_curve_constraint_tests::curves::sw_test::<<Config as Bls12Config>::G1Config, G1Var>()
         .unwrap();
     ark_curve_constraint_tests::curves::te_test::<

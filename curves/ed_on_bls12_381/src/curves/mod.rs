@@ -1,6 +1,6 @@
 use ark_ff::MontFp;
 use ark_models::{
-    models::CurveConfig,
+    CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
 };
