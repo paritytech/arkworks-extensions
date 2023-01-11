@@ -1,3 +1,0 @@
-cargo:rerun-if-changed=build/main.rs
-cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/achim/projects/ark-substrate/curves/target/debug/build/typenum-0dcaf07d87cfec64/out/consts.rs
-cargo:rustc-env=TYPENUM_BUILD_OP=/home/achim/projects/ark-substrate/curves/target/debug/build/typenum-0dcaf07d87cfec64/out/op.rs
