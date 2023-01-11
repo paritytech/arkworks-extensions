@@ -1,6 +1,6 @@
-use ark_ec::{models::CurveConfig, AffineRepr, CurveGroup, Group};
+use ark_ec::{CurveConfig, AffineRepr, CurveGroup, Group};
 use ark_ff::{Field, MontFp, Zero};
-use ark_models::models::{
+use ark_models::{
     bls12,
     bls12::Bls12Config,
     short_weierstrass::{Affine, Projective, SWCurveConfig},

@@ -1,6 +1,6 @@
 use ark_ff::{Field, MontFp, Zero};
 use ark_models::{
-    models::{
+    {
         short_weierstrass::{Projective, SWCurveConfig},
         CurveConfig,
     },

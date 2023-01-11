@@ -1,6 +1,6 @@
 use ark_ff::{Field, MontFp};
 use ark_models::{
-    models::{short_weierstrass::SWCurveConfig, CurveConfig},
+    {short_weierstrass::SWCurveConfig, CurveConfig},
     short_weierstrass::{Affine, Projective},
 };
 use ark_serialize::{CanonicalSerialize, Compress, Validate};
