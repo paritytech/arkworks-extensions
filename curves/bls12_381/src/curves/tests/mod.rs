@@ -1,6 +1,6 @@
 use ark_algebra_test_templates::*;
 use ark_ff::{fields::Field, One, UniformRand, Zero};
-use ark_models::{AffineRepr, CurveGroup, Group};
+use ark_models::{pairing::PairingOutput, AffineRepr, CurveGroup, Group};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, vec::Vec};
 
