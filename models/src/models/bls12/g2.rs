@@ -3,7 +3,6 @@ use crate::models::{
     short_weierstrass::{Affine, Projective},
 };
 use ark_ec::{AffineRepr, CurveGroup};
-use ark_ff::Fp2;
 use ark_serialize::*;
 use ark_std::vec::Vec;
 use derivative::Derivative;

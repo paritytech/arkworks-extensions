@@ -1,7 +1,6 @@
 use ark_ec::{
     models::CurveConfig,
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
-    AffineRepr,
 };
 use ark_ff::{
     fields::{
@@ -10,7 +9,7 @@ use ark_ff::{
         fp6_3over2::Fp6Config,
         Fp2,
     },
-    CyclotomicMultSubgroup, PrimeField,
+    PrimeField,
 };
 use ark_std::marker::PhantomData;
 use derivative::Derivative;
