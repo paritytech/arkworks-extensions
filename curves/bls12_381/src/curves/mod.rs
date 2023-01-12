@@ -2,7 +2,7 @@ use crate::{Fq, Fq12Config, Fq2Config, Fq6Config};
 use ark_ec::pairing::{MillerLoopOutput, Pairing, PairingOutput};
 use ark_ff::Fp12;
 use ark_models::bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType};
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress};
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
 
 pub mod g1;
@@ -71,8 +71,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let res = H::bls12_381_multi_miller_loop(a, b);
         let cursor = Cursor::new(&res[..]);
         let f: <Bls12<Self> as Pairing>::TargetField =
-            Fp12::deserialize_with_mode(cursor, Compress::Yes, ark_serialize::Validate::No)
-                .unwrap();
+            Fp12::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         MillerLoopOutput(f)
     }
 
@@ -89,7 +88,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let res = PairingOutput::<Bls12<Self>>::deserialize_with_mode(
             cursor,
             Compress::Yes,
-            ark_serialize::Validate::No,
+            Validate::No,
         )
         .unwrap();
 
