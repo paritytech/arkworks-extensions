@@ -17,7 +17,7 @@ pub struct EncodingFlags {
 }
 
 impl EncodingFlags {
-    pub fn get_flags(bytes: &[u8]) -> Self {
+    pub fn get_flags(bytes: Vec<u8>) -> Self {
         let compression_flag_set = (bytes[0] >> 7) & 1;
         let infinity_flag_set = (bytes[0] >> 6) & 1;
         let sort_flag_set = (bytes[0] >> 5) & 1;
@@ -75,7 +75,7 @@ pub(crate) fn serialize_fq(field: Fq) -> [u8; 48] {
 }
 
 pub(crate) fn read_fq_with_offset(
-    bytes: &[u8],
+    bytes: Vec<u8>,
     offset: usize,
     mask: bool,
 ) -> Result<Fq, ark_serialize::SerializationError> {
