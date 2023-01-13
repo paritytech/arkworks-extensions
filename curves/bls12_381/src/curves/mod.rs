@@ -78,11 +78,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     fn final_exponentiation(
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
-        let mut out: [u8; 576] = [0; 576];
-        let mut cursor = Cursor::new(&mut out[..]);
-        f.0.serialize_with_mode(&mut cursor, Compress::Yes).unwrap();
+        let target = f.0;
+        let mut serialized_target = vec![0; target.serialized_size(Compress::Yes)];
+        let mut cursor = Cursor::new(&mut serialized_target[..]);
+        target
+            .serialize_with_mode(&mut cursor, Compress::Yes)
+            .unwrap();
 
-        let res = H::bls12_381_final_exponentiation(&out);
+        let res = H::bls12_381_final_exponentiation(serialized_target);
 
         let cursor = Cursor::new(&res[..]);
         let res = PairingOutput::<Bls12<Self>>::deserialize_with_mode(

@@ -105,11 +105,14 @@ impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
     }
 
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
-        let mut out: [u8; 576] = [0; 576];
-        let mut cursor = Cursor::new(&mut out[..]);
-        f.0.serialize_with_mode(&mut cursor, Compress::Yes).unwrap();
+        let target = f.0;
+        let mut serialized_target = vec![0; target.serialized_size(Compress::Yes)];
+        let mut cursor = Cursor::new(&mut serialized_target[..]);
+        target
+            .serialize_with_mode(&mut cursor, Compress::Yes)
+            .unwrap();
 
-        let res = H::bw6_761_final_exponentiation(&out);
+        let res = H::bw6_761_final_exponentiation(serialized_target);
 
         let cursor = Cursor::new(&res[..]);
         let res =
