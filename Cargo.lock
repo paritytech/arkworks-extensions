@@ -2133,7 +2133,6 @@ dependencies = [
  "ark-models",
  "ark-serialize",
  "ark-std",
- "sp-ark-bls12-377",
  "sp-io",
 ]
 
@@ -2151,7 +2150,6 @@ dependencies = [
  "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
  "ark-serialize",
  "ark-std",
- "sp-ark-bls12-377",
  "sp-io",
 ]
 
@@ -2169,7 +2167,6 @@ dependencies = [
  "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
  "ark-serialize",
  "ark-std",
- "sp-ark-bls12-381",
  "sp-io",
 ]
 

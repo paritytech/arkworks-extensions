@@ -3,7 +3,6 @@
 members = ["curves/bls12_381", "curves/bls12_377", "curves/bw6_761", "curves/ed_on_bls12_377","curves/ed_on_bls12_381"]
 
 [patch.crates-io]
-ark-std = {git = "https://github.com/arkworks-rs/std" }
 ark-serialize = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }
 ark-ff = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }
 ark-ec = { git = "https://github.com/arkworks-rs/algebra/", branch = "releases"  }

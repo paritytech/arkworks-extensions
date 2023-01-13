@@ -16,7 +16,6 @@ ark-std = { version = "0.4.0-alpha", default-features = false }
 ark-r1cs-std = { version = "0.4.0-alpha", default-features = false, optional = true }
 ark-serialize = { version = "0.4.0-alpha", default-features = false }
 ark-ed-on-bls12-381 = { git = "https://github.com/arkworks-rs/curves", default-features = false }
-sp-ark-bls12-381 = { version = "0.4.0-alpha", path = "../bls12_381", default-features = false, features = [ "curve" ] }
 ark-models = { package = "ark-models", path = "../../models", default-features = false }
 
 [dev-dependencies]
@@ -28,5 +27,5 @@ sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git
 
 [features]
 default = []
-std = [ "ark-std/std", "ark-ff/std", "ark-models/std", "sp-ark-bls12-381/std", "ark-ed-on-bls12-381/std", "ark-models/std", "sp-io/std" ]
+std = [ "ark-std/std", "ark-ff/std", "ark-models/std", "ark-ed-on-bls12-381/std", "ark-models/std", "sp-io/std" ]
 r1cs = ["ark-r1cs-std"]
