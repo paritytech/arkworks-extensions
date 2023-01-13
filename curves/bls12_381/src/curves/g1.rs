@@ -241,18 +241,6 @@ mod test {
     use crate::HostFunctions;
     use ark_std::{rand::Rng, UniformRand};
 
-    fn sample_unchecked() -> Affine<g1::Config<Host>> {
-        let mut rng = ark_std::test_rng();
-        loop {
-            let x = Fq::rand(&mut rng);
-            let greatest = rng.gen();
-
-            if let Some(p) = Affine::get_point_from_x_unchecked(x, greatest) {
-                return p;
-            }
-        }
-    }
-
     pub struct Host {}
 
     impl HostFunctions for Host {
@@ -279,6 +267,18 @@ mod test {
         }
         fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
             sp_io::crypto::bls12_381_mul_affine_g2(base, scalar)
+        }
+    }
+
+    fn sample_unchecked() -> Affine<g1::Config<Host>> {
+        let mut rng = ark_std::test_rng();
+        loop {
+            let x = Fq::rand(&mut rng);
+            let greatest = rng.gen();
+
+            if let Some(p) = Affine::get_point_from_x_unchecked(x, greatest) {
+                return p;
+            }
         }
     }
 

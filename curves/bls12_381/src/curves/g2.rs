@@ -331,36 +331,66 @@ fn double_p_power_endomorphism<H: HostFunctions>(
     res
 }
 
-// #[cfg(test)]
-// mod test {
+#[cfg(test)]
+mod test {
 
-//     use super::*;
-//     use ark_std::UniformRand;
+    use super::*;
+    use crate::HostFunctions;
+    use ark_std::UniformRand;
 
-//     #[test]
-//     fn test_cofactor_clearing() {
-//         // multiplying by h_eff and clearing the cofactor by the efficient
-//         // endomorphism-based method should yield the same result.
-//         let h_eff: &'static [u64] = &[
-//             0xe8020005aaa95551,
-//             0x59894c0adebbf6b4,
-//             0xe954cbc06689f6a3,
-//             0x2ec0ec69d7477c1a,
-//             0x6d82bf015d1212b0,
-//             0x329c2f178731db95,
-//             0x9986ff031508ffe1,
-//             0x88e2a8e9145ad768,
-//             0x584c6a0ea91b3528,
-//             0xbc69f08f2ee75b3,
-//         ];
+    pub struct Host {}
 
-//         let mut rng = ark_std::test_rng();
-//         const SAMPLES: usize = 10;
-//         for _ in 0..SAMPLES {
-//             let p = Affine::<g2::Config<H>>::rand(&mut rng);
-//             let optimised = p.clear_cofactor().into_group();
-//             let naive = g2::Config::<H>::mul_affine(&p, h_eff);
-//             assert_eq!(optimised, naive);
-//         }
-//     }
-// }
+    impl HostFunctions for Host {
+        fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
+            sp_io::crypto::bls12_381_multi_miller_loop(a, b)
+        }
+        fn bls12_381_final_exponentiation(f12: &[u8]) -> Vec<u8> {
+            sp_io::crypto::bls12_381_final_exponentiation(f12)
+        }
+        fn bls12_381_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
+            sp_io::crypto::bls12_381_msm_g1(bases, bigints)
+        }
+        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+            sp_io::crypto::bls12_381_mul_projective_g1(base, scalar)
+        }
+        fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+            sp_io::crypto::bls12_381_mul_affine_g1(base, scalar)
+        }
+        fn bls12_381_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
+            sp_io::crypto::bls12_381_msm_g2(bases, bigints)
+        }
+        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+            sp_io::crypto::bls12_381_mul_projective_g2(base, scalar)
+        }
+        fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+            sp_io::crypto::bls12_381_mul_affine_g2(base, scalar)
+        }
+    }
+
+    #[test]
+    fn test_cofactor_clearing() {
+        // multiplying by h_eff and clearing the cofactor by the efficient
+        // endomorphism-based method should yield the same result.
+        let h_eff: &'static [u64] = &[
+            0xe8020005aaa95551,
+            0x59894c0adebbf6b4,
+            0xe954cbc06689f6a3,
+            0x2ec0ec69d7477c1a,
+            0x6d82bf015d1212b0,
+            0x329c2f178731db95,
+            0x9986ff031508ffe1,
+            0x88e2a8e9145ad768,
+            0x584c6a0ea91b3528,
+            0xbc69f08f2ee75b3,
+        ];
+
+        let mut rng = ark_std::test_rng();
+        const SAMPLES: usize = 10;
+        for _ in 0..SAMPLES {
+            let p = Affine::<g2::Config<Host>>::rand(&mut rng);
+            let optimised = p.clear_cofactor().into_group();
+            let naive = g2::Config::<Host>::mul_affine(&p, h_eff);
+            assert_eq!(optimised, naive);
+        }
+    }
+}
