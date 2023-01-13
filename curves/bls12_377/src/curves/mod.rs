@@ -101,5 +101,3 @@ pub type G1Affine<H> = bls12::G1Affine<Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<Config<H>>;
 pub type G2Affine<H> = bls12::G2Affine<Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<Config<H>>;
-
-// pub use g1::{G1TEAffine, G1TEProjective};
