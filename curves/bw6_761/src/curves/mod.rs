@@ -3,8 +3,9 @@ use ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
+use ark_serialize::{CanonicalDeserialize, Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_utils::serialize_argument;
 
 use crate::*;
 
@@ -74,22 +75,14 @@ impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <BW6<Self> as Pairing>::G1Prepared = elem.into();
-                let mut serialized = vec![0; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
+                serialize_argument(elem)
             })
             .collect();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <BW6<Self> as Pairing>::G2Prepared = elem.into();
-                let mut serialized = vec![0u8; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
+                serialize_argument(elem)
             })
             .collect();
 
@@ -107,11 +100,7 @@ impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
 
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
         let target = f.0;
-        let mut serialized_target = vec![0; target.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_target[..]);
-        target
-            .serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
+        let serialized_target = serialize_argument(target);
 
         let result = H::bw6_761_final_exponentiation(serialized_target);
 

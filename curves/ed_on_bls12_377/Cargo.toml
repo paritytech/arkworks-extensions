@@ -16,7 +16,8 @@ ark-std = { version = "0.4.0-alpha", default-features = false }
 ark-ed-on-bls12-377 = { git = "https://github.com/arkworks-rs/curves", default-features = false }
 ark-serialize = { version = "0.4.0-alpha", default-features = false }
 ark-r1cs-std = { version = "0.4.0-alpha", default-features = false, optional = true }
-ark-models = { package = "ark-models", path = "../../models", default-features = false }
+ark-models = { path = "../../models", default-features = false }
+ark-utils = { path = "../utils" }
 
 [dev-dependencies]
 ark-relations = { git = "https://github.com/arkworks-rs/snark", default-features = false }

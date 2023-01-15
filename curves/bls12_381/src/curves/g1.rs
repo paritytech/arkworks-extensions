@@ -6,8 +6,9 @@ use ark_models::{
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     AffineRepr, CurveConfig, Group,
 };
-use ark_serialize::{CanonicalSerialize, Compress, SerializationError, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec, vec::Vec, One};
+use ark_serialize::{Compress, SerializationError, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec::Vec, One};
+use ark_utils::serialize_argument;
 
 use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
@@ -144,23 +145,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     ) -> Result<Projective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases
             .into_iter()
-            .map(|elem| {
-                let mut serialized = vec![0; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
-            })
+            .map(|elem| serialize_argument(*elem))
             .collect();
         let scalars: Vec<Vec<u8>> = scalars
             .into_iter()
-            .map(|elem| {
-                let mut serialized = vec![0; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
-            })
+            .map(|elem| serialize_argument(*elem))
             .collect();
 
         let result = H::bls12_381_msm_g1(bases, scalars);
@@ -171,16 +160,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let mut serialized_base = vec![0; base.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_base[..]);
-        base.serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
-
-        let mut serialized_scalar = vec![0; scalar.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_scalar[..]);
-        scalar
-            .serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
 
         let result = H::bls12_381_mul_projective_g1(serialized_base, serialized_scalar);
 
@@ -190,16 +171,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let mut serialized_base = vec![0; base.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_base[..]);
-        base.serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
-
-        let mut serialized_scalar = vec![0; scalar.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_scalar[..]);
-        scalar
-            .serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
 
         let result = H::bls12_381_mul_affine_g1(serialized_base, serialized_scalar);
 

@@ -3,8 +3,9 @@ use ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
+use ark_serialize::{CanonicalDeserialize, Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_utils::serialize_argument;
 
 use crate::{fq::Fq, fr::Fr};
 
@@ -61,23 +62,11 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
     ) -> Result<Projective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases
             .into_iter()
-            .map(|elem| {
-                let mut serialized = vec![0; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
-            })
+            .map(|elem| serialize_argument(*elem))
             .collect();
         let scalars: Vec<Vec<u8>> = scalars
             .into_iter()
-            .map(|elem| {
-                let mut serialized = vec![0; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
-            })
+            .map(|elem| serialize_argument(*elem))
             .collect();
 
         let result = H::ed_on_bls12_377_msm(bases, scalars);
@@ -88,16 +77,8 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let mut serialized_base = vec![0; base.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_base[..]);
-        base.serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
-
-        let mut serialized_scalar = vec![0; scalar.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_scalar[..]);
-        scalar
-            .serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
 
         let result = H::ed_on_bls12_377_mul_projective(serialized_base, serialized_scalar);
 
@@ -108,16 +89,8 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let mut serialized_base = vec![0; base.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_base[..]);
-        base.serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
-
-        let mut serialized_scalar = vec![0; scalar.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_scalar[..]);
-        scalar
-            .serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
 
         let result = H::ed_on_bls12_377_mul_affine(serialized_base, serialized_scalar);
 

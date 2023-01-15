@@ -4,8 +4,9 @@ use ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
+use ark_serialize::{CanonicalDeserialize, Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_utils::serialize_argument;
 
 use crate::*;
 
@@ -48,22 +49,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                let mut serialized = vec![0; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
+                serialize_argument(elem)
             })
             .collect();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                let mut serialized = vec![0u8; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized[..]);
-                elem.serialize_with_mode(&mut cursor, Compress::Yes)
-                    .unwrap();
-                serialized
+                serialize_argument(elem)
             })
             .collect();
 
@@ -79,11 +72,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
         let target = f.0;
-        let mut serialized_target = vec![0; target.serialized_size(Compress::Yes)];
-        let mut cursor = Cursor::new(&mut serialized_target[..]);
-        target
-            .serialize_with_mode(&mut cursor, Compress::Yes)
-            .unwrap();
+        let serialized_target = serialize_argument(target);
 
         let result = H::bls12_377_final_exponentiation(serialized_target);
 
