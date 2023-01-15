@@ -67,8 +67,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             })
             .collect();
 
-        let res = H::bls12_377_multi_miller_loop(a, b);
-        let cursor = Cursor::new(&res[..]);
+        let resuslt = H::bls12_377_multi_miller_loop(a, b);
+
+        let cursor = Cursor::new(&result[..]);
         let f: <Bls12<Self> as Pairing>::TargetField =
             Fp12::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         MillerLoopOutput(f)
@@ -84,10 +85,10 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .serialize_with_mode(&mut cursor, Compress::Yes)
             .unwrap();
 
-        let res = H::bls12_377_final_exponentiation(serialized_target);
+        let result = H::bls12_377_final_exponentiation(serialized_target);
 
-        let cursor = Cursor::new(&res[..]);
-        let res = PairingOutput::<Bls12<Self>>::deserialize_with_mode(
+        let cursor = Cursor::new(&result[..]);
+        let result = PairingOutput::<Bls12<Self>>::deserialize_with_mode(
             cursor,
             Compress::Yes,
             Validate::No,

@@ -79,7 +79,9 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
                 serialized
             })
             .collect();
+
         let result = H::ed_on_bls12_377_msm(bases, scalars);
+
         let cursor = Cursor::new(&result[..]);
         let result = Self::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         Ok(result.into())
@@ -100,7 +102,6 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         let result = H::ed_on_bls12_377_mul_projective(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-
         let result =
             Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()
@@ -121,7 +122,6 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         let result = H::ed_on_bls12_377_mul_affine(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-
         let result =
             Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()

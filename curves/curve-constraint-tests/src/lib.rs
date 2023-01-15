@@ -223,11 +223,11 @@ pub mod fields {
 }
 
 pub mod curves {
+    use ark_ff::{BitIteratorLE, Field, One, PrimeField};
     use ark_models::{
         short_weierstrass::Projective as SWProjective, twisted_edwards::Projective as TEProjective,
         CurveGroup, Group,
     };
-    use ark_ff::{BitIteratorLE, Field, One, PrimeField};
     use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
     use ark_std::{test_rng, vec::Vec, UniformRand};
 
@@ -514,11 +514,11 @@ pub mod curves {
 }
 
 pub mod pairing {
+    use ark_ff::{BitIteratorLE, Field, PrimeField};
     use ark_models::{
         pairing::{Pairing, PairingOutput},
         AffineRepr, CurveGroup,
     };
-    use ark_ff::{BitIteratorLE, Field, PrimeField};
     use ark_r1cs_std::prelude::*;
     use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
     use ark_std::{test_rng, vec::Vec, UniformRand};

@@ -123,7 +123,9 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
                 serialized
             })
             .collect();
+
         let result = H::ed_on_bls12_381_te_msm(bases, scalars);
+
         let cursor = Cursor::new(&result[..]);
         let result = <JubjubConfig<H> as TECurveConfig>::deserialize_with_mode(
             cursor,
@@ -149,7 +151,6 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_te_mul_projective(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-
         let result =
             Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()
@@ -170,7 +171,6 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_te_mul_affine(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-
         let result =
             Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()
@@ -229,7 +229,9 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
                 serialized
             })
             .collect();
+
         let result = H::ed_on_bls12_381_sw_msm(bases, scalars);
+
         let cursor = Cursor::new(&result[..]);
         let result =
             SWProjective::<H>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
@@ -251,7 +253,6 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_sw_mul_projective(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-
         let result =
             SWProjective::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()
@@ -272,7 +273,6 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_sw_mul_affine(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-
         let result =
             SWProjective::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()

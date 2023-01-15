@@ -93,8 +93,9 @@ impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
             })
             .collect();
 
-        let res = H::bw6_761_multi_miller_loop(a, b);
-        let cursor = Cursor::new(&res[..]);
+        let result = H::bw6_761_multi_miller_loop(a, b);
+
+        let cursor = Cursor::new(&result[..]);
         let f = <BW6<Self> as Pairing>::TargetField::deserialize_with_mode(
             cursor,
             Compress::Yes,
@@ -112,10 +113,10 @@ impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
             .serialize_with_mode(&mut cursor, Compress::Yes)
             .unwrap();
 
-        let res = H::bw6_761_final_exponentiation(serialized_target);
+        let result = H::bw6_761_final_exponentiation(serialized_target);
 
-        let cursor = Cursor::new(&res[..]);
-        let res =
+        let cursor = Cursor::new(&result[..]);
+        let result =
             PairingOutput::<BW6<Self>>::deserialize_with_mode(cursor, Compress::Yes, Validate::No)
                 .unwrap();
 
