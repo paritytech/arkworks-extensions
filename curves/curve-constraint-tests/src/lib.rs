@@ -79,18 +79,9 @@ pub mod fields {
 
             let b_times_a_plus_b = &a_b * &b;
             let b_times_b_plus_a = &b_a * &b;
-            assert_eq!(
-                b_times_a_plus_b.value()?,
-                b_native * (b_native + a_native)
-            );
-            assert_eq!(
-                b_times_a_plus_b.value()?,
-                (b_native + a_native) * b_native
-            );
-            assert_eq!(
-                b_times_a_plus_b.value()?,
-                (a_native + b_native) * b_native
-            );
+            assert_eq!(b_times_a_plus_b.value()?, b_native * (b_native + a_native));
+            assert_eq!(b_times_a_plus_b.value()?, (b_native + a_native) * b_native);
+            assert_eq!(b_times_a_plus_b.value()?, (a_native + b_native) * b_native);
             b_times_b_plus_a.enforce_equal(&b_times_a_plus_b)?;
 
             // a * 1 = a
@@ -629,8 +620,7 @@ pub mod pairing {
         for &mode in &modes {
             let cs = ConstraintSystem::new_ref();
 
-            let test_g2_gadget =
-                P::G2Var::new_witness(cs.clone(), || Ok(test_g2_elem)).unwrap();
+            let test_g2_gadget = P::G2Var::new_witness(cs.clone(), || Ok(test_g2_elem)).unwrap();
 
             let prepared_test_g2_gadget = P::prepare_g2(&test_g2_gadget).unwrap();
             let allocated_test_g2_gadget =

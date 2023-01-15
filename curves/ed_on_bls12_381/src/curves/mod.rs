@@ -104,10 +104,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<Vec<u8>> = scalars
             .iter()
             .map(|elem| serialize_argument(*elem))
@@ -132,7 +129,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_te_mul_projective(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        
+
         Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
     }
 
@@ -143,7 +140,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_te_mul_affine(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        
+
         Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
     }
 }
@@ -180,10 +177,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         bases: &[SWAffine<H>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<SWProjective<H>, usize> {
-        let bases: Vec<Vec<u8>> = bases
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<Vec<u8>> = scalars
             .iter()
             .map(|elem| serialize_argument(*elem))
@@ -204,7 +198,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_sw_mul_projective(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        
+
         SWProjective::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
     }
 
@@ -215,7 +209,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         let result = H::ed_on_bls12_381_sw_mul_affine(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        
+
         SWProjective::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
     }
 }
