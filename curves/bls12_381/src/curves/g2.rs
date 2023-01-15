@@ -1,9 +1,9 @@
-use ark_ec::{AffineRepr, CurveConfig, CurveGroup, Group};
 use ark_ff::{Field, MontFp, Zero};
 use ark_models::{
     bls12,
     bls12::Bls12Config,
     short_weierstrass::{Affine, Projective, SWCurveConfig},
+    AffineRepr, CurveConfig, CurveGroup, Group,
 };
 use ark_serialize::{CanonicalSerialize, Compress, SerializationError, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec, vec::Vec};
