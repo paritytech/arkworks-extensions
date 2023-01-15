@@ -120,7 +120,7 @@ impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
             PairingOutput::<BW6<Self>>::deserialize_with_mode(cursor, Compress::Yes, Validate::No)
                 .unwrap();
 
-        Some(res)
+        Some(result)
     }
 }
 

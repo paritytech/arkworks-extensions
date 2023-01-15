@@ -98,7 +98,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         )
         .unwrap();
 
-        Some(res)
+        Some(result)
     }
 }
 

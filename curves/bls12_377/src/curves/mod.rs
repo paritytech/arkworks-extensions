@@ -67,7 +67,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             })
             .collect();
 
-        let resuslt = H::bls12_377_multi_miller_loop(a, b);
+        let result = H::bls12_377_multi_miller_loop(a, b);
 
         let cursor = Cursor::new(&result[..]);
         let f: <Bls12<Self> as Pairing>::TargetField =
@@ -95,7 +95,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         )
         .unwrap();
 
-        Some(res)
+        Some(result)
     }
 }
 
