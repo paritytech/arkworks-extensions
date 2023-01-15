@@ -68,51 +68,51 @@ pub mod fields {
             // a + b = b + a
             let a_b = &a + &b;
             let b_a = &b + &a;
-            assert_eq!(a_b.value()?, a_native + &b_native);
+            assert_eq!(a_b.value()?, a_native + b_native);
             a_b.enforce_equal(&b_a)?;
 
             // (a + b) + a = a + (b + a)
             let ab_a = &a_b + &a;
             let a_ba = &a + &b_a;
-            assert_eq!(ab_a.value()?, a_native + &b_native + &a_native);
+            assert_eq!(ab_a.value()?, a_native + b_native + a_native);
             ab_a.enforce_equal(&a_ba)?;
 
             let b_times_a_plus_b = &a_b * &b;
             let b_times_b_plus_a = &b_a * &b;
             assert_eq!(
                 b_times_a_plus_b.value()?,
-                b_native * &(b_native + &a_native)
+                b_native * (b_native + a_native)
             );
             assert_eq!(
                 b_times_a_plus_b.value()?,
-                (b_native + &a_native) * &b_native
+                (b_native + a_native) * b_native
             );
             assert_eq!(
                 b_times_a_plus_b.value()?,
-                (a_native + &b_native) * &b_native
+                (a_native + b_native) * b_native
             );
             b_times_b_plus_a.enforce_equal(&b_times_a_plus_b)?;
 
             // a * 1 = a
-            assert_eq!((&a * &one).value()?, a_native * &one_native);
+            assert_eq!((&a * &one).value()?, a_native * one_native);
 
             // a * b = b * a
             let ab = &a * &b;
             let ba = &b * &a;
             assert_eq!(ab.value()?, ba.value()?);
-            assert_eq!(ab.value()?, a_native * &b_native);
+            assert_eq!(ab.value()?, a_native * b_native);
 
             let ab_const = &a * &b_const;
             let b_const_a = &b_const * &a;
             assert_eq!(ab_const.value()?, b_const_a.value()?);
             assert_eq!(ab_const.value()?, ab.value()?);
-            assert_eq!(ab_const.value()?, a_native * &b_native);
+            assert_eq!(ab_const.value()?, a_native * b_native);
 
             // (a * b) * a = a * (b * a)
             let ab_a = &ab * &a;
             let a_ba = &a * &ba;
             assert_eq!(ab_a.value()?, a_ba.value()?);
-            assert_eq!(ab_a.value()?, a_native * &b_native * &a_native);
+            assert_eq!(ab_a.value()?, a_native * b_native * a_native);
 
             let aa = &a * &a;
             let a_squared = a.square()?;
@@ -145,7 +145,7 @@ pub mod fields {
             assert_eq!(a_native.pow([0x3]), a.pow_le(&bits)?.value()?);
 
             // a * a * a = a^3
-            assert_eq!(a_native.pow([0x3]), a.pow_by_constant(&[0x3])?.value()?);
+            assert_eq!(a_native.pow([0x3]), a.pow_by_constant([0x3])?.value()?);
             assert!(cs.is_satisfied().unwrap());
 
             let mut constants = [F::zero(); 4];
@@ -178,7 +178,7 @@ pub mod fields {
             let ab_false = &a + (AF::from(Boolean::Constant(false)) * b_native);
             let ab_true = &a + (AF::from(Boolean::Constant(true)) * b_native);
             assert_eq!(ab_false.value()?, a_native);
-            assert_eq!(ab_true.value()?, a_native + &b_native);
+            assert_eq!(ab_true.value()?, a_native + b_native);
 
             if !cs.is_satisfied().unwrap() {
                 panic!(
@@ -350,7 +350,7 @@ pub mod curves {
                     Vec::new_witness(ark_relations::ns!(cs, "bits"), || Ok(scalar_bits)).unwrap();
                 let result = a
                     .scalar_mul_le(input.iter())
-                    .expect(&format!("Mode: {:?}", mode));
+                    .unwrap_or_else(|_| panic!("Mode: {:?}", mode));
                 let result_val = result.value()?.into_affine();
                 assert_eq!(
                     result_val, native_result,
@@ -407,7 +407,7 @@ pub mod curves {
             assert_eq!(cs.which_is_unsatisfied().unwrap(), None);
 
             // Check addition
-            let ab = a + &b;
+            let ab = a + b;
             let ab_affine = ab.into_affine();
             let gadget_ab = &gadget_a + &gadget_b;
             let gadget_ba = &gadget_b + &gadget_a;
@@ -478,7 +478,7 @@ pub mod curves {
             assert_eq!(cs.which_is_unsatisfied()?, None);
 
             // Check addition
-            let ab = a + &b;
+            let ab = a + b;
             let ab_affine = ab.into_affine();
             let gadget_ab = &gadget_a + &gadget_b;
             let gadget_ba = &gadget_b + &gadget_a;
@@ -619,7 +619,7 @@ pub mod pairing {
     pub fn g2_prepare_consistency_test<E: Pairing, P: PairingVar<E>>() -> Result<(), SynthesisError>
     {
         let test_g2_elem = E::G2Affine::generator();
-        let test_g2_prepared = E::G2Prepared::from(test_g2_elem.clone());
+        let test_g2_prepared = E::G2Prepared::from(test_g2_elem);
 
         let modes = [
             AllocationMode::Input,
@@ -630,7 +630,7 @@ pub mod pairing {
             let cs = ConstraintSystem::new_ref();
 
             let test_g2_gadget =
-                P::G2Var::new_witness(cs.clone(), || Ok(test_g2_elem.clone())).unwrap();
+                P::G2Var::new_witness(cs.clone(), || Ok(test_g2_elem)).unwrap();
 
             let prepared_test_g2_gadget = P::prepare_g2(&test_g2_gadget).unwrap();
             let allocated_test_g2_gadget =

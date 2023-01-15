@@ -61,11 +61,11 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases
-            .into_iter()
+            .iter()
             .map(|elem| serialize_argument(*elem))
             .collect();
         let scalars: Vec<Vec<u8>> = scalars
-            .into_iter()
+            .iter()
             .map(|elem| serialize_argument(*elem))
             .collect();
 
@@ -83,9 +83,8 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         let result = H::ed_on_bls12_377_mul_projective(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        let result =
-            Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
-        result.into()
+        
+        Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -95,9 +94,8 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         let result = H::ed_on_bls12_377_mul_affine(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        let result =
-            Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
-        result.into()
+        
+        Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
     }
 }
 

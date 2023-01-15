@@ -49,12 +49,12 @@ pub(crate) fn deserialize_fq(bytes: [u8; 48]) -> Option<Fq> {
     // Note: The following unwraps are if the compiler cannot convert
     // the byte slice into [u8;8], we know this is infallible since we
     // are providing the indices at compile time and bytes has a fixed size
-    tmp.0[5] = u64::from_be_bytes(<[u8; 8]>::try_from((&bytes[0..8]).to_vec()).unwrap());
-    tmp.0[4] = u64::from_be_bytes(<[u8; 8]>::try_from((&bytes[8..16]).to_vec()).unwrap());
-    tmp.0[3] = u64::from_be_bytes(<[u8; 8]>::try_from((&bytes[16..24]).to_vec()).unwrap());
-    tmp.0[2] = u64::from_be_bytes(<[u8; 8]>::try_from((&bytes[24..32]).to_vec()).unwrap());
-    tmp.0[1] = u64::from_be_bytes(<[u8; 8]>::try_from((&bytes[32..40]).to_vec()).unwrap());
-    tmp.0[0] = u64::from_be_bytes(<[u8; 8]>::try_from((&bytes[40..48]).to_vec()).unwrap());
+    tmp.0[5] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[0..8].to_vec()).unwrap());
+    tmp.0[4] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[8..16].to_vec()).unwrap());
+    tmp.0[3] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[16..24].to_vec()).unwrap());
+    tmp.0[2] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[24..32].to_vec()).unwrap());
+    tmp.0[1] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[32..40].to_vec()).unwrap());
+    tmp.0[0] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[40..48].to_vec()).unwrap());
 
     Fq::from_bigint(tmp)
 }
@@ -100,7 +100,7 @@ pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
         .ok_or(SerializationError::InvalidData)?;
 
     // Obtain the three flags from the start of the byte sequence
-    let flags = EncodingFlags::get_flags((&bytes[..]).to_vec());
+    let flags = EncodingFlags::get_flags(bytes[..].to_vec());
 
     // we expect to be deserializing a compressed point
     if !flags.is_compressed {
@@ -112,7 +112,7 @@ pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     // Attempt to obtain the x-coordinate
-    let x = read_fq_with_offset((&bytes).to_vec(), 0, true)?;
+    let x = read_fq_with_offset(bytes.to_vec(), 0, true)?;
 
     let p = G1Affine::get_point_from_x_unchecked(x, flags.is_lexographically_largest)
         .ok_or(SerializationError::InvalidData)?;
@@ -129,7 +129,7 @@ pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
         .map_err(|_| SerializationError::InvalidData)?;
 
     // Obtain the three flags from the start of the byte sequence
-    let flags = EncodingFlags::get_flags((&bytes[..]).to_vec());
+    let flags = EncodingFlags::get_flags(bytes[..].to_vec());
 
     // we expect to be deserializing an uncompressed point
     if flags.is_compressed {
@@ -141,9 +141,9 @@ pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     // Attempt to obtain the x-coordinate
-    let x = read_fq_with_offset((&bytes).to_vec(), 0, true)?;
+    let x = read_fq_with_offset(bytes.to_vec(), 0, true)?;
     // Attempt to obtain the y-coordinate
-    let y = read_fq_with_offset((&bytes).to_vec(), 1, false)?;
+    let y = read_fq_with_offset(bytes.to_vec(), 1, false)?;
 
     let p = G1Affine::new_unchecked(x, y);
 
@@ -159,7 +159,7 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
         .map_err(|_| SerializationError::InvalidData)?;
 
     // Obtain the three flags from the start of the byte sequence
-    let flags = EncodingFlags::get_flags((&bytes).to_vec());
+    let flags = EncodingFlags::get_flags(bytes.to_vec());
 
     // we expect to be deserializing a compressed point
     if !flags.is_compressed {
@@ -171,8 +171,8 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     // Attempt to obtain the x-coordinate
-    let xc1 = read_fq_with_offset((&bytes).to_vec(), 0, true)?;
-    let xc0 = read_fq_with_offset((&bytes).to_vec(), 1, false)?;
+    let xc1 = read_fq_with_offset(bytes.to_vec(), 0, true)?;
+    let xc0 = read_fq_with_offset(bytes.to_vec(), 1, false)?;
 
     let x = Fq2::new(xc0, xc1);
 
@@ -191,7 +191,7 @@ pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
         .map_err(|_| SerializationError::InvalidData)?;
 
     // Obtain the three flags from the start of the byte sequence
-    let flags = EncodingFlags::get_flags((&bytes).to_vec());
+    let flags = EncodingFlags::get_flags(bytes.to_vec());
 
     // we expect to be deserializing an uncompressed point
     if flags.is_compressed {
@@ -203,13 +203,13 @@ pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     // Attempt to obtain the x-coordinate
-    let xc1 = read_fq_with_offset((&bytes).to_vec(), 0, true)?;
-    let xc0 = read_fq_with_offset((&bytes).to_vec(), 1, false)?;
+    let xc1 = read_fq_with_offset(bytes.to_vec(), 0, true)?;
+    let xc0 = read_fq_with_offset(bytes.to_vec(), 1, false)?;
     let x = Fq2::new(xc0, xc1);
 
     // Attempt to obtain the y-coordinate
-    let yc1 = read_fq_with_offset((&bytes).to_vec(), 2, false)?;
-    let yc0 = read_fq_with_offset((&bytes).to_vec(), 3, false)?;
+    let yc1 = read_fq_with_offset(bytes.to_vec(), 2, false)?;
+    let yc0 = read_fq_with_offset(bytes.to_vec(), 3, false)?;
     let y = Fq2::new(yc0, yc1);
 
     let p = G2Affine::new_unchecked(x, y);

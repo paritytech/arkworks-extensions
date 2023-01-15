@@ -90,14 +90,14 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let p_projective = p.into_group();
 
         // [x]P
-        let x_p = Config::mul_affine(p, &x).neg();
+        let x_p = Config::mul_affine(p, x).neg();
         // ψ(P)
-        let psi_p = p_power_endomorphism(&p);
+        let psi_p = p_power_endomorphism(p);
         // (ψ^2)(2P)
         let mut psi2_p2 = double_p_power_endomorphism(&p_projective.double());
 
         // tmp = [x]P + ψ(P)
-        let mut tmp = x_p.clone();
+        let mut tmp = x_p;
         tmp += &psi_p;
 
         // tmp2 = [x^2]P + [x]ψ(P)
@@ -185,11 +185,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases
-            .into_iter()
+            .iter()
             .map(|elem| serialize_argument(*elem))
             .collect();
         let scalars: Vec<Vec<u8>> = scalars
-            .into_iter()
+            .iter()
             .map(|elem| serialize_argument(*elem))
             .collect();
 
@@ -284,9 +284,9 @@ fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Confi
     res.x.frobenius_map_in_place(1);
     res.y.frobenius_map_in_place(1);
 
-    let tmp_x = res.x.clone();
-    res.x.c0 = -P_POWER_ENDOMORPHISM_COEFF_0.c1 * &tmp_x.c1;
-    res.x.c1 = P_POWER_ENDOMORPHISM_COEFF_0.c1 * &tmp_x.c0;
+    let tmp_x = res.x;
+    res.x.c0 = -P_POWER_ENDOMORPHISM_COEFF_0.c1 * tmp_x.c1;
+    res.x.c1 = P_POWER_ENDOMORPHISM_COEFF_0.c1 * tmp_x.c0;
     res.y *= P_POWER_ENDOMORPHISM_COEFF_1;
 
     res

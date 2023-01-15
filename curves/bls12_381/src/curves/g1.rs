@@ -76,7 +76,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         // It is enough to multiply by (1 - x), instead of (x - 1)^2 / 3
         let h_eff =
             one_minus_x(crate::Config::<H>::X_IS_NEGATIVE, crate::Config::<H>::X).into_bigint();
-        Config::<H>::mul_affine(&p, h_eff.as_ref()).into()
+        Config::<H>::mul_affine(p, h_eff.as_ref()).into()
     }
 
     fn deserialize_with_mode<R: ark_serialize::Read>(
@@ -144,11 +144,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases
-            .into_iter()
+            .iter()
             .map(|elem| serialize_argument(*elem))
             .collect();
         let scalars: Vec<Vec<u8>> = scalars
-            .into_iter()
+            .iter()
             .map(|elem| serialize_argument(*elem))
             .collect();
 
@@ -202,7 +202,7 @@ pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>
     // Endomorphism of the points on the curve.
     // endomorphism_p(x,y) = (BETA * x, y)
     // where BETA is a non-trivial cubic root of unity in Fq.
-    let mut res = (*p).clone();
+    let mut res = *p;
     res.x *= BETA;
     res
 }

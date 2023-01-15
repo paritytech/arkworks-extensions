@@ -50,7 +50,7 @@ type G2Affine = G2Affine_Host<Host>;
 
 #[test]
 fn test_g1_endomorphism_beta() {
-    assert!(crate::g1::BETA.pow(&[3u64]).is_one());
+    assert!(crate::g1::BETA.pow([3u64]).is_one());
 }
 
 #[test]
