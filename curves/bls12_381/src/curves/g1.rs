@@ -8,7 +8,7 @@ use ark_models::{
 };
 use ark_serialize::{Compress, SerializationError, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec::Vec, One};
-use ark_utils::serialize_argument;
+use sp_ark_utils::serialize_argument;
 
 use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,

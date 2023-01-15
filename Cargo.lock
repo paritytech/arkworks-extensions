@@ -152,7 +152,7 @@ dependencies = [
  "ark-relations 0.4.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-serialize",
  "ark-std",
- "ark-utils",
+ "sp-ark-utils",
 ]
 
 [[package]]
@@ -329,14 +329,6 @@ dependencies = [
  "num-traits",
  "rand 0.8.5",
  "rayon",
-]
-
-[[package]]
-name = "ark-utils"
-version = "0.4.0-alpha.1"
-dependencies = [
- "ark-serialize",
- "ark-std",
 ]
 
 [[package]]
@@ -2113,7 +2105,7 @@ dependencies = [
  "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
  "ark-serialize",
  "ark-std",
- "ark-utils",
+ "sp-ark-utils",
  "sp-io",
 ]
 
@@ -2128,8 +2120,8 @@ dependencies = [
  "ark-models",
  "ark-serialize",
  "ark-std",
- "ark-utils",
  "hex",
+ "sp-ark-utils",
  "sp-io",
 ]
 
@@ -2144,7 +2136,7 @@ dependencies = [
  "ark-models",
  "ark-serialize",
  "ark-std",
- "ark-utils",
+ "sp-ark-utils",
  "sp-io",
 ]
 
@@ -2162,7 +2154,7 @@ dependencies = [
  "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
  "ark-serialize",
  "ark-std",
- "ark-utils",
+ "sp-ark-utils",
  "sp-io",
 ]
 
@@ -2180,8 +2172,16 @@ dependencies = [
  "ark-relations 0.4.0-alpha.1 (git+https://github.com/arkworks-rs/snark)",
  "ark-serialize",
  "ark-std",
- "ark-utils",
+ "sp-ark-utils",
  "sp-io",
+]
+
+[[package]]
+name = "sp-ark-utils"
+version = "0.4.0-alpha.1"
+dependencies = [
+ "ark-serialize",
+ "ark-std",
 ]
 
 [[package]]
