@@ -1,4 +1,5 @@
 #![macro_use]
+#![allow(clippy::eq_op)]
 extern crate ark_relations;
 
 pub mod fields {
