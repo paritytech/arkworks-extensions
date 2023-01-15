@@ -18,8 +18,8 @@ ark-serialize = { version = "0.4.0-alpha", default-features = false }
 ark-ff = { version = "0.4.0-alpha", default-features = false }
 ark-relations = { version = "0.4.0-alpha", default-features = false }
 ark-r1cs-std = { version = "0.4.0-alpha", default-features = false }
-ark-ec = { version = "0.4.0-alpha", default-features = false }
+ark-models = { package = "ark-models", path = "../../models", default-features = false }
 
 [features]
 default = []
-std = [ "ark-std/std", "ark-ff/std", "ark-serialize/std", "ark-ec/std", "ark-relations/std", "ark-r1cs-std/std" ]
+std = [ "ark-std/std", "ark-ff/std", "ark-serialize/std", "ark-models/std", "ark-relations/std", "ark-r1cs-std/std" ]

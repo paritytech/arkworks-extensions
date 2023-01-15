@@ -146,8 +146,8 @@ dependencies = [
 name = "ark-curve-constraint-tests"
 version = "0.4.0-alpha.1"
 dependencies = [
- "ark-ec",
  "ark-ff",
+ "ark-models",
  "ark-r1cs-std",
  "ark-relations 0.4.0-alpha.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-serialize",
@@ -2113,6 +2113,7 @@ version = "0.4.0-alpha"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-381",
+ "ark-ec",
  "ark-ff",
  "ark-models",
  "ark-serialize",
