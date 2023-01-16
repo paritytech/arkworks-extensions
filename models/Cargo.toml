@@ -1,12 +1,12 @@
 [package]
 name = "ark-models"
 version = "0.3.0"
-authors = [ "arkworks contributors" ]
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
 description = "A substrate replacement model for bls12 of ark-ec"
 homepage = "https://arkworks.rs"
-repository = "https://github.com/arkworks-rs/algebra"
+repository = "https://github.com/paritytech/ark-substrate"
 documentation = "https://docs.rs/ark-ec/"
-keywords = ["cryptography", "elliptic-curves", "pairing"]
+keywords = ["cryptography", "elliptic-curves", "pairing", "substrate"]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"

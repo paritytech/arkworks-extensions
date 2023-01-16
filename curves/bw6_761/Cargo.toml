@@ -1,10 +1,10 @@
 [package]
 name = "sp-ark-bw6-761"
 version = "0.4.0-alpha.1"
-authors = [ "achimcc, arkworks contributors" ]
-repository = "https://github.com/paritytech/substrate/"
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
+repository = "https://github.com/paritytech/ark-substrate"
 description = "The BW6-761 pairing-friendly elliptic curve, optimized for Substrate"
-keywords = ["cryptography", "finite-fields", "elliptic-curves" ]
+keywords = ["cryptography", "finite-fields", "elliptic-curves", "substrate" ]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
