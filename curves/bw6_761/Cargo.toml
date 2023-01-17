@@ -21,7 +21,7 @@ sp-ark-utils = { path = "../utils", default-features = false  }
 [dev-dependencies]
 ark-algebra-test-templates = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
 ark-ec = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
-sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "achimcc/arkworks-integration" }
+sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git", branch = "achimcc/arkworks-integration", default-features = false }
 
 [features]
 default = []
