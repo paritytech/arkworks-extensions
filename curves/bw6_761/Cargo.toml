@@ -16,7 +16,7 @@ ark-std = { version = "0.4.0-alpha", default-features = false }
 ark-bw6-761 = { git = "https://github.com/arkworks-rs/curves", default-features = false }
 ark-serialize = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
 ark-models = { path = "../../models", default-features = false }
-sp-ark-utils = { path = "../utils", default-feature = false  }
+sp-ark-utils = { path = "../utils", default-features = false  }
 
 [dev-dependencies]
 ark-algebra-test-templates = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
@@ -25,5 +25,14 @@ sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git
 
 [features]
 default = []
-std = [ "ark-std/std", "ark-ff/std", "ark-ec/std", "ark-bw6-761/std", "ark-models/std", "sp-io/std", "sp-ark-utils/std" ]
+std = [ 
+    "ark-std/std", 
+    "ark-ff/std", 
+    "ark-ec/std", 
+    "ark-bw6-761/std", 
+    "ark-models/std", 
+    "sp-io/std", 
+    "sp-ark-utils/std",
+    "sp-io/std"
+]
 

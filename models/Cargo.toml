@@ -27,5 +27,10 @@ itertools = { version = "0.10", default-features = false }
 
 [features]
 default = [ ]
-std = [ "ark-std/std", "ark-ff/std", "ark-serialize/std" ]
+std = [ 
+    "ark-std/std", 
+    "ark-ff/std", 
+    "ark-serialize/std",
+    "num-traits/std"
+]
 parallel = [ "std", "rayon", "ark-std/parallel" ]
