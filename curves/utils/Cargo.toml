@@ -16,4 +16,4 @@ ark-serialize = { version = "0.4.0-alpha", default-features = false }
 
 [features]
 default = []
-std = [ "ark-std/std" ]
+std = [ "ark-std/std", "ark-serialize/std" ]

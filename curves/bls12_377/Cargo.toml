@@ -17,7 +17,7 @@ ark-std = { version = "0.4.0-alpha", default-features = false }
 ark-serialize = { version = "0.4.0-alpha", default-features = false }
 ark-bls12-377 = { git = "https://github.com/arkworks-rs/curves", default-features = false, features = ["curve"] }
 ark-models = { path = "../../models", default-features = false }
-sp-ark-utils = { path = "../utils" }
+sp-ark-utils = { path = "../utils", default-feature = false  }
 
 [dev-dependencies]
 ark-relations = { git = "https://github.com/arkworks-rs/snark", default-features = false }
@@ -29,7 +29,7 @@ sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git
 
 [features]
 default = [ "curve" ]
-std = [ "ark-std/std", "ark-ff/std", "ark-models/std", "ark-bls12-377/std" ]
+std = [ "ark-std/std", "ark-ff/std", "ark-models/std", "ark-bls12-377/std", "sp-ark-utils/std" ]
 
 curve = [ "scalar_field", "base_field" ]
 scalar_field = []
