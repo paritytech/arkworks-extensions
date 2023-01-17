@@ -16,11 +16,11 @@ edition = "2021"
 ark-ff = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
 ark-std = { version = "0.4.0-alpha", default-features = false }
 ark-serialize = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
-ark-bls12-381 = { git = "https://github.com/arkworks-rs/curves" }
+ark-bls12-381 = { git = "https://github.com/arkworks-rs/curves", default-features = false }
 ark-models = { path = "../../models", default-features = false }
 sp-ark-utils = { path = "../utils", default-features = false  }
 
-[dev-dependencies]
+[dev-dependencies] 
 ark-algebra-test-templates = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
 sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "achimcc/arkworks-integration" }
 ark-ec = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
@@ -29,12 +29,14 @@ hex = "^0.4.0"
 [features]
 default = [ "curve" ]
 std = [ 
-    "ark-std/std", 
     "ark-ff/std", 
+    "ark-std/std", 
+    "ark-serialize/std",
+    "ark-bls12-381/std",
     "ark-models/std", 
     "sp-ark-utils/std",
-    "ark-bls12-381/std",
-    "sp-ark-utils/std",
+    "ark-algebra-test-templates/std",
+    "ark-ec/std",
     "sp-io/std"
 ]
 

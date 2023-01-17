@@ -30,14 +30,16 @@ sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git
 [features]
 default = [ "curve" ]
 std = [ 
+    "ark-ff/std",
+    "ark-r1cs-std/std", 
     "ark-std/std", 
-    "ark-ff/std", 
-    "ark-models/std", 
-    "ark-bls12-377/std", 
-    "sp-ark-utils/std",
-    "ark-r1cs-std/std",
     "ark-serialize/std",
+    "ark-bls12-377/std",
+    "ark-models/std",  
+    "sp-ark-utils/std",
     "ark-relations/std",
+    "ark-ec/std",
+    "ark-algebra-test-templates/std",
     "ark-curve-constraint-tests/std",
     "sp-io/std"
 ]

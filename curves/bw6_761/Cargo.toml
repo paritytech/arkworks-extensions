@@ -26,12 +26,14 @@ sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git
 [features]
 default = []
 std = [ 
-    "ark-std/std", 
     "ark-ff/std", 
-    "ark-ec/std", 
-    "ark-bw6-761/std", 
-    "ark-models/std", 
-    "sp-io/std", 
+    "ark-std/std", 
+    "ark-bw6-761/std",
+    "ark-serialize/std", 
+    "ark-models/std",
     "sp-ark-utils/std",
+    "ark-algebra-test-templates/std",
+    "ark-ec/std", 
+    "sp-io/std",
 ]
 

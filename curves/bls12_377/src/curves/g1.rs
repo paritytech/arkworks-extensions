@@ -8,8 +8,8 @@ use ark_models::{
 };
 use ark_serialize::{Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
-use sp_ark_utils::serialize_argument;
 use core::ops::Neg;
+use sp_ark_utils::serialize_argument;
 
 use crate::{Fq, Fr, HostFunctions};
 

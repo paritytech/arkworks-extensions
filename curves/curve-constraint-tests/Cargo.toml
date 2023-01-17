@@ -24,11 +24,11 @@ sp-ark-utils = { path = "../utils", default-features = false  }
 [features]
 default = []
 std = [ 
-    "ark-std/std", 
+    "ark-std/std",
+    "ark-serialize/std",  
     "ark-ff/std", 
-    "ark-serialize/std", 
-    "ark-models/std", 
     "ark-relations/std", 
-    "ark-r1cs-std/std", 
+    "ark-r1cs-std/std",
+    "ark-models/std",  
     "sp-ark-utils/std"
 ]
