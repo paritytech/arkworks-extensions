@@ -152,7 +152,6 @@ dependencies = [
  "ark-relations 0.4.0",
  "ark-serialize",
  "ark-std",
- "sp-ark-utils",
 ]
 
 [[package]]
