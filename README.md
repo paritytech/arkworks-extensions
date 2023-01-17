@@ -149,7 +149,7 @@ impl HostFunctions for Host {
     }
 }
 
-type EdwardsProjective_Host = EdwardsProjective_Host<Host>;
+type EdwardsProjective = EdwardsProjective_Host<Host>;
 ```
 
 ### ED_ON_BLS12_381
