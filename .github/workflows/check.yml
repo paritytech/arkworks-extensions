@@ -1,0 +1,56 @@
+name: Check Set-Up & Build
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:     
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set-Up
+        run: sudo apt install -y git clang curl libssl-dev llvm libudev-dev protobuf-compiler
+
+      - name: Install Rustup
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source ~/.cargo/env
+          rustup default stable
+          rustup update nightly
+          rustup update stable
+          rustup target add wasm32-unknown-unknown --toolchain nightly
+
+      - name: Check Build
+        run: |
+          cargo check --workspace --release
+
+      - name: Cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          toolchain: nightly
+          command: fmt
+          args: --all -- --check
+          
+      - name: Cargo clippy
+        uses: actions-rs/cargo@v1
+        with:
+          toolchain: stable
+          command: clippy
+          args: --workspace --all-targets --all-features -- -D warnings
+
+
+      - name: Run tests
+        run: cargo test --workspace --verbose
+
+      
