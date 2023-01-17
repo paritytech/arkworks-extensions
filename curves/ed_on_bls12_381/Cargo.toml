@@ -29,15 +29,17 @@ sp-io =  { version = "7.0.0", default-features = false, git = "https://github.co
 [features]
 default = []
 std = [
-     "ark-std/std", 
-     "ark-ff/std", 
-     "ark-models/std", 
+     "ark-ff/std",
+     "ark-std/std",  
+     "ark-r1cs-std/std",
+     "ark-serialize/std",
      "ark-ed-on-bls12-381/std", 
      "ark-models/std", 
-     "sp-io/std", 
      "sp-ark-utils/std",
-     "ark-serialize/std",
      "ark-relations/std",
+     "ark-algebra-test-templates/std",
+     "ark-curve-constraint-tests/std",
      "ark-ec/std",
+     "sp-io/std", 
 ]
 r1cs = ["ark-r1cs-std"]
