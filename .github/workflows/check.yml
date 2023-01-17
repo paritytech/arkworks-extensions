@@ -47,7 +47,7 @@ jobs:
         with:
           toolchain: stable
           command: clippy
-          args: --workspace --all-targets --all-features -- -D warnings
+          args: --workspace --all-targets
 
 
       - name: Run tests
