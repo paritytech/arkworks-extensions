@@ -1,3 +1,5 @@
+#![cfg_attr(not(feature = "std"), no_std)]
+
 use ark_serialize::{CanonicalSerialize, Compress};
 use ark_std::io::Cursor;
 
