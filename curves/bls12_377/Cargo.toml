@@ -28,7 +28,7 @@ sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git
 
 
 [features]
-default = [ "curve" ]
+default = [ ]
 std = [ 
     "ark-ff/std",
     "ark-r1cs-std/std", 
