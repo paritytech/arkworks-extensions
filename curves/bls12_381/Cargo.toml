@@ -24,7 +24,7 @@ sp-ark-utils = { path = "../utils", default-features = false  }
 ark-algebra-test-templates = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
 sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git", default-features = false, branch = "achimcc/arkworks-integration" }
 ark-ec = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
-hex = "^0.4.0"
+hex = { version = "^0.4.0", default-features = false }
 
 [features]
 default = [ "curve" ]
@@ -38,7 +38,7 @@ std = [
     "ark-algebra-test-templates/std",
     "sp-io/std",
     "ark-ec/std",
-
+    "hex/std"
 ]
 
 curve = [ "scalar_field" ]
