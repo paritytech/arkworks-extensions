@@ -29,4 +29,5 @@ mod curves;
 
 #[cfg(feature = "curve")]
 pub use ark_bls12_381::{fq::*, fq12::*, fq2::*, fq6::*, fr::*};
+#[cfg(feature = "curve")]
 pub use curves::*;
