@@ -1,5 +1,5 @@
 [package]
-name = "ark-models"
+name = "sp-ark-models"
 version = "0.4.0"
 authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
 description = "A substrate replacement model for bls12 of ark-ec"

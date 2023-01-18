@@ -18,7 +18,7 @@ ark-serialize = { version = "0.4.0", default-features = false }
 ark-ff = { version = "0.4.0", default-features = false }
 ark-relations = { version = "0.4.0", default-features = false }
 ark-r1cs-std = { version = "0.4.0", default-features = false }
-ark-models = { path = "../../models", default-features = false }
+sp-ark-models = { path = "../../models", default-features = false }
 
 [features]
 default = []
@@ -28,5 +28,5 @@ std = [
     "ark-ff/std", 
     "ark-relations/std", 
     "ark-r1cs-std/std",
-    "ark-models/std"
+    "sp-ark-models/std"
 ]

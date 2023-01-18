@@ -1,5 +1,5 @@
 use ark_ff::Fp12;
-use ark_models::{
+use sp_ark_models::{
     bls12,
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},

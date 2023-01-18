@@ -151,11 +151,11 @@ name = "ark-curve-constraint-tests"
 version = "0.4.0"
 dependencies = [
  "ark-ff",
- "ark-models",
  "ark-r1cs-std",
  "ark-relations 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-serialize",
  "ark-std",
+ "sp-ark-models",
 ]
 
 [[package]]
@@ -240,22 +240,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "ark-models"
-version = "0.4.0"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-serialize",
- "ark-std",
- "derivative",
- "getrandom 0.2.8",
- "itertools",
- "num-traits",
- "rayon",
- "zeroize",
 ]
 
 [[package]]
@@ -2114,11 +2098,11 @@ dependencies = [
  "ark-curve-constraint-tests",
  "ark-ec",
  "ark-ff",
- "ark-models",
  "ark-r1cs-std",
  "ark-relations 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-serialize",
  "ark-std",
+ "sp-ark-models",
  "sp-ark-utils",
  "sp-io",
 ]
@@ -2131,10 +2115,10 @@ dependencies = [
  "ark-bls12-381",
  "ark-ec",
  "ark-ff",
- "ark-models",
  "ark-serialize",
  "ark-std",
  "hex",
+ "sp-ark-models",
  "sp-ark-utils",
  "sp-io",
 ]
@@ -2147,9 +2131,9 @@ dependencies = [
  "ark-bw6-761",
  "ark-ec",
  "ark-ff",
- "ark-models",
  "ark-serialize",
  "ark-std",
+ "sp-ark-models",
  "sp-ark-utils",
  "sp-io",
 ]
@@ -2163,11 +2147,11 @@ dependencies = [
  "ark-ec",
  "ark-ed-on-bls12-377",
  "ark-ff",
- "ark-models",
  "ark-r1cs-std",
  "ark-relations 0.4.0 (git+https://github.com/arkworks-rs/snark)",
  "ark-serialize",
  "ark-std",
+ "sp-ark-models",
  "sp-ark-utils",
  "sp-io",
 ]
@@ -2181,13 +2165,29 @@ dependencies = [
  "ark-ec",
  "ark-ed-on-bls12-381",
  "ark-ff",
- "ark-models",
  "ark-r1cs-std",
  "ark-relations 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-serialize",
  "ark-std",
+ "sp-ark-models",
  "sp-ark-utils",
  "sp-io",
+]
+
+[[package]]
+name = "sp-ark-models"
+version = "0.4.0"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-serialize",
+ "ark-std",
+ "derivative",
+ "getrandom 0.2.8",
+ "itertools",
+ "num-traits",
+ "rayon",
+ "zeroize",
 ]
 
 [[package]]

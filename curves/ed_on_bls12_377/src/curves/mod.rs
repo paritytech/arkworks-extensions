@@ -1,5 +1,5 @@
 use ark_ff::MontFp;
-use ark_models::{
+use sp_ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };

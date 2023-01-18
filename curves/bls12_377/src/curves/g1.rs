@@ -1,5 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
-use ark_models::{
+use sp_ark_models::{
     short_weierstrass::{Affine as SWAffine, Projective, SWCurveConfig},
     twisted_edwards::{
         Affine as TEAffine, MontCurveConfig, Projective as TEProjective, TECurveConfig,

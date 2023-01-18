@@ -9,7 +9,7 @@ categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
 edition = "2021"
-publish = false
+publish = true
 
 [dependencies]
 ark-ff = { version="0.4.0-alpha", default-features = false }
@@ -17,7 +17,7 @@ ark-r1cs-std = { version="0.4.0-alpha", default-features = false, optional = tru
 ark-std = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.0", default-features = false }
 ark-bls12-377 = { version = "0.4.0",default-features = false, features = ["curve"] }
-ark-models = { path = "../../models", default-features = false }
+sp-ark-models = { path = "../../models", default-features = false }
 sp-ark-utils = { path = "../utils", default-features = false  }
 
 [dev-dependencies]
@@ -36,7 +36,7 @@ std = [
     "ark-std/std", 
     "ark-serialize/std",
     "ark-bls12-377/std",
-    "ark-models/std",
+    "sp-ark-models/std",
     "ark-relations/std",  
     "sp-ark-utils/std",
     "ark-ec/std",

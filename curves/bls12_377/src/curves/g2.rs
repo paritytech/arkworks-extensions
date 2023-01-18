@@ -1,5 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
-use ark_models::{
+use sp_ark_models::{
     short_weierstrass::Affine,
     {
         short_weierstrass::{Projective, SWCurveConfig},

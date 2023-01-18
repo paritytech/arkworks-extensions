@@ -1,5 +1,5 @@
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
-use ark_models::{
+use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };

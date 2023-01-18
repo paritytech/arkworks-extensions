@@ -1,5 +1,5 @@
 use ark_ff::{BigInteger384, PrimeField};
-use ark_models::{short_weierstrass::Affine, AffineRepr};
+use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 use ark_serialize::SerializationError;
 use ark_std::vec::Vec;
 

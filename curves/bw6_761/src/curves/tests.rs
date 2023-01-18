@@ -34,5 +34,5 @@ impl HostFunctions for Host {
 
 test_group!(g1; crate::g1::G1Projective<super::Host>; sw);
 test_group!(g2; crate::g2::G2Projective<super::Host>; sw);
-test_group!(pairing_output; ark_models::pairing::PairingOutput<crate::BW6_761<super::Host>>; msm);
+test_group!(pairing_output; sp_ark_models::pairing::PairingOutput<crate::BW6_761<super::Host>>; msm);
 test_pairing!(pairing; crate::BW6_761<super::Host>);
