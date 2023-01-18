@@ -148,7 +148,7 @@ dependencies = [
 
 [[package]]
 name = "ark-curve-constraint-tests"
-version = "0.4.0-alpha.1"
+version = "0.4.0"
 dependencies = [
  "ark-ff",
  "ark-models",
@@ -2107,7 +2107,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "sp-ark-bls12-377"
-version = "0.4.0-alpha.1"
+version = "0.4.0"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-377",
@@ -2141,7 +2141,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-bw6-761"
-version = "0.4.0-alpha.1"
+version = "0.4.0"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bw6-761",
@@ -2156,7 +2156,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-ed-on-bls12-377"
-version = "0.4.0-alpha.1"
+version = "0.4.0"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-curve-constraint-tests",
@@ -2174,7 +2174,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-ed-on-bls12-381"
-version = "0.4.0-alpha.1"
+version = "0.4.0"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-curve-constraint-tests",
@@ -2192,7 +2192,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-utils"
-version = "0.4.0-alpha.1"
+version = "0.4.0"
 dependencies = [
  "ark-serialize",
  "ark-std",
