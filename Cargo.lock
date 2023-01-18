@@ -94,7 +94,8 @@ checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
 [[package]]
 name = "ark-algebra-test-templates"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "390ae58ca5e3ed40d8c1eb9c939931258562c1c331a0ea10d76091f450c50b43"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -112,8 +113,9 @@ dependencies = [
 
 [[package]]
 name = "ark-bls12-377"
-version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb00293ba84f51ce3bd026bd0de55899c4e68f0a39a5728cebae3a73ffdc0a4f"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -122,8 +124,9 @@ dependencies = [
 
 [[package]]
 name = "ark-bls12-381"
-version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c775f0d12169cba7aae4caeb547bb6a50781c7449a8aa53793827c9ec4abf488"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -133,8 +136,9 @@ dependencies = [
 
 [[package]]
 name = "ark-bw6-761"
-version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e0605daf0cc5aa2034b78d008aaf159f56901d92a52ee4f6ecdfdac4f426700"
 dependencies = [
  "ark-bls12-377",
  "ark-ec",
@@ -157,7 +161,8 @@ dependencies = [
 [[package]]
 name = "ark-ec"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "52d7f0c52aff14f216200a9eee06a9990fee2e51fc9599e226df448ad3232886"
 dependencies = [
  "ark-ff",
  "ark-poly",
@@ -172,8 +177,9 @@ dependencies = [
 
 [[package]]
 name = "ark-ed-on-bls12-377"
-version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b10d901b9ac4b38f9c32beacedfadcdd64e46f8d7f8e88c1ae1060022cf6f6c6"
 dependencies = [
  "ark-bls12-377",
  "ark-ec",
@@ -183,8 +189,9 @@ dependencies = [
 
 [[package]]
 name = "ark-ed-on-bls12-381"
-version = "0.4.0-alpha.1"
-source = "git+https://github.com/arkworks-rs/curves#69a9c3513bfe94ebd03efaa0ac49d63ea4afbc3a"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba6d678bb98a7e4f825bd4e332e93ac4f5a114ce2e3340dee4d7dc1c7ab5b323"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -195,7 +202,8 @@ dependencies = [
 [[package]]
 name = "ark-ff"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51ee31d8869a353433524dbd5a8f51f95cdafe7c66d458956ec13aa737198562"
 dependencies = [
  "ark-ff-asm",
  "ark-ff-macros",
@@ -214,7 +222,8 @@ dependencies = [
 [[package]]
 name = "ark-ff-asm"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3fc8f7ec7fdcc20f3f110783c043d80479b42f500003cf92b71ca90f34a2ba0e"
 dependencies = [
  "quote",
  "syn",
@@ -223,7 +232,8 @@ dependencies = [
 [[package]]
 name = "ark-ff-macros"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "15aa320e38052d644e569740bad208e5f9f5fafedcc9e6b1557f723be1b7ff8d"
 dependencies = [
  "num-bigint",
  "num-traits",
@@ -251,7 +261,8 @@ dependencies = [
 [[package]]
 name = "ark-poly"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "88d2e8741caf33ab3063f1fc65617716ffb18cba8e872998aa2eef0d4e4b56d1"
 dependencies = [
  "ark-ff",
  "ark-serialize",
@@ -262,8 +273,9 @@ dependencies = [
 
 [[package]]
 name = "ark-r1cs-std"
-version = "0.4.0-alpha.3"
-source = "git+https://github.com/arkworks-rs/r1cs-std/#054969fbcee949b9030bbc166865cba1d527517e"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de1d1472e5cb020cb3405ce2567c91c8d43f21b674aef37b0202f5c3304761db"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -302,7 +314,8 @@ dependencies = [
 [[package]]
 name = "ark-serialize"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "58ea39d00a8a4c832e6f6520e58ccec7bf909c4845863512e9b8656fd47df355"
 dependencies = [
  "ark-serialize-derive",
  "ark-std",
@@ -313,7 +326,8 @@ dependencies = [
 [[package]]
 name = "ark-serialize-derive"
 version = "0.4.0"
-source = "git+https://github.com/arkworks-rs/algebra/?branch=releases#c2f23fbd479e3d47b1ced166c5d545b563e03ad8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "101333772a4020c883890811500d5ecc704c545a90140629af5c3b9f00d78953"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2102,7 +2116,7 @@ dependencies = [
  "ark-ff",
  "ark-models",
  "ark-r1cs-std",
- "ark-relations 0.4.0-alpha.1",
+ "ark-relations 0.4.0",
  "ark-serialize",
  "ark-std",
  "sp-ark-utils",
@@ -2111,7 +2125,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-bls12-381"
-version = "0.4.0-alpha"
+version = "0.4.0"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-381",
@@ -2169,7 +2183,7 @@ dependencies = [
  "ark-ff",
  "ark-models",
  "ark-r1cs-std",
- "ark-relations 0.4.0-alpha.1",
+ "ark-relations 0.4.0",
  "ark-serialize",
  "ark-std",
  "sp-ark-utils",

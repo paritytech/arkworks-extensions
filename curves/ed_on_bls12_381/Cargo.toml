@@ -11,20 +11,20 @@ license = "MIT/Apache-2.0"
 edition = "2021"
 
 [dependencies]
-ark-ff = { version = "0.4.0-alpha", default-features = false }
-ark-std = { version = "0.4.0-alpha", default-features = false }
-ark-r1cs-std = { version = "0.4.0-alpha", optional = true, default-features = false }
-ark-serialize = { version = "0.4.0-alpha", default-features = false }
-ark-ed-on-bls12-381 = { git = "https://github.com/arkworks-rs/curves", default-features = false }
+ark-ff = { version = "0.4.0", default-features = false }
+ark-std = { version = "0.4.0", default-features = false }
+ark-r1cs-std = { version = "0.4.0", optional = true, default-features = false }
+ark-serialize = { version = "0.4.0", default-features = false }
+ark-ed-on-bls12-381 = { version = "0.4.0",default-features = false }
 ark-models = { path = "../../models", default-features = false }
 sp-ark-utils = { path = "../utils", default-features = false  }
 
 [dev-dependencies]
-ark-relations = { git = "https://github.com/arkworks-rs/snark", default-features = false }
-ark-algebra-test-templates = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
+ark-relations = { version = "0.4.0", default-features = false }
+ark-algebra-test-templates = { version = "0.4.0", default-features = false }
 ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-features = false }
-ark-ec = { git = "https://github.com/arkworks-rs/algebra", branch = "releases", default-features = false }
-sp-io =  { version = "7.0.0", git = "https://github.com/paritytech/substrate.git", branch = "achimcc/arkworks-integration", default-features = false }
+ark-ec = { version = "0.4.0", default-features = false }
+sp-io =  { version = "7.0.0",  default-features = false }
 
 [features]
 default = []

@@ -126,7 +126,7 @@ dependencies = [
 
 [[package]]
 name = "ark-std"
-version = "0.4.0-alpha"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cc5b16d734e9b2e43886ff586755219df7fb9639cc04ab00c7e636708a5ba06a"
 dependencies = [
