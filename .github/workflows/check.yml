@@ -80,7 +80,6 @@ jobs:
         with:
           profile: minimal
           toolchain: nightly
-          components: test 
       - name: Run tests
         run: cargo test --workspace --verbose
 
