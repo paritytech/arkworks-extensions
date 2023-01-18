@@ -1,12 +1,12 @@
 use ark_ff::{Field, MontFp, Zero};
+use ark_serialize::{Compress, SerializationError, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec::Vec};
 use sp_ark_models::{
     bls12,
     bls12::Bls12Config,
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     AffineRepr, CurveConfig, CurveGroup, Group,
 };
-use ark_serialize::{Compress, SerializationError, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec::Vec};
 use sp_ark_utils::serialize_argument;
 
 use super::util::{serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE};

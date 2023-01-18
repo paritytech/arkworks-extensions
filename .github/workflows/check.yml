@@ -12,35 +12,55 @@ on:
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:     
-  build:
-    runs-on: ubuntu-22.04
+jobs:   
 
+  rustfmt:
+    runs-on: 'ubuntu-latest'
     steps:
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components: rustfmt
+
       - uses: actions/checkout@v3
-
-      - name: Set-Up
-        run: sudo apt install -y git clang curl libssl-dev llvm libudev-dev protobuf-compiler
-
-      - name: Install Rustup
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          source ~/.cargo/env
-          rustup default stable
-          rustup update nightly
-          rustup update stable
-          rustup target add wasm32-unknown-unknown --toolchain nightly
-
-      - name: Check Build
-        run: |
-          cargo check --workspace --release
 
       - name: Cargo fmt
         uses: actions-rs/cargo@v1
         with:
           toolchain: nightly
           command: fmt
-          args: --all -- --check
+          args: --all -- --check   
+
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+     - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+
+      - name: Check Build
+        run: |
+          cargo build --workspace --release
+
+  clippy:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+          uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: nightly
+            components: rustfmt      
           
       - name: Cargo clippy
         uses: actions-rs/cargo@v1
@@ -49,7 +69,18 @@ jobs:
           command: clippy
           args: --workspace --all-targets
 
+  test:
+    runs-on: ubuntu-22.04
 
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+          uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: nightly
+            components: test 
       - name: Run tests
         run: cargo test --workspace --verbose
 

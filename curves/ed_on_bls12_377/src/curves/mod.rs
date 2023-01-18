@@ -1,10 +1,10 @@
 use ark_ff::MontFp;
+use ark_serialize::{CanonicalDeserialize, Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-use ark_serialize::{CanonicalDeserialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_utils::serialize_argument;
 
 use crate::{fq::Fq, fr::Fr};

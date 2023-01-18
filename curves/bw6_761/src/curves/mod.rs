@@ -1,10 +1,10 @@
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
+use ark_serialize::{CanonicalDeserialize, Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use ark_serialize::{CanonicalDeserialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_utils::serialize_argument;
 
 use crate::*;

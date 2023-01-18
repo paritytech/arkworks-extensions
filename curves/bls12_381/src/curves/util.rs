@@ -1,7 +1,7 @@
 use ark_ff::{BigInteger384, PrimeField};
-use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 use ark_serialize::SerializationError;
 use ark_std::vec::Vec;
+use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
 use crate::{
     g1::Config as G1Config, g2::Config as G2Config, Fq, Fq2, G1Affine, G2Affine, HostFunctions,

@@ -1,4 +1,6 @@
 use ark_ff::{Field, MontFp, Zero};
+use ark_serialize::{Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     short_weierstrass::Affine,
     {
@@ -6,8 +8,6 @@ use sp_ark_models::{
         CurveConfig,
     },
 };
-use ark_serialize::{Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_utils::serialize_argument;
 
 use crate::{g1, Fq, Fq2, Fr, HostFunctions};
