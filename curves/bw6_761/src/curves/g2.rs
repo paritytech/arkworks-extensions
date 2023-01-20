@@ -2,6 +2,7 @@ use ark_ff::{Field, MontFp};
 use ark_serialize::{Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_models::{
+    bls12,
     short_weierstrass::{Affine, Projective},
     {short_weierstrass::SWCurveConfig, CurveConfig},
 };
@@ -9,8 +10,8 @@ use sp_ark_utils::serialize_argument;
 
 use crate::{Fq, Fr, HostFunctions};
 
-pub type G2Affine<H> = Affine<Config<H>>;
-pub type G2Projective<H> = Projective<Config<H>>;
+pub type G2Affine<H> = Affine<crate::Config<H>>;
+pub type G2Projective<H> = Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 

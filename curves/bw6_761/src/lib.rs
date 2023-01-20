@@ -28,7 +28,10 @@
 //! * A = 0
 //! * B = 4
 
+#[cfg(feature = "curve")]
 mod curves;
 
+#[cfg(feature = "curve")]
 pub use ark_bw6_761::{fq, fq3, fq6, fr, Fq, Fq3Config, Fq6Config, Fr};
+#[cfg(feature = "curve")]
 pub use curves::*;
