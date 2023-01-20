@@ -19,7 +19,7 @@ pub enum TwistType {
     D,
 }
 
-pub trait BW6Config: 'static + Eq + Sized {
+pub trait BW6Config: 'static + Sized {
     const X: <Self::Fp as PrimeField>::BigInt;
     const X_IS_NEGATIVE: bool;
     const ATE_LOOP_COUNT_1: &'static [u64];

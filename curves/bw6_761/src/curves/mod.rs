@@ -28,7 +28,7 @@ pub trait HostFunctions: 'static {
     fn bw6_761_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
 }
 
-impl<H: HostFunctions + core::cmp::Eq> BW6Config for Config<H> {
+impl<H: HostFunctions> BW6Config for Config<H> {
     const X: BigInteger = BigInt::new([
         0x8508c00000000001,
         0x0,

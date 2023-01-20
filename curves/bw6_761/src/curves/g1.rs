@@ -15,9 +15,9 @@ pub type G1Projective<H> = bw6::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
-pub struct Config<H: HostFunctions + core::cmp::Eq>(PhantomData<fn() -> H>);
+pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions + core::cmp::Eq> CurveConfig for Config<H> {
+impl<H: HostFunctions> CurveConfig for Config<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -38,7 +38,7 @@ impl<H: HostFunctions + core::cmp::Eq> CurveConfig for Config<H> {
     const COFACTOR_INV: Fr = MontFp!("91141326767669940707819291241958318717982251277713150053234367522357946997763584490607453720072232540829942217804");
 }
 
-impl<H: HostFunctions + core::cmp::Eq> SWCurveConfig for Config<H> {
+impl<H: HostFunctions> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
     const COEFF_A: Fq = Fq::ZERO;
 
