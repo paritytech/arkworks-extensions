@@ -25,7 +25,6 @@ ark-ec = { version = "0.4.0", default-features = false }
 sp-io =  { version = "7.0.0",  default-features = false }
 
 [features]
-default = [ "curve" ]
 std = [ 
     "ark-ff/std", 
     "ark-std/std", 
@@ -37,6 +36,3 @@ std = [
     "ark-ec/std", 
     "sp-io/std",
 ]
-curve = [ "scalar_field" ]
-scalar_field = []
-
