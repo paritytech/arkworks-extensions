@@ -2,7 +2,7 @@ use ark_ff::{Field, MontFp};
 use ark_serialize::{Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_models::{
-    bls12,
+    bw6,
     short_weierstrass::{Affine, Projective},
     {short_weierstrass::SWCurveConfig, CurveConfig},
 };
@@ -10,14 +10,14 @@ use sp_ark_utils::serialize_argument;
 
 use crate::{Fq, Fr, HostFunctions};
 
-pub type G2Affine<H> = Affine<crate::Config<H>>;
-pub type G2Projective<H> = Projective<crate::Config<H>>;
+pub type G2Affine<H> = bw6::G2Affine<crate::Config<H>>;
+pub type G2Projective<H> = bw6::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: HostFunctions + core::cmp::Eq>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions> CurveConfig for Config<H> {
+impl<H: HostFunctions + core::cmp::Eq> CurveConfig for Config<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -38,7 +38,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
     const COFACTOR_INV: Fr = MontFp!("214911522365886453591244899095480747723790054550866810551297776298664428889000553861210287833206024638187939842124");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Config<H> {
+impl<H: HostFunctions + core::cmp::Eq> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
     const COEFF_A: Fq = Fq::ZERO;
 

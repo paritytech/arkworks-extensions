@@ -1,3 +1,4 @@
+use crate::{Fq, Fq3Config, Fq6Config};
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
@@ -6,8 +7,6 @@ use sp_ark_models::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
 use sp_ark_utils::serialize_argument;
-
-use crate::*;
 
 pub mod g1;
 pub mod g2;
