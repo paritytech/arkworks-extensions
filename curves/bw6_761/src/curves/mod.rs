@@ -118,4 +118,3 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 }
 
 pub type BW6_761<H> = BW6<Config<H>>;
-

@@ -16,6 +16,11 @@ pub mod g2;
 #[cfg(test)]
 mod tests;
 
+pub use self::{
+    g1::{G1Affine, G1Projective},
+    g2::{G2Affine, G2Projective},
+};
+
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
@@ -89,8 +94,3 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 }
 
 pub type Bls12_377<H> = Bls12<Config<H>>;
-
-pub type G1Affine<H> = bls12::G1Affine<Config<H>>;
-pub type G1Projective<H> = bls12::G1Projective<Config<H>>;
-pub type G2Affine<H> = bls12::G2Affine<Config<H>>;
-pub type G2Projective<H> = bls12::G2Projective<Config<H>>;
