@@ -1,4 +1,4 @@
-use crate::{Fq, Fq12Config, Fq2Config, Fq6Config};
+use crate::*;
 use ark_ff::Fp12;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};

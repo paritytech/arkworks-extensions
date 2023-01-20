@@ -29,7 +29,7 @@ sp-io =  { version = "7.0.0", default-features= false }
 
 
 [features]
-default = [ "std"  ]
+default = [ "curve" ]
 std = [ 
     "ark-ff/std",
     "ark-r1cs-std/std", 

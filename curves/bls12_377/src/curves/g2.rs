@@ -2,11 +2,9 @@ use ark_ff::{Field, MontFp, Zero};
 use ark_serialize::{Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_models::{
-    short_weierstrass::Affine,
-    {
-        short_weierstrass::{Projective, SWCurveConfig},
-        CurveConfig,
-    },
+    bls12, 
+    short_weierstrass::{Projective, SWCurveConfig, Affine},
+    CurveConfig,
 };
 use sp_ark_utils::serialize_argument;
 

@@ -3,6 +3,7 @@ use ark_serialize::{Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use core::ops::Neg;
 use sp_ark_models::{
+    bls12,
     short_weierstrass::{Affine as SWAffine, Projective, SWCurveConfig},
     twisted_edwards::{
         Affine as TEAffine, MontCurveConfig, Projective as TEProjective, TECurveConfig,

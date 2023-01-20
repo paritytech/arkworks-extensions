@@ -1,14 +1,12 @@
+use crate::*;
 use ark_ff::Fp12;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_models::{
-    bls12,
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
 use sp_ark_utils::serialize_argument;
-
-use crate::*;
 
 pub mod g1;
 pub mod g2;
