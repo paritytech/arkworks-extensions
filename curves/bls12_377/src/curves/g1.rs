@@ -11,6 +11,9 @@ use sp_ark_models::{
 };
 use sp_ark_utils::serialize_argument;
 
+pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
+pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
+
 use crate::{Fq, Fr, HostFunctions};
 
 #[derive(Clone, Default, PartialEq, Eq)]

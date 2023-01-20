@@ -12,7 +12,9 @@ use sp_ark_utils::serialize_argument;
 
 use crate::{g1, Fq, Fq2, Fr, HostFunctions};
 
-pub type G2Affine<H> = Affine<Config<H>>;
+pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
+pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
+
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
