@@ -14,6 +14,11 @@ pub mod g2;
 #[cfg(test)]
 mod tests;
 
+pub use self::{
+    g1::{G1Affine, G1Projective},
+    g2::{G2Affine, G2Projective},
+};
+
 #[derive(PartialEq, Eq)]
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
@@ -114,7 +119,3 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 
 pub type BW6_761<H> = BW6<Config<H>>;
 
-pub type G1Affine<H> = g1::G1Affine<Config<H>>;
-pub type G1Projective<H> = g1::G1Projective<Config<H>>;
-pub type G2Affine<H> = g2::G2Affine<Config<H>>;
-pub type G2Projective<H> = g2::G2Projective<Config<H>>;
