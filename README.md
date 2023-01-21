@@ -10,7 +10,7 @@ We also provide forks of the models `BW6` and `BLS12`. The reason for this is th
 
 To implement the elliptic curves in Substrate you need to pass the host function calls from the Substrate [sp-io](https://github.com/paritytech/substrate) crate to the instantiated elliptic curves.
 
-See the [groth16 example](https://github.com/achimcc/substrate-groth16) for further implementation details and an example on how to verify a [groth16](https://eprint.iacr.org/2016/260.pdf) proof in a Substrate pallet. 
+See the [substrate-arkworks-examples](https://github.com/achimcc/substrate-arkworks-examples) repo for further implementation details, benchmarks and an example on how to verify a [groth16](https://eprint.iacr.org/2016/260.pdf) proof in a Substrate pallet. 
 
 ### BLS12_377
 Curve instantiation:
