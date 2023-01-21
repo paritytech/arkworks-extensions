@@ -1,3 +1,4 @@
+#![cfg_attr(not(feature = "std"), no_std)]
 #![macro_use]
 #![allow(clippy::eq_op)]
 extern crate ark_relations;
@@ -217,7 +218,7 @@ pub mod fields {
 pub mod curves {
     use ark_ff::{BitIteratorLE, Field, One, PrimeField};
     use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
-    use ark_std::{test_rng, vec::Vec, UniformRand};
+    use ark_std::{test_rng, vec, vec::Vec, UniformRand};
     use sp_ark_models::{
         short_weierstrass::Projective as SWProjective, twisted_edwards::Projective as TEProjective,
         CurveGroup, Group,

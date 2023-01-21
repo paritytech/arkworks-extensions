@@ -27,7 +27,7 @@ zeroize = { version = "1", features = ["zeroize_derive"], default-features = fal
 itertools = { version = "0.10", default-features = false }
 
 [features]
-default = [ "std"  ]
+default = [ "std" ]
 std = [ 
     "ark-ff/std",
     "ark-ec/std",

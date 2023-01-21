@@ -1,3 +1,4 @@
+#![cfg_attr(not(feature = "std"), no_std)]
 use crate::HostFunctions;
 use ark_algebra_test_templates::*;
 use ark_std::vec::Vec;
