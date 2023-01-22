@@ -65,7 +65,7 @@ jobs:
       - name: Cargo clippy
         uses: actions-rs/cargo@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           command: clippy
           args: --workspace --all-targets
 
