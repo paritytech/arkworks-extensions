@@ -87,7 +87,7 @@ pub(crate) fn read_fq_with_offset(
         // Mask away the flag bits
         tmp[0] &= 0b0001_1111;
     }
-   deserialize_fq(tmp).ok_or(SerializationError::InvalidData)
+    deserialize_fq(tmp).ok_or(SerializationError::InvalidData)
 }
 
 pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
