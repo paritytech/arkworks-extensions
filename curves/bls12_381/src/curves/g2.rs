@@ -23,7 +23,7 @@ pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
-    type BaseField = Fq2;
+    type BaseField = fq2::Fq2;
     type ScalarField = Fr;
 
     /// COFACTOR = (x^8 - 4 x^7 + 5 x^6) - (4 x^4 + 6 x^3 - 4 x^2 - 4 x + 13) //
@@ -49,10 +49,10 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
 
 impl<H: HostFunctions> SWCurveConfig for Config<H> {
     /// COEFF_A = [0, 0]
-    const COEFF_A: Fq2 = Fq2::new(g1::Config::<H>::COEFF_A, g1::Config::<H>::COEFF_A);
+    const COEFF_A: fq2::Fq2 = fq2::Fq2::new(g1::Config::<H>::COEFF_A, g1::Config::<H>::COEFF_A);
 
     /// COEFF_B = [4, 4]
-    const COEFF_B: Fq2 = Fq2::new(g1::Config::<H>::COEFF_B, g1::Config::<H>::COEFF_B);
+    const COEFF_B: fq2::Fq2 = fq2::Fq2::new(g1::Config::<H>::COEFF_B, g1::Config::<H>::COEFF_B);
 
     /// AFFINE_GENERATOR_COEFFS = (G2_GENERATOR_X, G2_GENERATOR_Y)
     const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
@@ -220,8 +220,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 }
 
-pub const G2_GENERATOR_X: Fq2 = Fq2::new(G2_GENERATOR_X_C0, G2_GENERATOR_X_C1);
-pub const G2_GENERATOR_Y: Fq2 = Fq2::new(G2_GENERATOR_Y_C0, G2_GENERATOR_Y_C1);
+pub const G2_GENERATOR_X: fq2::Fq2 = fq2::Fq2::new(G2_GENERATOR_X_C0, G2_GENERATOR_X_C1);
+pub const G2_GENERATOR_Y: fq2::Fq2 = fq2::Fq2::new(G2_GENERATOR_Y_C0, G2_GENERATOR_Y_C1);
 
 /// G2_GENERATOR_X_C0 =
 /// 352701069587466618187139116011060144890029952792775240219908644239793785735715026873347600343865175952761926303160
@@ -240,7 +240,7 @@ pub const G2_GENERATOR_Y_C0: Fq = MontFp!("1985150602287291935568054521177171638
 pub const G2_GENERATOR_Y_C1: Fq = MontFp!("927553665492332455747201965776037880757740193453592970025027978793976877002675564980949289727957565575433344219582");
 
 // PSI_X = 1/(u+1)^((p-1)/3)
-const P_POWER_ENDOMORPHISM_COEFF_0 : Fq2 = Fq2::new(
+const P_POWER_ENDOMORPHISM_COEFF_0 : fq2::Fq2 = fq2::Fq2::new(
     Fq::ZERO,
     MontFp!(
                 "4002409555221667392624310435006688643935503118305586438271171395842971157480381377015405980053539358417135540939437"
@@ -248,7 +248,7 @@ const P_POWER_ENDOMORPHISM_COEFF_0 : Fq2 = Fq2::new(
 );
 
 // PSI_Y = 1/(u+1)^((p-1)/2)
-const P_POWER_ENDOMORPHISM_COEFF_1: Fq2 = Fq2::new(
+const P_POWER_ENDOMORPHISM_COEFF_1: fq2::Fq2 = fq2::Fq2::new(
     MontFp!(
                 "2973677408986561043442465346520108879172042883009249989176415018091420807192182638567116318576472649347015917690530"),
     MontFp!(
@@ -256,12 +256,12 @@ const P_POWER_ENDOMORPHISM_COEFF_1: Fq2 = Fq2::new(
 );
 
 // PSI_2_X = (u+1)^((1-p^2)/3)
-const DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0: Fq2 = Fq2::new(
+const DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0: fq2::Fq2 = fq2::Fq2::new(
     MontFp!("4002409555221667392624310435006688643935503118305586438271171395842971157480381377015405980053539358417135540939436"),
     Fq::ZERO
 );
 
-/// psi(P) is the untwist-Frobenius-twist endomorhism on E'(Fq2)
+/// psi(P) is the untwist-Frobenius-twist endomorhism on E'(fq2::Fq2)
 fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Config<H>> {
     // The p-power endomorphism for G2 is defined as follows:
     // 1. Note that G2 is defined on curve E': y^2 = x^3 + 4(u+1).
