@@ -1,4 +1,3 @@
-use super::util::{fq::Fq, fq12, fq2, fq6};
 use crate::*;
 use ark_ff::Fp12;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
@@ -12,6 +11,8 @@ use sp_ark_utils::serialize_argument;
 pub mod g1;
 pub mod g2;
 pub(crate) mod util;
+
+use util::{fq::Fq, fq12, fq2, fq6};
 
 #[cfg(test)]
 mod tests;
