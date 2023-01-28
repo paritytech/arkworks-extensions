@@ -1,3 +1,4 @@
+use super::util::{fq::Fq, fq12, fq2, fq6};
 use crate::*;
 use ark_ff::Fp12;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
