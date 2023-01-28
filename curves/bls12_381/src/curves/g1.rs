@@ -10,7 +10,7 @@ use sp_ark_models::{
 use sp_ark_utils::serialize_argument;
 
 use crate::util::{
-    fq, fq12, fq2, fr, read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags,
+    fq::Fq, fr::Fr, read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags,
     G1_SERIALIZED_SIZE,
 };
 use crate::HostFunctions;
@@ -23,24 +23,24 @@ pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
-    type BaseField = fq::Fq;
-    type ScalarField = fr::Fr;
+    type BaseField = fq;
+    type ScalarField = Fr;
 
     /// COFACTOR = (x - 1)^2 / 3  = 76329603384216526031706109802092473003
     const COFACTOR: &'static [u64] = &[0x8c00aaab0000aaab, 0x396c8c005555e156];
 
     /// COFACTOR_INV = COFACTOR^{-1} mod r
     /// = 52435875175126190458656871551744051925719901746859129887267498875565241663483
-    const COFACTOR_INV: fr::Fr =
+    const COFACTOR_INV: Fr =
         MontFp!("52435875175126190458656871551744051925719901746859129887267498875565241663483");
 }
 
 impl<H: HostFunctions> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
-    const COEFF_A: fq::Fq = fq::Fq::ZERO;
+    const COEFF_A: fq = fq::ZERO;
 
     /// COEFF_B = 4
-    const COEFF_B: fq::Fq = MontFp!("4");
+    const COEFF_B: fq = MontFp!("4");
 
     /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
     const GENERATOR: G1Affine<H> = G1Affine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
@@ -114,7 +114,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         }
         // need to access the field struct `x` directly, otherwise we get None from xy()
         // method
-        let x_bytes = serialize_fq::Fq(p.x);
+        let x_bytes = serialize_fq(p.x);
         if encoding.is_compressed {
             let mut bytes: [u8; G1_SERIALIZED_SIZE] = x_bytes;
 
@@ -123,7 +123,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         } else {
             let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
             bytes[0..G1_SERIALIZED_SIZE].copy_from_slice(&x_bytes[..]);
-            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&fq::Fq(p.y)[..]);
+            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&fq(p.y)[..]);
 
             encoding.encode_flags(&mut bytes);
             writer.write_all(&bytes)?;
@@ -180,26 +180,26 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 }
 
-fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) -> fr::Fr {
-    let x: fr::Fr = fr::Fr::from_sign_and_limbs(!x_is_negative, x_value);
-    fr::Fr::one() - x
+fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) -> Fr {
+    let x: Fr = Fr::from_sign_and_limbs(!x_is_negative, x_value);
+    Fr::one() - x
 }
 
 /// G1_GENERATOR_X =
 /// 3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507
-pub const G1_GENERATOR_X: fq::Fq = MontFp!("3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507");
+pub const G1_GENERATOR_X: fq = MontFp!("3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507");
 
 /// G1_GENERATOR_Y =
 /// 1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569
-pub const G1_GENERATOR_Y: fq::Fq = MontFp!("1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569");
+pub const G1_GENERATOR_Y: fq = MontFp!("1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569");
 
-/// BETA is a non-trivial cubic root of unity in fq::Fq.
-pub const BETA: fq::Fq = MontFp!("793479390729215512621379701633421447060886740281060493010456487427281649075476305620758731620350");
+/// BETA is a non-trivial cubic root of unity in fq.
+pub const BETA: fq = MontFp!("793479390729215512621379701633421447060886740281060493010456487427281649075476305620758731620350");
 
 pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>> {
     // Endomorphism of the points on the curve.
     // endomorphism_p(x,y) = (BETA * x, y)
-    // where BETA is a non-trivial cubic root of unity in fq::Fq.
+    // where BETA is a non-trivial cubic root of unity in fq.
     let mut res = *p;
     res.x *= BETA;
     res
@@ -244,7 +244,7 @@ mod test {
     fn sample_unchecked() -> Affine<g1::Config<Host>> {
         let mut rng = ark_std::test_rng();
         loop {
-            let x = fq::Fq::rand(&mut rng);
+            let x = fq::rand(&mut rng);
             let greatest = rng.gen();
 
             if let Some(p) = Affine::get_point_from_x_unchecked(x, greatest) {
