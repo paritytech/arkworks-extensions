@@ -11,7 +11,7 @@ use sp_ark_models::{
 use sp_ark_utils::serialize_argument;
 
 use crate::util::{
-    read_g1_compressed, read_g1_uncompressed, serialize_fq::Fq, EncodingFlags, G1_SERIALIZED_SIZE,
+    read_g1_compressed, read_g1_uncompressed, fq::serialize_fq::Fq, EncodingFlags, G1_SERIALIZED_SIZE,
 };
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
@@ -113,7 +113,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         }
         // need to access the field struct `x` directly, otherwise we get None from xy()
         // method
-        let x_bytes = serialize_fq::Fq(p.x);
+        let x_bytes = fq::serialize_fq::Fq(p.x);
         if encoding.is_compressed {
             let mut bytes: [u8; G1_SERIALIZED_SIZE] = x_bytes;
 
@@ -122,7 +122,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         } else {
             let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
             bytes[0..G1_SERIALIZED_SIZE].copy_from_slice(&x_bytes[..]);
-            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&serialize_fq::Fq(p.y)[..]);
+            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&fq::serialize_fq::Fq(p.y)[..]);
 
             encoding.encode_flags(&mut bytes);
             writer.write_all(&bytes)?;

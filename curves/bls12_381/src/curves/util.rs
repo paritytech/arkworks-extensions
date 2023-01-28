@@ -43,7 +43,7 @@ impl EncodingFlags {
     }
 }
 
-pub(crate) fn deserialize_fq(bytes: [u8; 48]) -> Option<Fq> {
+pub(crate) fn defq::serialize_fq(bytes: [u8; 48]) -> Option<Fq> {
     let mut tmp = BigInteger384::new([0, 0, 0, 0, 0, 0]);
 
     // Note: The following unwraps are if the compiler cannot convert
@@ -59,7 +59,7 @@ pub(crate) fn deserialize_fq(bytes: [u8; 48]) -> Option<Fq> {
     Fq::from_bigint(tmp)
 }
 
-pub(crate) fn serialize_fq(field: Fq) -> [u8; 48] {
+pub(crate) fn fq::serialize_fq(field: Fq) -> [u8; 48] {
     let mut result = [0u8; 48];
 
     let rep = field.into_bigint();
@@ -87,7 +87,7 @@ pub(crate) fn read_fq_with_offset(
         // Mask away the flag bits
         tmp[0] &= 0b0001_1111;
     }
-    deserialize_fq(tmp).ok_or(SerializationError::InvalidData)
+    defq::serialize_fq(tmp).ok_or(SerializationError::InvalidData)
 }
 
 pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
