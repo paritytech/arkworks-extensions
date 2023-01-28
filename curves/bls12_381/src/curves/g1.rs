@@ -13,7 +13,7 @@ use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
 };
 use crate::HostFunctions;
-use ark_bls12_381::{fr, fr::Fr, Fq, Fq};
+use ark_bls12_381::{fr, fr::Fr, Fq};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
