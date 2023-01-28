@@ -12,8 +12,8 @@ use sp_ark_utils::serialize_argument;
 use super::util::{
     read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
 };
-use crate::HostFunctions;
-use ark_bls12_381::{fq2::Fq2, fr, fr::Fr, g1, Fq};
+use crate::{g1, HostFunctions};
+use ark_bls12_381::{fq2::Fq2, fr, fr::Fr, Fq};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
