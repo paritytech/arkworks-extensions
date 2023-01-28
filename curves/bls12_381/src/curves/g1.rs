@@ -23,7 +23,7 @@ pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
     type BaseField = fq::Fq;
-    type ScalarField = Fr;
+    type ScalarField = fr::Fr;
 
     /// COFACTOR = (x - 1)^2 / 3  = 76329603384216526031706109802092473003
     const COFACTOR: &'static [u64] = &[0x8c00aaab0000aaab, 0x396c8c005555e156];
@@ -180,7 +180,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 }
 
 fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) -> Fr {
-    let x: Fr = Fr::from_sign_and_limbs(!x_is_negative, x_value);
+    let x: Fr = fr::Fr::from_sign_and_limbs(!x_is_negative, x_value);
     Fr::one() - x
 }
 

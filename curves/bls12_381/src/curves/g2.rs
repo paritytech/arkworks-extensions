@@ -24,7 +24,7 @@ pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
     type BaseField = fq2::Fq2;
-    type ScalarField = Fr;
+    type ScalarField = fr::Fr;
 
     /// COFACTOR = (x^8 - 4 x^7 + 5 x^6) - (4 x^4 + 6 x^3 - 4 x^2 - 4 x + 13) //
     /// 9
