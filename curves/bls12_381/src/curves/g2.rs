@@ -278,8 +278,8 @@ fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Confi
     // as implemented in the code as follows.
 
     let mut res = *p;
-    res.x.Frobenius_map_in_place(1);
-    res.y.Frobenius_map_in_place(1);
+    res.x.frobenius_map_in_place(1);
+    res.y.frobenius_map_in_place(1);
 
     let tmp_x = res.x;
     res.x.c0 = -P_POWER_ENDOMORPHISM_COEFF_0.c1 * tmp_x.c1;
