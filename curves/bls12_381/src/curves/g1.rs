@@ -10,7 +10,7 @@ use sp_ark_models::{
 use sp_ark_utils::serialize_argument;
 
 use crate::util::{
-    read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
+    read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE, fr
 };
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
