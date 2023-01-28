@@ -123,7 +123,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         } else {
             let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
             bytes[0..G1_SERIALIZED_SIZE].copy_from_slice(&x_bytes[..]);
-            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&Fq(p.y)[..]);
+            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&serialize_fq(p.y)[..]);
 
             encoding.encode_flags(&mut bytes);
             writer.write_all(&bytes)?;
