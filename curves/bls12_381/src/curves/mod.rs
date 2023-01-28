@@ -37,7 +37,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     const X: &'static [u64] = &[0xd201000000010000];
     const X_IS_NEGATIVE: bool = true;
     const TWIST_TYPE: TwistType = TwistType::M;
-    type Fp = fq::Fq;
+    type Fp = Fq;
     type Fp2Config = fq2::Fq2Config;
     type Fp6Config = fq6::Fq6Config;
     type Fp12Config = fq12::Fq12Config;
