@@ -31,7 +31,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
 
     /// COFACTOR_INV = COFACTOR^{-1} mod r
     /// = 52435875175126190458656871551744051925719901746859129887267498875565241663483
-    const COFACTOR_INV: Fr =
+    const COFACTOR_INV:fr::Fr =
         MontFp!("52435875175126190458656871551744051925719901746859129887267498875565241663483");
 }
 
@@ -180,9 +180,9 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 }
 
-fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) -> Fr {
-    let x: Fr = fr::Fr::from_sign_and_limbs(!x_is_negative, x_value);
-    Fr::one() - x
+fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) ->fr::Fr {
+    let x:fr::Fr = fr::Fr::from_sign_and_limbs(!x_is_negative, x_value);
+   fr::Fr::one() - x
 }
 
 /// G1_GENERATOR_X =

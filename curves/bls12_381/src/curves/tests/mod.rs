@@ -6,7 +6,7 @@ use ark_std::{rand::Rng, test_rng, vec, vec::Vec};
 use sp_ark_models::{pairing::PairingOutput, AffineRepr, CurveGroup, Group};
 
 use crate::{
-    fq::Fq, fq::Fq2, Fr, G1Affine as G1Affine_Host, G1Projective as G1Projective_Host,
+    Fq, Fq2,fr::Fr, G1Affine as G1Affine_Host, G1Projective as G1Projective_Host,
     G2Affine as G2Affine_Host, G2Projective as G2Projective_Host, HostFunctions,
 };
 
@@ -65,7 +65,7 @@ fn test_g1_subgroup_membership_via_endomorphism() {
 fn test_g1_subgroup_non_membership_via_endomorphism() {
     let mut rng = test_rng();
     loop {
-        let x = fq::Fq::rand(&mut rng);
+        let x = Fq::rand(&mut rng);
         let greatest = rng.gen();
 
         if let Some(p) = G1Affine::get_point_from_x_unchecked(x, greatest) {
@@ -88,7 +88,7 @@ fn test_g2_subgroup_membership_via_endomorphism() {
 fn test_g2_subgroup_non_membership_via_endomorphism() {
     let mut rng = test_rng();
     loop {
-        let x = fq::Fq2::rand(&mut rng);
+        let x = Fq2::rand(&mut rng);
         let greatest = rng.gen();
 
         if let Some(p) = G2Affine::get_point_from_x_unchecked(x, greatest) {

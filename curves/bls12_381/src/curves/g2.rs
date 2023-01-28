@@ -43,7 +43,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
 
     /// COFACTOR_INV = COFACTOR^{-1} mod r
     /// 26652489039290660355457965112010883481355318854675681319708643586776743290055
-    const COFACTOR_INV: Fr =
+    const COFACTOR_INV:fr::Fr =
         MontFp!("26652489039290660355457965112010883481355318854675681319708643586776743290055");
 }
 
@@ -268,7 +268,7 @@ fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Confi
     //    To map a point (x, y) in E' to (s, t) in E,
     //    set s = x / ((u+1) ^ (1/3)), t = y / ((u+1) ^ (1/2)),
     //    because E: y^2 = x^3 + 4.
-    // 2. Apply the Frobenius endomorphism (s, t) => (s', t'),
+    // 2. Apply thefr::Frobenius endomorphism (s, t) => (s', t'),
     //    another point on curve E, where s' = s^p, t' = t^p.
     // 3. Map the point from E back to E'; that is,
     //    set x' = s' * ((u+1) ^ (1/3)), y' = t' * ((u+1) ^ (1/2)).
