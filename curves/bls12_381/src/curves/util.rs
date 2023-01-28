@@ -4,7 +4,7 @@ use ark_std::vec::Vec;
 use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
 use crate::{
-    fq::Fq, fq2::Fq2, g1::Config as G1Config, g2::Config as G2Config, G1Affine, G2Affine,
+    fq, fq::Fq, fq2::Fq2, g1::Config as G1Config, g2::Config as G2Config, G1Affine, G2Affine,
     HostFunctions,
 };
 
