@@ -12,7 +12,8 @@ pub mod g1;
 pub mod g2;
 pub(crate) mod util;
 
-use util::{fq::Fq, fq12, fq2, fq6};
+use crate::fq;
+use util::{fq12, fq2, fq6};
 
 #[cfg(test)]
 mod tests;
