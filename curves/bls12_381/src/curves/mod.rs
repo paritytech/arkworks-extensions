@@ -13,7 +13,7 @@ pub mod g2;
 pub(crate) mod util;
 
 use crate::fq;
-use util::{fq12, fq2, fq6};
+use ark_bls12_381::{fq::Fq, fq12, fq2, fq6};
 
 #[cfg(test)]
 mod tests;
