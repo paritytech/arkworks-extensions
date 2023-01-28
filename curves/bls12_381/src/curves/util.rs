@@ -4,7 +4,7 @@ use ark_std::vec::Vec;
 use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
 use crate::{
-    g1::Config as G1Config, g2::Config as G2Config, fq::Fq, fq::Fq2, G1Affine, G2Affine, HostFunctions,
+    g1::Config as G1Config, g2::Config as G2Config, Fq, Fq2, G1Affine, G2Affine, HostFunctions,
 };
 
 pub const G1_SERIALIZED_SIZE: usize = 48;
@@ -43,7 +43,7 @@ impl EncodingFlags {
     }
 }
 
-pub(crate) fn defq::serialize_fq(bytes: [u8; 48]) -> Option<Fq> {
+pub(crate) fn deserialize_fq(bytes: [u8; 48]) -> Option<Fq> {
     let mut tmp = BigInteger384::new([0, 0, 0, 0, 0, 0]);
 
     // Note: The following unwraps are if the compiler cannot convert
@@ -56,10 +56,10 @@ pub(crate) fn defq::serialize_fq(bytes: [u8; 48]) -> Option<Fq> {
     tmp.0[1] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[32..40].to_vec()).unwrap());
     tmp.0[0] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[40..48].to_vec()).unwrap());
 
-    fq::Fq::from_bigint(tmp)
+    Fq::from_bigint(tmp)
 }
 
-pub(crate) fn fq::serialize_fq(field: fq::Fq) -> [u8; 48] {
+pub(crate) fn serialize_fq(field: Fq) -> [u8; 48] {
     let mut result = [0u8; 48];
 
     let rep = field.into_bigint();
@@ -174,7 +174,7 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
     let xc1 = read_fq_with_offset(bytes.to_vec(), 0, true)?;
     let xc0 = read_fq_with_offset(bytes.to_vec(), 1, false)?;
 
-    let x = fq::Fq2::new(xc0, xc1);
+    let x = Fq2::new(xc0, xc1);
 
     let p = G2Affine::get_point_from_x_unchecked(x, flags.is_lexographically_largest)
         .ok_or(SerializationError::InvalidData)?;
@@ -205,12 +205,12 @@ pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     // Attempt to obtain the x-coordinate
     let xc1 = read_fq_with_offset(bytes.to_vec(), 0, true)?;
     let xc0 = read_fq_with_offset(bytes.to_vec(), 1, false)?;
-    let x = fq::Fq2::new(xc0, xc1);
+    let x = Fq2::new(xc0, xc1);
 
     // Attempt to obtain the y-coordinate
     let yc1 = read_fq_with_offset(bytes.to_vec(), 2, false)?;
     let yc0 = read_fq_with_offset(bytes.to_vec(), 3, false)?;
-    let y = fq::Fq2::new(yc0, yc1);
+    let y = Fq2::new(yc0, yc1);
 
     let p = G2Affine::new_unchecked(x, y);
 
