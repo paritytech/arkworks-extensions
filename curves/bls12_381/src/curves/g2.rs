@@ -11,7 +11,7 @@ use sp_ark_utils::serialize_argument;
 
 use super::util::{fq::serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE};
 use crate::{
-    util::{read_g2_compressed, read_g2_uncompressed},
+    util::{read_g2_compressed, read_g2_uncompressed, serialize_fq},
     *,
 };
 
@@ -158,8 +158,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
             let mut bytes = [0u8; 2 * G2_SERIALIZED_SIZE];
 
             let mut y_bytes = [0u8; G2_SERIALIZED_SIZE];
-            let c1_bytes = fq::serialize_fq(p.y.c1);
-            let c0_bytes = fq::serialize_fq(p.y.c0);
+            let c1_bytes = serialize_fq(p.y.c1);
+            let c0_bytes = serialize_fq(p.y.c0);
             y_bytes[0..48].copy_from_slice(&c1_bytes[..]);
             y_bytes[48..96].copy_from_slice(&c0_bytes[..]);
             bytes[0..G2_SERIALIZED_SIZE].copy_from_slice(&x_bytes);
@@ -241,7 +241,7 @@ pub const G2_GENERATOR_Y_C1: fq::Fq = MontFp!("927553665492332455747201965776037
 
 // PSI_X = 1/(u+1)^((p-1)/3)
 const P_POWER_ENDOMORPHISM_COEFF_0 : fq2::Fq2 = fq2::Fq2::new(
-    fq::Fq::ZERO,
+    Fq::ZERO,
     MontFp!(
                 "4002409555221667392624310435006688643935503118305586438271171395842971157480381377015405980053539358417135540939437"
     )
@@ -258,7 +258,7 @@ const P_POWER_ENDOMORPHISM_COEFF_1: fq2::Fq2 = fq2::Fq2::new(
 // PSI_2_X = (u+1)^((1-p^2)/3)
 const DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0: fq2::Fq2 = fq2::Fq2::new(
     MontFp!("4002409555221667392624310435006688643935503118305586438271171395842971157480381377015405980053539358417135540939436"),
-    fq::Fq::ZERO
+    Fq::ZERO
 );
 
 /// psi(P) is the untwist-Frobenius-twist endomorhism on E'(fq2::Fq2)
