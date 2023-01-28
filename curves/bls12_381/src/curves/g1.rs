@@ -9,7 +9,7 @@ use sp_ark_models::{
 };
 use sp_ark_utils::serialize_argument;
 
-use super::util::{
+use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
 };
 
@@ -121,7 +121,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         } else {
             let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
             bytes[0..G1_SERIALIZED_SIZE].copy_from_slice(&x_bytes[..]);
-            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&serialize_fq::Fq(p.y)[..]);
+            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&fq::Fq(p.y)[..]);
 
             encoding.encode_flags(&mut bytes);
             writer.write_all(&bytes)?;
