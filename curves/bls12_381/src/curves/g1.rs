@@ -13,7 +13,7 @@ use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
 };
 use crate::HostFunctions;
-use ark_bls12_381::{fq, fr, fr::Fr, Fq};
+use ark_bls12_381::{fr, fr::Fr, Fq, Fq};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
@@ -23,7 +23,7 @@ pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
-    type BaseField = fq;
+    type BaseField = Fq;
     type ScalarField = Fr;
 
     /// COFACTOR = (x - 1)^2 / 3  = 76329603384216526031706109802092473003
@@ -37,10 +37,10 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
 
 impl<H: HostFunctions> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
-    const COEFF_A: fq = fq::ZERO;
+    const COEFF_A: Fq = Fq::ZERO;
 
     /// COEFF_B = 4
-    const COEFF_B: fq = MontFp!("4");
+    const COEFF_B: Fq = MontFp!("4");
 
     /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
     const GENERATOR: G1Affine<H> = G1Affine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
@@ -187,11 +187,11 @@ fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) -> Fr {
 
 /// G1_GENERATOR_X =
 /// 3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507
-pub const G1_GENERATOR_X: fq = MontFp!("3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507");
+pub const G1_GENERATOR_X: Fq = MontFp!("3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507");
 
 /// G1_GENERATOR_Y =
 /// 1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569
-pub const G1_GENERATOR_Y: fq = MontFp!("1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569");
+pub const G1_GENERATOR_Y: Fq = MontFp!("1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569");
 
 /// BETA is a non-trivial cubic root of unity in fq.
 pub const BETA: fq = MontFp!("793479390729215512621379701633421447060886740281060493010456487427281649075476305620758731620350");
