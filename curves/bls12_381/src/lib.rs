@@ -22,7 +22,7 @@
 //! * valuation(q - 1, 2) = 1
 //! * valuation(r - 1, 2) = 32
 //! * G1 curve equation: y^2 = x^3 + 4
-//! * G2 curve equation: y^2 = x^3 + Fq2(4, 4)
+//! * G2 curve equation: y^2 = x^3 + fq::Fq2(4, 4)
 
 #[cfg(feature = "curve")]
 mod curves;

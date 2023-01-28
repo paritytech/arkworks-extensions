@@ -6,7 +6,7 @@ use ark_std::{rand::Rng, test_rng, vec, vec::Vec};
 use sp_ark_models::{pairing::PairingOutput, AffineRepr, CurveGroup, Group};
 
 use crate::{
-    Fq, Fq2, Fr, G1Affine as G1Affine_Host, G1Projective as G1Projective_Host,
+    fq::Fq, fq::Fq2, Fr, G1Affine as G1Affine_Host, G1Projective as G1Projective_Host,
     G2Affine as G2Affine_Host, G2Projective as G2Projective_Host, HostFunctions,
 };
 

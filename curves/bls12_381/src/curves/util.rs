@@ -4,7 +4,7 @@ use ark_std::vec::Vec;
 use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
 use crate::{
-    g1::Config as G1Config, g2::Config as G2Config, Fq, Fq2, G1Affine, G2Affine, HostFunctions,
+    g1::Config as G1Config, g2::Config as G2Config, fq::Fq, fq::Fq2, G1Affine, G2Affine, HostFunctions,
 };
 
 pub const G1_SERIALIZED_SIZE: usize = 48;
@@ -56,10 +56,10 @@ pub(crate) fn defq::serialize_fq(bytes: [u8; 48]) -> Option<Fq> {
     tmp.0[1] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[32..40].to_vec()).unwrap());
     tmp.0[0] = u64::from_be_bytes(<[u8; 8]>::try_from(bytes[40..48].to_vec()).unwrap());
 
-    Fq::from_bigint(tmp)
+    fq::Fq::from_bigint(tmp)
 }
 
-pub(crate) fn fq::serialize_fq(field: Fq) -> [u8; 48] {
+pub(crate) fn fq::serialize_fq(field: fq::Fq) -> [u8; 48] {
     let mut result = [0u8; 48];
 
     let rep = field.into_bigint();
