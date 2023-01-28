@@ -4,8 +4,8 @@ use ark_std::vec::Vec;
 use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
 use crate::HostFunctions;
-use crate::{g1::Config as G1Config, g2::Config as G2Config};
-use ark_bls12_381::{fq, fq::Fq, fq2::Fq2, G1Affine, G2Affine};
+use crate::{g1::Config as G1Config, g1::G1Affine, g2::Config as G2Config, g2::G2Affine};
+use ark_bls12_381::{fq, fq::Fq, fq2::Fq2};
 pub const G1_SERIALIZED_SIZE: usize = 48;
 pub const G2_SERIALIZED_SIZE: usize = 96;
 
