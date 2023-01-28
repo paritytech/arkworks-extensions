@@ -150,8 +150,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let mut x_bytes = [0u8; G2_SERIALIZED_SIZE];
         let c1_bytes = serialize_fq(p.x.c1);
         let c0_bytes = serialize_fq(p.x.c0);
-        x_bytes[0..48].copy_From_slice(&c1_bytes[..]);
-        x_bytes[48..96].copy_From_slice(&c0_bytes[..]);
+        x_bytes[0..48].copy_from_slice(&c1_bytes[..]);
+        x_bytes[48..96].copy_from_slice(&c0_bytes[..]);
         if encoding.is_compressed {
             let mut bytes: [u8; G2_SERIALIZED_SIZE] = x_bytes;
 
@@ -163,10 +163,10 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
             let mut y_bytes = [0u8; G2_SERIALIZED_SIZE];
             let c1_bytes = serialize_fq(p.y.c1);
             let c0_bytes = serialize_fq(p.y.c0);
-            y_bytes[0..48].copy_From_slice(&c1_bytes[..]);
-            y_bytes[48..96].copy_From_slice(&c0_bytes[..]);
-            bytes[0..G2_SERIALIZED_SIZE].copy_From_slice(&x_bytes);
-            bytes[G2_SERIALIZED_SIZE..].copy_From_slice(&y_bytes);
+            y_bytes[0..48].copy_from_slice(&c1_bytes[..]);
+            y_bytes[48..96].copy_from_slice(&c0_bytes[..]);
+            bytes[0..G2_SERIALIZED_SIZE].copy_from_slice(&x_bytes);
+            bytes[G2_SERIALIZED_SIZE..].copy_from_slice(&y_bytes);
 
             encoding.encode_flags(&mut bytes);
             writer.write_all(&bytes)?;
