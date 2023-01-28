@@ -9,10 +9,8 @@ use sp_ark_models::{
 };
 use sp_ark_utils::serialize_argument;
 
-use super::util::{
-    fq, fq2, fr, read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, HostFunctions,
-    G2_SERIALIZED_SIZE,
-};
+use super::util::{read_g2_compressed, read_g2_uncompressed, EncodingFlags, G2_SERIALIZED_SIZE};
+use crate::{fq, fq12, fq2, fr, serialize_fq, HostFunctions};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
