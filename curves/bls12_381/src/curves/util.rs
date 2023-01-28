@@ -174,7 +174,7 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
     let xc1 = read_fq_with_offset(bytes.to_vec(), 0, true)?;
     let xc0 = read_fq_with_offset(bytes.to_vec(), 1, false)?;
 
-    let x = Fq2::new(xc0, xc1);
+    let x = fq::Fq2::new(xc0, xc1);
 
     let p = G2Affine::get_point_from_x_unchecked(x, flags.is_lexographically_largest)
         .ok_or(SerializationError::InvalidData)?;
@@ -205,12 +205,12 @@ pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     // Attempt to obtain the x-coordinate
     let xc1 = read_fq_with_offset(bytes.to_vec(), 0, true)?;
     let xc0 = read_fq_with_offset(bytes.to_vec(), 1, false)?;
-    let x = Fq2::new(xc0, xc1);
+    let x = fq::Fq2::new(xc0, xc1);
 
     // Attempt to obtain the y-coordinate
     let yc1 = read_fq_with_offset(bytes.to_vec(), 2, false)?;
     let yc0 = read_fq_with_offset(bytes.to_vec(), 3, false)?;
-    let y = Fq2::new(yc0, yc1);
+    let y = fq::Fq2::new(yc0, yc1);
 
     let p = G2Affine::new_unchecked(x, y);
 
