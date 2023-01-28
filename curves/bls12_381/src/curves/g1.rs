@@ -12,7 +12,8 @@ use sp_ark_utils::serialize_argument;
 use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
 };
-use crate::{fq, fq::Fq, fr, fr::Fr, HostFunctions};
+use crate::HostFunctions;
+use ark_bls12_381::{fq, fq::Fq, fr, fr::Fr};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
@@ -122,7 +123,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         } else {
             let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
             bytes[0..G1_SERIALIZED_SIZE].copy_from_slice(&x_bytes[..]);
-            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&fq(p.y)[..]);
+            bytes[G1_SERIALIZED_SIZE..].copy_from_slice(&Fq(p.y)[..]);
 
             encoding.encode_flags(&mut bytes);
             writer.write_all(&bytes)?;

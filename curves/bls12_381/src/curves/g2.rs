@@ -9,14 +9,11 @@ use sp_ark_models::{
 };
 use sp_ark_utils::serialize_argument;
 
-use super::{
-    g1,
-    util::{
-        fq::fq, fq12, fq2::Fq2, fr::Fr, read_g2_compressed, read_g2_uncompressed, serialize_fq,
-        EncodingFlags, G2_SERIALIZED_SIZE,
-    },
+use super::util::{
+    read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
 };
 use crate::HostFunctions;
+use ark_bls12_381::{fq, fq::Fq, fq2::Fq2, fr, fr::Fr, g1};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
