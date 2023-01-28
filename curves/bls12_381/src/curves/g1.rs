@@ -10,7 +10,7 @@ use sp_ark_models::{
 use sp_ark_utils::serialize_argument;
 
 use crate::util::{
-    fq2, fr, read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, HostFunctions,
+    fq, fq2, fr, read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, HostFunctions,
     G1_SERIALIZED_SIZE,
 };
 
