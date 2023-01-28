@@ -39,7 +39,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     const TWIST_TYPE: TwistType = TwistType::M;
     type Fp = Fq;
     type Fp2Config = Fq2Config;
-    type Fp6Config = Fq6Config;
+    type Fp6Config = fq6::Fq6Config;
     type Fp12Config = Fq12Config;
     type G1Config = self::g1::Config<H>;
     type G2Config = self::g2::Config<H>;
