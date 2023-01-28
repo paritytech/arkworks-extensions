@@ -32,6 +32,6 @@ mod curves;
 pub mod constraints;
 
 #[cfg(feature = "curve")]
-pub use ark_bls12_377::{Fq, Fq12Config, Fq2, Fq2Config, Fq6Config, Fr, FrConfig, fq12, fr, fq2};
+pub use ark_bls12_377::{fq12, fq2, fr, Fq, Fq12Config, Fq2, Fq2Config, Fq6Config, Fr, FrConfig};
 #[cfg(feature = "curve")]
 pub use curves::*;
