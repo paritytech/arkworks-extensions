@@ -10,7 +10,8 @@ use sp_ark_models::{
 use sp_ark_utils::serialize_argument;
 
 use super::util::{
-    read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE, fr
+    fq2, fr, read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, HostFunctions,
+    G2_SERIALIZED_SIZE,
 };
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
