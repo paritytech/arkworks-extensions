@@ -10,9 +10,10 @@ use sp_ark_models::{
 use sp_ark_utils::serialize_argument;
 
 use crate::util::{
-    fq, fq12, fq2, fr, read_g1_compressed, read_g1_uncompressed, EncodingFlags, G1_SERIALIZED_SIZE,
+    fq, fq12, fq2, fr, read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags,
+    G1_SERIALIZED_SIZE,
 };
-use crate::{serialize_fq, HostFunctions};
+use crate::HostFunctions;
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;

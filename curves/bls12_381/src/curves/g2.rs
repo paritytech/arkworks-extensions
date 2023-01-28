@@ -10,9 +10,10 @@ use sp_ark_models::{
 use sp_ark_utils::serialize_argument;
 
 use super::util::{
-    fq, fq12, fq2, fr, read_g2_compressed, read_g2_uncompressed, EncodingFlags, G2_SERIALIZED_SIZE,
+    fq, fq12, fq2, fr, read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags,
+    G2_SERIALIZED_SIZE,
 };
-use crate::{serialize_fq, HostFunctions};
+use crate::{g1, HostFunctions};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
@@ -240,7 +241,7 @@ pub const G2_GENERATOR_Y_C1: fq::Fq = MontFp!("927553665492332455747201965776037
 
 // PSI_X = 1/(u+1)^((p-1)/3)
 const P_POWER_ENDOMORPHISM_COEFF_0 : fq2::Fq2 = fq2::Fq2::new(
-    Fq::ZERO,
+    fq::Fq::ZERO,
     MontFp!(
                 "4002409555221667392624310435006688643935503118305586438271171395842971157480381377015405980053539358417135540939437"
     )
@@ -257,7 +258,7 @@ const P_POWER_ENDOMORPHISM_COEFF_1: fq2::Fq2 = fq2::Fq2::new(
 // PSI_2_X = (u+1)^((1-p^2)/3)
 const DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0: fq2::Fq2 = fq2::Fq2::new(
     MontFp!("4002409555221667392624310435006688643935503118305586438271171395842971157480381377015405980053539358417135540939436"),
-    Fq::ZERO
+    fq::Fq::ZERO
 );
 
 /// psi(P) is the untwist-Frobenius-twist endomorhism on E'(fq2::Fq2)
