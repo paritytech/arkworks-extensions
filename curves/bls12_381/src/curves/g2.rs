@@ -27,7 +27,7 @@ pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
     type BaseField = Fq2;
-    type ScalarField = fr;
+    type ScalarField = Fr;
 
     /// COFACTOR = (x^8 - 4 x^7 + 5 x^6) - (4 x^4 + 6 x^3 - 4 x^2 - 4 x + 13) //
     /// 9
@@ -46,7 +46,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
 
     /// COFACTOR_INV = COFACTOR^{-1} mod r
     /// 26652489039290660355457965112010883481355318854675681319708643586776743290055
-    const COFACTOR_INV: fr =
+    const COFACTOR_INV: Fr =
         MontFp!("26652489039290660355457965112010883481355318854675681319708643586776743290055");
 }
 
@@ -66,7 +66,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn is_in_correct_subgroup_assuming_on_curve(point: &G2Affine<H>) -> bool {
-        // Algorithm from Section 4 of https://eprint.iacr.org/2021/1130.
+        // Algorithm From Section 4 of https://eprint.iacr.org/2021/1130.
         //
         // Checks that [p]P = [X]P
 
@@ -150,8 +150,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let mut x_bytes = [0u8; G2_SERIALIZED_SIZE];
         let c1_bytes = serialize_fq(p.x.c1);
         let c0_bytes = serialize_fq(p.x.c0);
-        x_bytes[0..48].copy_from_slice(&c1_bytes[..]);
-        x_bytes[48..96].copy_from_slice(&c0_bytes[..]);
+        x_bytes[0..48].copy_From_slice(&c1_bytes[..]);
+        x_bytes[48..96].copy_From_slice(&c0_bytes[..]);
         if encoding.is_compressed {
             let mut bytes: [u8; G2_SERIALIZED_SIZE] = x_bytes;
 
@@ -163,10 +163,10 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
             let mut y_bytes = [0u8; G2_SERIALIZED_SIZE];
             let c1_bytes = serialize_fq(p.y.c1);
             let c0_bytes = serialize_fq(p.y.c0);
-            y_bytes[0..48].copy_from_slice(&c1_bytes[..]);
-            y_bytes[48..96].copy_from_slice(&c0_bytes[..]);
-            bytes[0..G2_SERIALIZED_SIZE].copy_from_slice(&x_bytes);
-            bytes[G2_SERIALIZED_SIZE..].copy_from_slice(&y_bytes);
+            y_bytes[0..48].copy_From_slice(&c1_bytes[..]);
+            y_bytes[48..96].copy_From_slice(&c0_bytes[..]);
+            bytes[0..G2_SERIALIZED_SIZE].copy_From_slice(&x_bytes);
+            bytes[G2_SERIALIZED_SIZE..].copy_From_slice(&y_bytes);
 
             encoding.encode_flags(&mut bytes);
             writer.write_all(&bytes)?;
@@ -271,9 +271,9 @@ fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Confi
     //    To map a point (x, y) in E' to (s, t) in E,
     //    set s = x / ((u+1) ^ (1/3)), t = y / ((u+1) ^ (1/2)),
     //    because E: y^2 = x^3 + 4.
-    // 2. Apply thefrobenius endomorphism (s, t) => (s', t'),
+    // 2. Apply theFrobenius endomorphism (s, t) => (s', t'),
     //    another point on curve E, where s' = s^p, t' = t^p.
-    // 3. Map the point from E back to E'; that is,
+    // 3. Map the point From E back to E'; that is,
     //    set x' = s' * ((u+1) ^ (1/3)), y' = t' * ((u+1) ^ (1/2)).
     //
     // To sum up, it maps
@@ -281,8 +281,8 @@ fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Confi
     // as implemented in the code as follows.
 
     let mut res = *p;
-    res.x.frobenius_map_in_place(1);
-    res.y.frobenius_map_in_place(1);
+    res.x.Frobenius_map_in_place(1);
+    res.y.Frobenius_map_in_place(1);
 
     let tmp_x = res.x;
     res.x.c0 = -P_POWER_ENDOMORPHISM_COEFF_0.c1 * tmp_x.c1;
