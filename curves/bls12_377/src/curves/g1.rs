@@ -1,4 +1,6 @@
-use ark_bls12_377::g1::Config as ArkConfig;
+use ark_bls12_377::g1::{
+    Config as OrgConfig, G1_GENERATOR_X, G1_GENERATOR_Y, TE_GENERATOR_X, TE_GENERATOR_Y,
+};
 use ark_ec::{
     models::{bls12, CurveConfig},
     short_weierstrass::{Affine as SWAffine, Projective as SWProjective, SWCurveConfig},
@@ -6,13 +8,12 @@ use ark_ec::{
         Affine as TEAffine, MontCurveConfig, Projective as TEProjective, TECurveConfig,
     },
 };
-use ark_ff::MontFp;
 use ark_serialize::{Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use core::ops::Neg;
 use sp_ark_utils::serialize_argument;
 
-use crate::{Fq, HostFunctions};
+use crate::HostFunctions;
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
@@ -27,18 +28,17 @@ pub type G1TEAffine<H> = TEAffine<Config<H>>;
 pub type G1TEProjective<H> = TEProjective<Config<H>>;
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
-    type BaseField = <ArkConfig as CurveConfig>::BaseField;
-    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
+    type BaseField = <OrgConfig as CurveConfig>::BaseField;
+    type ScalarField = <OrgConfig as CurveConfig>::ScalarField;
 
-    const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
-    const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
+    const COFACTOR: &'static [u64] = <OrgConfig as CurveConfig>::COFACTOR;
+    const COFACTOR_INV: Self::ScalarField = <OrgConfig as CurveConfig>::COFACTOR_INV;
 }
 
 impl<H: HostFunctions> SWCurveConfig for Config<H> {
-    const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
-    const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
+    const COEFF_A: Self::BaseField = <OrgConfig as SWCurveConfig>::COEFF_A;
+    const COEFF_B: Self::BaseField = <OrgConfig as SWCurveConfig>::COEFF_B;
 
-    /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
     const GENERATOR: G1SWAffine<H> = G1SWAffine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
     // TODO: is this really required??? Why?
@@ -151,16 +151,13 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 /// TE2d = Fp(122268283598675559488486339158635529096981886914877139579534153582033676785385790730042363341236035746924960903179)
 /// ```
 impl<H: HostFunctions> TECurveConfig for Config<H> {
-    /// COEFF_A = -1
-    const COEFF_A: Fq = MontFp!("-1");
-
-    /// COEFF_D = 122268283598675559488486339158635529096981886914877139579534153582033676785385790730042363341236035746924960903179 mod q
-    const COEFF_D: Fq = MontFp!("122268283598675559488486339158635529096981886914877139579534153582033676785385790730042363341236035746924960903179");
+    const COEFF_A: Self::BaseField = <OrgConfig as TECurveConfig>::COEFF_A;
+    const COEFF_D: Self::BaseField = <OrgConfig as TECurveConfig>::COEFF_D;
 
     /// AFFINE_GENERATOR_COEFFS = (GENERATOR_X, GENERATOR_Y)
     const GENERATOR: G1TEAffine<H> = G1TEAffine::<H>::new_unchecked(TE_GENERATOR_X, TE_GENERATOR_Y);
 
-    type MontCurveConfig = Config<H>;
+    type MontCurveConfig = Self;
 
     /// Multiplication by `a` is multiply by `-1`.
     #[inline(always)]
@@ -199,71 +196,8 @@ impl<H: HostFunctions> TECurveConfig for Config<H> {
 // MB=Fp(10189023633222963290707194929886294091415157242906428298294512798502806398782149227503530278436336312243746741931)
 // ```
 impl<H: HostFunctions> MontCurveConfig for Config<H> {
-    /// COEFF_A = 228097355113300204138531148905234651262148041026195375645000724271212049151994375092458297304264351187709081232384
-    const COEFF_A: Fq = MontFp!("228097355113300204138531148905234651262148041026195375645000724271212049151994375092458297304264351187709081232384");
+    const COEFF_A: Self::BaseField = <OrgConfig as MontCurveConfig>::COEFF_A;
+    const COEFF_B: Self::BaseField = <OrgConfig as MontCurveConfig>::COEFF_B;
 
-    /// COEFF_B = 10189023633222963290707194929886294091415157242906428298294512798502806398782149227503530278436336312243746741931
-    const COEFF_B: Fq = MontFp!("10189023633222963290707194929886294091415157242906428298294512798502806398782149227503530278436336312243746741931");
-
-    type TECurveConfig = Config<H>;
+    type TECurveConfig = Self;
 }
-
-/// G1_GENERATOR_X =
-/// 81937999373150964239938255573465948239988671502647976594219695644855304257327692006745978603320413799295628339695
-pub const G1_GENERATOR_X: Fq = MontFp!("81937999373150964239938255573465948239988671502647976594219695644855304257327692006745978603320413799295628339695");
-
-/// G1_GENERATOR_Y =
-/// 241266749859715473739788878240585681733927191168601896383759122102112907357779751001206799952863815012735208165030
-pub const G1_GENERATOR_Y: Fq = MontFp!("241266749859715473739788878240585681733927191168601896383759122102112907357779751001206799952863815012735208165030");
-
-// The generator for twisted Edward form is the same SW generator converted into
-// the normalized TE form (TE2).
-//``` sage
-// # following scripts in previous section
-// #####################################################
-// # Weierstrass curve generator
-// #####################################################
-// Wx = Fp(81937999373150964239938255573465948239988671502647976594219695644855304257327692006745978603320413799295628339695)
-// Wy = Fp(241266749859715473739788878240585681733927191168601896383759122102112907357779751001206799952863815012735208165030)
-//
-// assert(Wy^2 - Wx^3 - WA * Wx - WB == 0)
-//
-// #####################################################
-// # Montgomery curve generator
-// #####################################################
-// # x = s * (x - alpha)
-// Mx = Fp(251803586774461569862800610331871502335378228972505599912537082323947581271784390797244487924068052270360793200630)
-// # y = s * y
-// My = Fp(77739247071951651095607889637653357561348174979132042929587539214321586851215673796661346812932566642719051699820)
-//
-// assert(MB * My^2 == Mx^3+ MA * Mx^2 + Mx)
-//
-// # #####################################################
-// # # Twisted Edwards curve 1 generator
-// # #####################################################
-// # x = Mx/My
-// TE1x = Fp(82241236807150726090333472814441006963902378430536027612759193445733851062772474760677400112551677454953925168208)
-// # y = (Mx - 1)/(Mx+1)
-// TE1y = Fp(6177051365529633638563236407038680211609544222665285371549726196884440490905471891908272386851767077598415378235)
-//
-// assert( TE1a * TE1x^2 + TE1y^2 == 1 + TE1d * TE1x^2 * TE1y^2 )
-//
-//
-// # #####################################################
-// # # Twisted Edwards curve 2 generator
-// # #####################################################
-// beta = (-TE1a).sqrt()
-// # x = TE1x * sqrt(-TE1a)
-// TE2x = Fp(71222569531709137229370268896323705690285216175189308202338047559628438110820800641278662592954630774340654489393)
-// # y = TE1y
-// TE2y = Fp(6177051365529633638563236407038680211609544222665285371549726196884440490905471891908272386851767077598415378235)
-//
-// assert( TE2a * TE2x^2 + TE2y^2 == 1 + TE2d * TE2x^2 * TE2y^2 )
-// ```
-/// TE_GENERATOR_X =
-/// 71222569531709137229370268896323705690285216175189308202338047559628438110820800641278662592954630774340654489393
-pub const TE_GENERATOR_X: Fq = MontFp!("71222569531709137229370268896323705690285216175189308202338047559628438110820800641278662592954630774340654489393");
-
-/// TE_GENERATOR_Y =
-/// 6177051365529633638563236407038680211609544222665285371549726196884440490905471891908272386851767077598415378235
-pub const TE_GENERATOR_Y: Fq = MontFp!("6177051365529633638563236407038680211609544222665285371549726196884440490905471891908272386851767077598415378235");

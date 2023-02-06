@@ -1,4 +1,4 @@
-use ark_bls12_377::{Fq, Fq12Config, Fq2Config, Fq6Config};
+use ark_bls12_377::Config as OrgConfig;
 use ark_ec::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -34,51 +34,18 @@ pub struct Config<H: HostFunctions>(PhantomData<H>);
 
 pub type Bls12_377<H> = Bls12<Config<H>>;
 
-fn type_name_of<T>(_: &T) -> &str {
-    core::any::type_name::<T>()
-}
-
-impl<H: HostFunctions> Config<H> {
-    // Hack to serialize all the expected types into affine.
-    // `G2Prepared` conversion is performed into the host function for efficiency.
-    fn serialize_as_affine(elem: impl Into<G2Prepared<Self>>) -> Vec<u8> {
-        use ark_ec::CurveGroup;
-        use core::any;
-        let type_name = type_name_of(&elem);
-
-        // Hack to catch one of the expected types
-        // TODO: is there a better way?
-        let affine = if type_name == any::type_name::<G2Projective<H>>() {
-            let proj: &G2Projective<H> = unsafe { core::mem::transmute(&elem) };
-            proj.into_affine()
-        } else if type_name == any::type_name::<&G2Projective<H>>() {
-            let proj: &&G2Projective<H> = unsafe { core::mem::transmute(&elem) };
-            proj.into_affine()
-        } else if type_name == any::type_name::<G2Affine<H>>() {
-            let affine: &G2Affine<H> = unsafe { core::mem::transmute(&elem) };
-            *affine
-        } else if type_name == any::type_name::<&G2Affine<H>>() {
-            let affine: &&G2Affine<H> = unsafe { core::mem::transmute(&elem) };
-            **affine
-        } else {
-            panic!("Unhandled type: {}", type_name);
-        };
-
-        serialize_argument(affine)
-    }
-}
-
 impl<H: HostFunctions> Bls12Config for Config<H> {
-    const X: &'static [u64] = &[0x8508c00000000001];
-    /// `x` is positive.
-    const X_IS_NEGATIVE: bool = false;
-    const TWIST_TYPE: TwistType = TwistType::D;
-    type Fp = Fq;
-    type Fp2Config = Fq2Config;
-    type Fp6Config = Fq6Config;
-    type Fp12Config = Fq12Config;
+    type Fp = <OrgConfig as Bls12Config>::Fp;
+    type Fp2Config = <OrgConfig as Bls12Config>::Fp2Config;
+    type Fp6Config = <OrgConfig as Bls12Config>::Fp6Config;
+    type Fp12Config = <OrgConfig as Bls12Config>::Fp12Config;
+
     type G1Config = g1::Config<H>;
     type G2Config = g2::Config<H>;
+
+    const X: &'static [u64] = <OrgConfig as Bls12Config>::X;
+    const X_IS_NEGATIVE: bool = <OrgConfig as Bls12Config>::X_IS_NEGATIVE;
+    const TWIST_TYPE: TwistType = <OrgConfig as Bls12Config>::TWIST_TYPE;
 
     fn multi_miller_loop(
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
@@ -108,8 +75,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     fn final_exponentiation(
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
-        let target = f.0;
-        let serialized_target = serialize_argument(target);
+        let serialized_target = serialize_argument(f.0);
 
         let result = H::bls12_377_final_exponentiation(serialized_target);
 
@@ -122,5 +88,39 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         .unwrap();
 
         Some(result)
+    }
+}
+
+impl<H: HostFunctions> Config<H> {
+    // Hack to serialize all the expected types into affine.
+    // `G2Prepared` conversion is performed into the host function for efficiency.
+    fn serialize_as_affine(elem: impl Into<G2Prepared<Self>>) -> Vec<u8> {
+        use ark_ec::CurveGroup;
+        use core::any;
+
+        fn type_name_of<T>(_: &T) -> &str {
+            core::any::type_name::<T>()
+        }
+
+        // Hack to catch one of the expected types
+        // TODO: is there a better way?
+        let type_name = type_name_of(&elem);
+        let affine = if type_name == any::type_name::<G2Projective<H>>() {
+            let proj: &G2Projective<H> = unsafe { core::mem::transmute(&elem) };
+            proj.into_affine()
+        } else if type_name == any::type_name::<&G2Projective<H>>() {
+            let proj: &&G2Projective<H> = unsafe { core::mem::transmute(&elem) };
+            proj.into_affine()
+        } else if type_name == any::type_name::<G2Affine<H>>() {
+            let affine: &G2Affine<H> = unsafe { core::mem::transmute(&elem) };
+            *affine
+        } else if type_name == any::type_name::<&G2Affine<H>>() {
+            let affine: &&G2Affine<H> = unsafe { core::mem::transmute(&elem) };
+            **affine
+        } else {
+            panic!("Unhandled type: {}", type_name);
+        };
+
+        serialize_argument(affine)
     }
 }
