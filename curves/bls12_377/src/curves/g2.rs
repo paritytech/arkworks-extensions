@@ -13,7 +13,7 @@ pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<H>);
+pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
     type BaseField = <OrgConfig as CurveConfig>::BaseField;

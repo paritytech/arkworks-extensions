@@ -19,7 +19,7 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-pub trait HostFunctions: Send + Sync + 'static {
+pub trait HostFunctions: 'static {
     fn bls12_377_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8>;
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Vec<u8>;
     fn bls12_377_msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
@@ -30,7 +30,7 @@ pub trait HostFunctions: Send + Sync + 'static {
     fn bls12_377_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
 }
 
-pub struct Config<H: HostFunctions>(PhantomData<H>);
+pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub type Bls12_377<H> = Bls12<Config<H>>;
 

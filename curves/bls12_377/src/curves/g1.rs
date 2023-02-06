@@ -19,7 +19,7 @@ pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<H>);
+pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub type G1SWAffine<H> = SWAffine<Config<H>>;
 pub type G1SWProjective<H> = SWProjective<Config<H>>;
