@@ -12,17 +12,16 @@ edition = "2021"
 publish = true
 
 [dependencies]
+ark-bls12-377 = { version = "0.4.0", features = ["curve"], default-features = false }
+ark-ec = { version = "0.4.0", default-features = false }
 ark-ff = { version="0.4.0-alpha", default-features = false }
 ark-r1cs-std = { version="0.4.0-alpha", optional = true, default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.0", default-features = false }
-ark-bls12-377 = { version = "0.4.0", features = ["curve"], default-features = false }
-sp-ark-models = { path = "../../models", default-features = false }
 sp-ark-utils = { path = "../utils", default-features = false  }
 
 [dev-dependencies]
 ark-relations = { version = "0.4.0", default-features = false }
-ark-ec = { version = "0.4.0", default-features = false }
 ark-algebra-test-templates = { version = "0.4.0", default-features = false }
 ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-features = false }
 sp-io =  { version = "7.0.0", default-features= false }
@@ -36,7 +35,6 @@ std = [
     "ark-std/std", 
     "ark-serialize/std",
     "ark-bls12-377/std",
-    "sp-ark-models/std",
     "sp-ark-utils/std",
     "ark-relations/std",  
     "ark-ec/std",

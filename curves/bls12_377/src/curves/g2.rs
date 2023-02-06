@@ -1,11 +1,10 @@
-use ark_ff::{Field, MontFp, Zero};
+use ark_ec::{
+    models::{bls12, CurveConfig},
+    short_weierstrass::{Affine as SWAffine, Projective as SWProjective, SWCurveConfig},
+};
+use ark_ff::{Field, MontFp};
 use ark_serialize::{Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
-use sp_ark_models::{
-    bls12,
-    short_weierstrass::{Affine, Projective, SWCurveConfig},
-    CurveConfig,
-};
 use sp_ark_utils::serialize_argument;
 
 use crate::{g1, Fq, Fq2, Fr, HostFunctions};
@@ -14,7 +13,7 @@ pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: HostFunctions>(PhantomData<H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
     type BaseField = Fq2;
@@ -58,15 +57,15 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     /// AFFINE_GENERATOR_COEFFS = (G2_GENERATOR_X, G2_GENERATOR_Y)
     const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
 
-    #[inline(always)]
-    fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
-        Self::BaseField::zero()
-    }
+    // #[inline(always)]
+    // fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
+    //     Self::BaseField::zero()
+    // }
 
     fn msm(
-        bases: &[Affine<Self>],
+        bases: &[SWAffine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
-    ) -> Result<Projective<Self>, usize> {
+    ) -> Result<SWProjective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<Vec<u8>> = scalars
             .iter()
@@ -85,7 +84,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         Ok(result.into())
     }
 
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_projective(base: &SWProjective<Self>, scalar: &[u64]) -> SWProjective<Self> {
         let serialized_base = serialize_argument(*base);
         let serialized_scalar = serialize_argument(scalar);
 
@@ -96,7 +95,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         result.into()
     }
 
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_affine(base: &SWAffine<Self>, scalar: &[u64]) -> SWProjective<Self> {
         let serialized_base = serialize_argument(*base);
         let serialized_scalar = serialize_argument(scalar);
 

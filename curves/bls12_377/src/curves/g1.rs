@@ -1,56 +1,56 @@
-use ark_ff::{Field, MontFp, Zero};
-use ark_serialize::{Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
-use core::ops::Neg;
-use sp_ark_models::{
-    bls12,
-    short_weierstrass::{Affine as SWAffine, Projective, SWCurveConfig},
+use ark_bls12_377::g1::Config as ArkConfig;
+use ark_ec::{
+    models::{bls12, CurveConfig},
+    short_weierstrass::{Affine as SWAffine, Projective as SWProjective, SWCurveConfig},
     twisted_edwards::{
         Affine as TEAffine, MontCurveConfig, Projective as TEProjective, TECurveConfig,
     },
-    CurveConfig,
 };
+use ark_ff::MontFp;
+use ark_serialize::{Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use core::ops::Neg;
 use sp_ark_utils::serialize_argument;
+
+use crate::{Fq, HostFunctions};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
-use crate::{Fq, Fr, HostFunctions};
-
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: HostFunctions>(PhantomData<H>);
+
+pub type G1SWAffine<H> = SWAffine<Config<H>>;
+pub type G1SWProjective<H> = SWProjective<Config<H>>;
+
+pub type G1TEAffine<H> = TEAffine<Config<H>>;
+pub type G1TEProjective<H> = TEProjective<Config<H>>;
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
-    type BaseField = Fq;
-    type ScalarField = Fr;
+    type BaseField = <ArkConfig as CurveConfig>::BaseField;
+    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 
-    /// COFACTOR = (x - 1)^2 / 3  = 30631250834960419227450344600217059328
-    const COFACTOR: &'static [u64] = &[0x0, 0x170b5d4430000000];
-
-    /// COFACTOR_INV = COFACTOR^{-1} mod r
-    /// = 5285428838741532253824584287042945485047145357130994810877
-    const COFACTOR_INV: Fr = MontFp!("5285428838741532253824584287042945485047145357130994810877");
+    const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
+    const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
 }
 
 impl<H: HostFunctions> SWCurveConfig for Config<H> {
-    /// COEFF_A = 0
-    const COEFF_A: Fq = Fq::ZERO;
-
-    /// COEFF_B = 1
-    const COEFF_B: Fq = Fq::ONE;
+    const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
+    const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
     /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
     const GENERATOR: G1SWAffine<H> = G1SWAffine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
-    #[inline(always)]
-    fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
-        Self::BaseField::zero()
-    }
+    // TODO: is this really required??? Why?
+    // #[inline(always)]
+    // fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
+    //     Self::BaseField::zero()
+    // }
 
     fn msm(
         bases: &[SWAffine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
-    ) -> Result<Projective<Self>, usize> {
+    ) -> Result<SWProjective<Self>, usize> {
         let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<Vec<u8>> = scalars
             .iter()
@@ -69,7 +69,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         Ok(result.into())
     }
 
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_projective(base: &SWProjective<Self>, scalar: &[u64]) -> SWProjective<Self> {
         let serialized_base = serialize_argument(*base);
         let serialized_scalar = serialize_argument(scalar);
 
@@ -85,7 +85,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         result.into()
     }
 
-    fn mul_affine(base: &SWAffine<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_affine(base: &SWAffine<Self>, scalar: &[u64]) -> SWProjective<Self> {
         let serialized_base = serialize_argument(*base);
 
         let serialized_scalar = serialize_argument(scalar);
@@ -102,10 +102,6 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         result.into()
     }
 }
-
-pub type G1SWAffine<H> = SWAffine<Config<H>>;
-pub type G1TEAffine<H> = TEAffine<Config<H>>;
-pub type G1TEProjective<H> = TEProjective<Config<H>>;
 
 /// Bls12_377::G1 also has a twisted Edwards form.
 /// It can be obtained via the following script, implementing

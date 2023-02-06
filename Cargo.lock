@@ -2113,7 +2113,6 @@ dependencies = [
  "ark-relations 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-serialize",
  "ark-std",
- "sp-ark-models",
  "sp-ark-utils",
  "sp-io",
 ]

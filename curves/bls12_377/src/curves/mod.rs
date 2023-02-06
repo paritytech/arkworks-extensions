@@ -1,11 +1,11 @@
-use crate::*;
-use ark_ff::Fp12;
-use ark_serialize::{CanonicalDeserialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
-use sp_ark_models::{
+use ark_bls12_377::{Fq, Fq12Config, Fq2Config, Fq6Config};
+use ark_ec::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
+use ark_ff::Fp12;
+use ark_serialize::{CanonicalDeserialize, Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use sp_ark_utils::serialize_argument;
 
 pub mod g1;
@@ -19,9 +19,7 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
-
-pub trait HostFunctions: 'static {
+pub trait HostFunctions: Send + Sync + 'static {
     fn bls12_377_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8>;
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Vec<u8>;
     fn bls12_377_msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
@@ -30,6 +28,44 @@ pub trait HostFunctions: 'static {
     fn bls12_377_msm_g2(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
     fn bls12_377_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
     fn bls12_377_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
+}
+
+pub struct Config<H: HostFunctions>(PhantomData<H>);
+
+pub type Bls12_377<H> = Bls12<Config<H>>;
+
+fn type_name_of<T>(_: &T) -> &str {
+    core::any::type_name::<T>()
+}
+
+impl<H: HostFunctions> Config<H> {
+    // Hack to serialize all the expected types into affine.
+    // `G2Prepared` conversion is performed into the host function for efficiency.
+    fn serialize_as_affine(elem: impl Into<G2Prepared<Self>>) -> Vec<u8> {
+        use ark_ec::CurveGroup;
+        use core::any;
+        let type_name = type_name_of(&elem);
+
+        // Hack to catch one of the expected types
+        // TODO: is there a better way?
+        let affine = if type_name == any::type_name::<G2Projective<H>>() {
+            let proj: &G2Projective<H> = unsafe { core::mem::transmute(&elem) };
+            proj.into_affine()
+        } else if type_name == any::type_name::<&G2Projective<H>>() {
+            let proj: &&G2Projective<H> = unsafe { core::mem::transmute(&elem) };
+            proj.into_affine()
+        } else if type_name == any::type_name::<G2Affine<H>>() {
+            let affine: &G2Affine<H> = unsafe { core::mem::transmute(&elem) };
+            *affine
+        } else if type_name == any::type_name::<&G2Affine<H>>() {
+            let affine: &&G2Affine<H> = unsafe { core::mem::transmute(&elem) };
+            **affine
+        } else {
+            panic!("Unhandled type: {}", type_name);
+        };
+
+        serialize_argument(affine)
+    }
 }
 
 impl<H: HostFunctions> Bls12Config for Config<H> {
@@ -55,12 +91,10 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 serialize_argument(elem)
             })
             .collect();
-        let b = b
+
+        let b: Vec<Vec<u8>> = b
             .into_iter()
-            .map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                serialize_argument(elem)
-            })
+            .map(|elem| Self::serialize_as_affine(elem))
             .collect();
 
         let result = H::bls12_377_multi_miller_loop(a, b);
@@ -90,5 +124,3 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         Some(result)
     }
 }
-
-pub type Bls12_377<H> = Bls12<Config<H>>;

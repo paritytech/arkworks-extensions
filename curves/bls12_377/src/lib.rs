@@ -6,7 +6,6 @@
     nonstandard_style,
     rust_2018_idioms
 )]
-#![forbid(unsafe_code)]
 
 //! This library implements the BLS12_377 curve generated in [\[BCGMMW20, “Zexe”\]](https://eprint.iacr.org/2018/962).
 //! The name denotes that it is a Barreto--Lynn--Scott curve of embedding degree

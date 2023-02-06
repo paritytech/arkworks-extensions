@@ -3,7 +3,7 @@ use crate::HostFunctions;
 use ark_algebra_test_templates::*;
 use ark_std::vec::Vec;
 
-pub struct Host {}
+pub struct Host;
 
 impl HostFunctions for Host {
     fn bls12_377_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
