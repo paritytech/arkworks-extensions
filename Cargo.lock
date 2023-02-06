@@ -2161,7 +2161,6 @@ dependencies = [
  "ark-relations 0.4.0 (git+https://github.com/arkworks-rs/snark)",
  "ark-serialize",
  "ark-std",
- "sp-ark-models",
  "sp-ark-utils",
  "sp-io",
 ]
