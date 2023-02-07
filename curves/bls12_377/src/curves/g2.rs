@@ -30,11 +30,6 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     /// AFFINE_GENERATOR_COEFFS = (G2_GENERATOR_X, G2_GENERATOR_Y)
     const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
 
-    // #[inline(always)]
-    // fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
-    //     Self::BaseField::zero()
-    // }
-
     fn msm(
         bases: &[SWAffine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],

@@ -41,12 +41,6 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
     const GENERATOR: G1SWAffine<H> = G1SWAffine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
-    // TODO: is this really required??? Why?
-    // #[inline(always)]
-    // fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
-    //     Self::BaseField::zero()
-    // }
-
     fn msm(
         bases: &[SWAffine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
