@@ -91,34 +91,34 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     }
 }
 
+#[inline(always)]
+fn is_type<T, U>() -> bool {
+    use core::{any, mem};
+    any::type_name::<T>() == any::type_name::<U>() && mem::size_of::<T>() == mem::size_of::<U>()
+}
+
 impl<H: HostFunctions> Config<H> {
     // Hack to serialize all the expected types into affine.
     // `G2Prepared` conversion is performed into the host function for efficiency.
-    fn serialize_as_affine(elem: impl Into<G2Prepared<Self>>) -> Vec<u8> {
+    fn serialize_as_affine<T: Into<G2Prepared<Self>>>(elem: T) -> Vec<u8> {
         use ark_ec::CurveGroup;
-        use core::any;
-
-        fn type_name_of<T>(_: &T) -> &str {
-            core::any::type_name::<T>()
-        }
 
         // Hack to catch one of the expected types
         // TODO: is there a better way?
-        let type_name = type_name_of(&elem);
-        let affine = if type_name == any::type_name::<G2Projective<H>>() {
+        let affine = if is_type::<T, G2Projective<H>>() {
             let proj: &G2Projective<H> = unsafe { core::mem::transmute(&elem) };
             proj.into_affine()
-        } else if type_name == any::type_name::<&G2Projective<H>>() {
-            let proj: &&G2Projective<H> = unsafe { core::mem::transmute(&elem) };
+        } else if is_type::<T, &G2Projective<H>>() {
+            let proj: &G2Projective<H> = unsafe { core::mem::transmute(&elem) };
             proj.into_affine()
-        } else if type_name == any::type_name::<G2Affine<H>>() {
+        } else if is_type::<T, G2Affine<H>>() {
             let affine: &G2Affine<H> = unsafe { core::mem::transmute(&elem) };
             *affine
-        } else if type_name == any::type_name::<&G2Affine<H>>() {
+        } else if is_type::<T, &G2Affine<H>>() {
             let affine: &&G2Affine<H> = unsafe { core::mem::transmute(&elem) };
             **affine
         } else {
-            panic!("Unhandled type: {}", type_name);
+            panic!("Unhandled type: {}", std::any::type_name::<T>());
         };
 
         serialize_argument(affine)
