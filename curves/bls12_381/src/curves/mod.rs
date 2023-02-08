@@ -57,7 +57,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
                 let elem = serialize_argument(elem);
                 let cursor = Cursor::new(&elem[..]);
-                let check = <Bls12_381 as Pairing>::G1Affine::deserialize_with_mode(
+                let check = <ark_bls12_381::Bls12_381 as Pairing>::G1Affine::deserialize_with_mode(
                     cursor,
                     Compress::No,
                     Validate::No,
