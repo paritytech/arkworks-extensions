@@ -55,7 +55,11 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                serialize_argument(elem)
+                let elem  = serialize_argument(elem);
+                let cursor = Cursor::new(&elem[..]);
+                let check = elem.deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+                assert_eq!(check, elem);
+                elem
             })
             .collect();
         let b = b
