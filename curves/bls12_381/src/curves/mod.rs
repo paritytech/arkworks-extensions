@@ -55,11 +55,13 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                let result = serialize_argument(elem.clone());
-                let cursor = Cursor::new(&result[..]);
+                // let result = serialize_argument(elem.clone());
+                let mut result = vec![0u8; elem.serialized_size(Compress::Yes)];
+                let mut cursor = Cursor::new(&mut result[..]);
+                elem.serialize_compressed(&mut cursor).unwrap();
                 let check = sp_ark_models::bls12::G1Prepared::deserialize_with_mode(
                     cursor,
-                    Compress::No,
+                    Compress::Yes,
                     Validate::No,
                 )
                 .unwrap();
