@@ -2212,7 +2212,7 @@ dependencies = [
 [[package]]
 name = "sp-arkworks"
 version = "0.4.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
@@ -2229,7 +2229,7 @@ dependencies = [
 [[package]]
 name = "sp-core"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "array-bytes",
  "base58",
@@ -2271,7 +2271,7 @@ dependencies = [
 [[package]]
 name = "sp-core-hashing"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "blake2",
  "byteorder",
@@ -2285,7 +2285,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2295,7 +2295,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -2306,7 +2306,7 @@ dependencies = [
 [[package]]
 name = "sp-io"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "bytes",
  "ed25519",
@@ -2332,7 +2332,7 @@ dependencies = [
 [[package]]
 name = "sp-keystore"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "async-trait",
  "futures",
@@ -2348,7 +2348,7 @@ dependencies = [
 [[package]]
 name = "sp-panic-handler"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "backtrace",
  "lazy_static",
@@ -2358,7 +2358,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -2376,7 +2376,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -2388,7 +2388,7 @@ dependencies = [
 [[package]]
 name = "sp-state-machine"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "hash-db",
  "log",
@@ -2408,12 +2408,12 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 
 [[package]]
 name = "sp-storage"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -2426,7 +2426,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "parity-scale-codec",
  "sp-std",
@@ -2438,7 +2438,7 @@ dependencies = [
 [[package]]
 name = "sp-trie"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "ahash 0.8.3",
  "hash-db",
@@ -2461,7 +2461,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#5a8e08a962fd8114f5e5eb64ba6627dc1387c92e"
+source = "git+https://github.com/paritytech/substrate.git?branch=no-compression#975e8e7097605c5365ef45635f418cbee18834f3"
 dependencies = [
  "impl-trait-for-tuples",
  "log",
