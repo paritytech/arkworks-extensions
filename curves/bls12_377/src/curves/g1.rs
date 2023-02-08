@@ -60,12 +60,9 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = H::bls12_377_msm_g1(bases, scalars);
 
         let cursor = Cursor::new(&result[..]);
-        let result = <Config<H> as SWCurveConfig>::deserialize_with_mode(
-            cursor,
-            Compress::No,
-            Validate::No,
-        )
-        .unwrap();
+        let result =
+            <Config<H> as SWCurveConfig>::deserialize_with_mode(cursor, Compress::No, Validate::No)
+                .unwrap();
         Ok(result.into())
     }
 
@@ -76,12 +73,9 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = H::bls12_377_mul_projective_g1(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        let result = <Config<H> as SWCurveConfig>::deserialize_with_mode(
-            cursor,
-            Compress::No,
-            Validate::No,
-        )
-        .unwrap();
+        let result =
+            <Config<H> as SWCurveConfig>::deserialize_with_mode(cursor, Compress::No, Validate::No)
+                .unwrap();
         result.into()
     }
 
@@ -93,12 +87,9 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = H::bls12_377_mul_affine_g1(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        let result = <Config<H> as SWCurveConfig>::deserialize_with_mode(
-            cursor,
-            Compress::No,
-            Validate::No,
-        )
-        .unwrap();
+        let result =
+            <Config<H> as SWCurveConfig>::deserialize_with_mode(cursor, Compress::No, Validate::No)
+                .unwrap();
         result.into()
     }
 }

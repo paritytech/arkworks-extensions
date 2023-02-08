@@ -76,12 +76,9 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = H::bls12_377_msm_g2(bases, scalars);
 
         let cursor = Cursor::new(&result[..]);
-        let result = <Config<H> as SWCurveConfig>::deserialize_with_mode(
-            cursor,
-            Compress::No,
-            Validate::No,
-        )
-        .unwrap();
+        let result =
+            <Config<H> as SWCurveConfig>::deserialize_with_mode(cursor, Compress::No, Validate::No)
+                .unwrap();
         Ok(result.into())
     }
 
