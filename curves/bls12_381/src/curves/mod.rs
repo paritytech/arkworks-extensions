@@ -54,8 +54,8 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let a: Vec<Vec<u8>> = a
             .into_iter()
             .map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.clone().into();
-                let result = serialize_argument(elem);
+                let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
+                let result = serialize_argument(elem.clone());
                 let cursor = Cursor::new(&result[..]);
                 let check = sp_ark_models::bls12::G1Prepared::deserialize_with_mode(
                     cursor,
