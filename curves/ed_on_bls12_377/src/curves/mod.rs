@@ -69,7 +69,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         let result = H::ed_on_bls12_377_msm(bases, scalars);
 
         let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
+        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
         Ok(result.into())
     }
 
@@ -81,7 +81,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let cursor = Cursor::new(&result[..]);
 
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
+        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -92,7 +92,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let cursor = Cursor::new(&result[..]);
 
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
+        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
     }
 }
 

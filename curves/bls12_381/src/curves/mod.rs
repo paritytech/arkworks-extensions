@@ -70,7 +70,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let cursor = Cursor::new(&res[..]);
         let f: <Bls12<Self> as Pairing>::TargetField =
-            Fp12::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
+            Fp12::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
         MillerLoopOutput(f)
     }
 
@@ -85,7 +85,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let cursor = Cursor::new(&result[..]);
         let result = PairingOutput::<Bls12<Self>>::deserialize_with_mode(
             cursor,
-            Compress::Yes,
+            Compress::No,
             Validate::No,
         )
         .unwrap();

@@ -62,7 +62,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let cursor = Cursor::new(&result[..]);
         let result = <Config<H> as SWCurveConfig>::deserialize_with_mode(
             cursor,
-            Compress::Yes,
+            Compress::No,
             Validate::No,
         )
         .unwrap();
@@ -78,7 +78,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let cursor = Cursor::new(&result[..]);
         let result = <Config<H> as SWCurveConfig>::deserialize_with_mode(
             cursor,
-            Compress::Yes,
+            Compress::No,
             Validate::No,
         )
         .unwrap();
@@ -95,7 +95,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let cursor = Cursor::new(&result[..]);
         let result = <Config<H> as SWCurveConfig>::deserialize_with_mode(
             cursor,
-            Compress::Yes,
+            Compress::No,
             Validate::No,
         )
         .unwrap();

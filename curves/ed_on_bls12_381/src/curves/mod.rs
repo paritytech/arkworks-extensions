@@ -115,7 +115,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         let cursor = Cursor::new(&result[..]);
         let result = <JubjubConfig<H> as TECurveConfig>::deserialize_with_mode(
             cursor,
-            Compress::Yes,
+            Compress::No,
             Validate::No,
         )
         .unwrap();
@@ -130,7 +130,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
 
         let cursor = Cursor::new(&result[..]);
 
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
+        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -141,7 +141,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
 
         let cursor = Cursor::new(&result[..]);
 
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
+        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
     }
 }
 
@@ -187,7 +187,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let cursor = Cursor::new(&result[..]);
         let result =
-            SWProjective::<H>::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
+            SWProjective::<H>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
         Ok(result)
     }
 
@@ -199,7 +199,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let cursor = Cursor::new(&result[..]);
 
-        SWProjective::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
+        SWProjective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
     }
 
     fn mul_affine(base: &SWAffine<H>, scalar: &[u64]) -> SWProjective<H> {
@@ -210,7 +210,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let cursor = Cursor::new(&result[..]);
 
-        SWProjective::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap()
+        SWProjective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
     }
 }
 
