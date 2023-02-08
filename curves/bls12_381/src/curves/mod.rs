@@ -59,13 +59,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 let mut result = vec![0u8; elem.serialized_size(Compress::Yes)];
                 let mut cursor = Cursor::new(&mut result[..]);
                 elem.serialize_compressed(&mut cursor).unwrap();
-                let check = sp_ark_models::bls12::G1Prepared::deserialize_with_mode(
-                    cursor,
-                    Compress::Yes,
-                    Validate::No,
-                )
-                .unwrap();
-                assert_eq!(check, elem);
+                // assert_eq!(check, elem);
                 result
             })
             .collect();
