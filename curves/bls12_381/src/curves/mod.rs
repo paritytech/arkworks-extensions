@@ -55,20 +55,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                let mut serialized_result = vec![0u8; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized_result[..]);
-                elem.serialize_compressed(&mut cursor).unwrap();
-                serialized_result
+                serialize_argument(elem)
             })
             .collect();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                let mut serialized_result = vec![0u8; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut serialized_result[..]);
-                elem.serialize_compressed(&mut cursor).unwrap();
-                serialized_result
+                serialize_argument(elem)
             })
             .collect();
 
@@ -76,7 +70,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let cursor = Cursor::new(&res[..]);
         let f: <Bls12<Self> as Pairing>::TargetField =
-            Fp12::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+            Fp12::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         MillerLoopOutput(f)
     }
 
