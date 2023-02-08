@@ -73,7 +73,11 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                serialize_argument(elem)
+                // serialize_argument(elem)
+                let mut result = vec![0u8; elem.serialized_size(Compress::Yes)];
+                let mut cursor = Cursor::new(&mut result[..]);
+                elem.serialize_compressed(&mut cursor).unwrap();
+                result
             })
             .collect();
 
