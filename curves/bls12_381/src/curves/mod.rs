@@ -55,26 +55,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                // let result = serialize_argument(elem.clone());
-                // let mut serialized_result = vec![0u8; result.serialized_size(Compress::Yes)];
-                // let mut cursor = Cursor::new(&mut serialized_result[..]);
-                // result.serialize_compressed(&mut cursor).unwrap();
-                let mut result = vec![0u8; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut result[..]);
-                elem.serialize_compressed(&mut cursor).unwrap();
-                // assert_eq!(check, elem);
-                result
+                serialize_argument(elem)
             })
             .collect();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                // serialize_argument(elem)
-                let mut result = vec![0u8; elem.serialized_size(Compress::Yes)];
-                let mut cursor = Cursor::new(&mut result[..]);
-                elem.serialize_compressed(&mut cursor).unwrap();
-                result
+                serialize_argument(elem)
             })
             .collect();
 
