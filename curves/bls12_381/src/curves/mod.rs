@@ -56,9 +56,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
                 // let result = serialize_argument(elem.clone());
-                let mut result = vec![0u8; elem.serialized_size(Compress::Yes)];
+                let mut result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut result[..]);
-                elem.serialize_compressed(&mut cursor).unwrap();
+                elem.serialize_uncompressed(&mut cursor).unwrap();
                 // assert_eq!(check, elem);
                 result
             })
