@@ -55,9 +55,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
+                let mut serialized_result = vec![0u8; elem.serialized_size(Compress::Yes)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
-                elem.serialize_uncompressed(&mut cursor).unwrap();
+                elem.serialize_compressed(&mut cursor).unwrap();
                 serialized_result
             })
             .collect();
