@@ -1,7 +1,7 @@
 use crate::*;
 use ark_ff::Fp12;
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec, vec};
+use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -57,7 +57,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
                 let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
-                <<Bls12<Self> as Pairing>::G1Prepared as CanonicalDeserialize>::serialize_uncompressed(cursor);
+                <<Bls12<Self> as Pairing>::G1Prepared as CanonicalSerialize>::serialize_uncompressed(cursor);
                 serialized_result
             })
             .collect();
@@ -67,7 +67,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
                 let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
-                <<Bls12<Self> as Pairing>::G2Prepared as CanonicalDeserialize>::serialize_uncompressed(cursor);
+                <<Bls12<Self> as Pairing>::G2Prepared as CanonicalSerialize>::serialize_uncompressed(cursor);
                 elem.serialize_uncompressed(&mut cursor).unwrap();
                 serialized_result
             })
