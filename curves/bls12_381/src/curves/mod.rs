@@ -55,7 +55,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                let elem: <Bls12<Self> as Pairing>::G1Affine = elem.into();
+                let elem: <ark_ec::short_weierstrass::Affine<ark_bls12_381::g1::Config> = elem.into();
                 let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
                 <ark_ec::short_weierstrass::Affine<ark_bls12_381::g1::Config> as CanonicalSerialize>::serialize_uncompressed(&elem, cursor);
@@ -66,7 +66,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                let elem: <Bls12<Self> as Pairing>::G2Affine = elem.into();
+                let elem: <ark_ec::short_weierstrass::Affine<ark_bls12_381::g2::Config>  = elem.into();
                 let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
                 <ark_ec::short_weierstrass::Affine<ark_bls12_381::g2::Config> as CanonicalSerialize>::serialize_uncompressed(&elem, cursor);
