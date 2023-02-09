@@ -68,7 +68,6 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
                 <<Bls12<Self> as Pairing>::G2Prepared as CanonicalSerialize>::serialize_uncompressed(&elem, cursor);
-                elem.serialize_uncompressed(&mut cursor).unwrap();
                 serialized_result
             })
             .collect();
