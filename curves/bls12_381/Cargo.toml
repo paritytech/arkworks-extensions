@@ -31,7 +31,7 @@ hex = { version = "^0.4.0", default-features = false }
 [features]
 default = [ "std" ]
 std = [ 
-    "ark-cc/std", 
+    "ark-ec/std", 
     "ark-ff/std", 
     "ark-std/std", 
     "ark-serialize/std",
