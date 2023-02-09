@@ -57,7 +57,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
                 let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
-                <<Bls12<Self> as Pairing>::G1Affine as CanonicalSerialize>::serialize_uncompressed(&elem, cursor);
+                elem.serialize_uncompressed(&mut cursor);
                 serialized_result
             })
             .collect();
@@ -65,10 +65,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                let elem: <Bls12<Self> as Pairing>::G2Affine = elem.into();
                 let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
                 let mut cursor = Cursor::new(&mut serialized_result[..]);
-                <<Bls12<Self> as Pairing>::G2Affine as CanonicalSerialize>::serialize_uncompressed(&elem, cursor);
+                elem.serialize_uncompressed(&mut cursor);
                 serialized_result
             })
             .collect();
