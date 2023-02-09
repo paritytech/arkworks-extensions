@@ -14,6 +14,7 @@ edition = "2021"
 publish = true
 
 [dependencies]
+ark-cc = { version = "0.4.0", default-features = false }
 ark-ff = { version = "0.4.0", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.0", default-features = false }
@@ -30,6 +31,7 @@ hex = { version = "^0.4.0", default-features = false }
 [features]
 default = [ "std" ]
 std = [ 
+    "ark-cc/std", 
     "ark-ff/std", 
     "ark-std/std", 
     "ark-serialize/std",
