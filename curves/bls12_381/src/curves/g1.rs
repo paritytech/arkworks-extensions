@@ -85,7 +85,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         compress: ark_serialize::Compress,
         validate: ark_serialize::Validate,
     ) -> Result<Affine<Self>, ark_serialize::SerializationError> {
-        let p = if compress == ark_serialize::Compress::No {
+        let p = if compress == ark_serialize::Compress::Yes {
             read_g1_compressed(&mut reader)?
         } else {
             read_g1_uncompressed(&mut reader)?
@@ -104,7 +104,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         compress: ark_serialize::Compress,
     ) -> Result<(), SerializationError> {
         let encoding = EncodingFlags {
-            is_compressed: compress == ark_serialize::Compress::No,
+            is_compressed: compress == ark_serialize::Compress::Yes,
             is_infinity: item.is_zero(),
             is_lexographically_largest: item.y > -item.y,
         };
@@ -133,7 +133,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn serialized_size(compress: Compress) -> usize {
-        if compress == Compress::No {
+        if compress == Compress::Yes {
             G1_SERIALIZED_SIZE
         } else {
             G1_SERIALIZED_SIZE * 2
