@@ -116,7 +116,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         compress: ark_serialize::Compress,
         validate: ark_serialize::Validate,
     ) -> Result<Affine<Self>, ark_serialize::SerializationError> {
-        let p = if compress == ark_serialize::Compress::No {
+        let p = if compress == ark_serialize::Compress::Yes {
             read_g2_compressed(&mut reader)?
         } else {
             read_g2_uncompressed(&mut reader)?
@@ -135,7 +135,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         compress: ark_serialize::Compress,
     ) -> Result<(), SerializationError> {
         let encoding = EncodingFlags {
-            is_compressed: compress == ark_serialize::Compress::No,
+            is_compressed: compress == ark_serialize::Compress::Yes,
             is_infinity: item.is_zero(),
             is_lexographically_largest: item.y > -item.y,
         };
@@ -173,7 +173,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn serialized_size(compress: ark_serialize::Compress) -> usize {
-        if compress == Compress::No {
+        if compress == Compress::Yes {
             G2_SERIALIZED_SIZE
         } else {
             2 * G2_SERIALIZED_SIZE
@@ -193,7 +193,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = H::bls12_381_msm_g2(bases, scalars);
 
         let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = Self::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         Ok(result.into())
     }
 
@@ -204,7 +204,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = H::bls12_381_mul_projective_g2(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = Self::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()
     }
 
@@ -215,7 +215,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = H::bls12_381_mul_affine_g2(serialized_base, serialized_scalar);
 
         let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = Self::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
         result.into()
     }
 }
