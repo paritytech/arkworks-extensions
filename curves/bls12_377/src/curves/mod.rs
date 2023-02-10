@@ -6,7 +6,7 @@ use ark_ec::{
 use ark_ff::Fp12;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
-use sp_ark_utils::serialize_argument;
+use sp_ark_utils::{cast_type, serialize_argument};
 
 pub mod g1;
 pub mod g2;
@@ -91,36 +91,16 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     }
 }
 
-#[inline(always)]
-fn is_type<T, U>() -> bool {
-    use core::{any, mem};
-    any::type_name::<T>() == any::type_name::<U>() && mem::size_of::<T>() == mem::size_of::<U>()
-}
-
 impl<H: HostFunctions> Config<H> {
     // Hack to serialize all the expected types into affine.
     // `G2Prepared` conversion is performed into the host function for efficiency.
     fn serialize_as_affine<T: Into<G2Prepared<Self>>>(elem: T) -> Vec<u8> {
         use ark_ec::CurveGroup;
 
-        // Hack to catch one of the expected types
-        // TODO: is there a better way?
-        let affine = if is_type::<T, G2Projective<H>>() {
-            let proj: &G2Projective<H> = unsafe { core::mem::transmute(&elem) };
-            proj.into_affine()
-        } else if is_type::<T, &G2Projective<H>>() {
-            let proj: &G2Projective<H> = unsafe { core::mem::transmute(&elem) };
-            proj.into_affine()
-        } else if is_type::<T, G2Affine<H>>() {
-            let affine: &G2Affine<H> = unsafe { core::mem::transmute(&elem) };
-            *affine
-        } else if is_type::<T, &G2Affine<H>>() {
-            let affine: &&G2Affine<H> = unsafe { core::mem::transmute(&elem) };
-            **affine
-        } else {
-            panic!("Unhandled type: {}", std::any::type_name::<T>());
-        };
-
-        serialize_argument(affine)
+        cast_type::<_, G2Affine<H>>(&elem)
+            .map(|affine| *affine)
+            .or_else(|| cast_type::<_, G2Projective<H>>(&elem).map(|proj| proj.into_affine()))
+            .map(|affine| serialize_argument(affine))
+            .unwrap_or_default()
     }
 }
