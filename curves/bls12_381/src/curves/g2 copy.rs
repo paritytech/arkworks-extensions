@@ -1,28 +1,32 @@
-use ark_ff::{Field, MontFp, Zero};
-use ark_serialize::{Compress, SerializationError, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, ops::Neg, vec::Vec};
-use sp_ark_models::{
+use ark_std::ops::Neg;
+
+use ark_ec::{
     bls12,
     bls12::Bls12Config,
+    hashing::curve_maps::wb::{IsogenyMap, WBConfig},
+    models::CurveConfig,
     short_weierstrass::{Affine, Projective, SWCurveConfig},
-    AffineRepr, CurveConfig, CurveGroup, Group,
+    AffineRepr, CurveGroup, Group,
 };
-use sp_ark_utils::serialize_argument;
+use ark_ff::{Field, MontFp, Zero};
+use ark_serialize::{Compress, SerializationError};
 
-use super::util::{
-    read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
+use super::{
+    g2_swu_iso,
+    util::{serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE},
 };
-use crate::{g1, HostFunctions};
-use ark_bls12_381::{fq2::Fq2, fr, fr::Fr, Fq};
+use crate::{
+    util::{read_g2_compressed, read_g2_uncompressed},
+    *,
+};
 
-pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
-pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
+pub type G2Affine = bls12::G2Affine<crate::Config>;
+pub type G2Projective = bls12::G2Projective<crate::Config>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
+pub struct Config;
 
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
-
-impl<H: HostFunctions> CurveConfig for Config<H> {
+impl CurveConfig for Config {
     type BaseField = Fq2;
     type ScalarField = Fr;
 
@@ -47,28 +51,28 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
         MontFp!("26652489039290660355457965112010883481355318854675681319708643586776743290055");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Config<H> {
+impl SWCurveConfig for Config {
     /// COEFF_A = [0, 0]
-    const COEFF_A: Fq2 = Fq2::new(g1::Config::<H>::COEFF_A, g1::Config::<H>::COEFF_A);
+    const COEFF_A: Fq2 = Fq2::new(g1::Config::COEFF_A, g1::Config::COEFF_A);
 
     /// COEFF_B = [4, 4]
-    const COEFF_B: Fq2 = Fq2::new(g1::Config::<H>::COEFF_B, g1::Config::<H>::COEFF_B);
+    const COEFF_B: Fq2 = Fq2::new(g1::Config::COEFF_B, g1::Config::COEFF_B);
 
     /// AFFINE_GENERATOR_COEFFS = (G2_GENERATOR_X, G2_GENERATOR_Y)
-    const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
+    const GENERATOR: G2Affine = G2Affine::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
 
     #[inline(always)]
     fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
         Self::BaseField::zero()
     }
 
-    fn is_in_correct_subgroup_assuming_on_curve(point: &G2Affine<H>) -> bool {
-        // Algorithm From Section 4 of https://eprint.iacr.org/2021/1130.
+    fn is_in_correct_subgroup_assuming_on_curve(point: &G2Affine) -> bool {
+        // Algorithm from Section 4 of https://eprint.iacr.org/2021/1130.
         //
         // Checks that [p]P = [X]P
 
-        let mut x_times_point = point.mul_bigint(crate::Config::<H>::X);
-        if crate::Config::<H>::X_IS_NEGATIVE {
+        let mut x_times_point = point.mul_bigint(crate::Config::X);
+        if crate::Config::X_IS_NEGATIVE {
             x_times_point = -x_times_point;
         }
 
@@ -78,7 +82,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     #[inline]
-    fn clear_cofactor(p: &G2Affine<H>) -> G2Affine<H> {
+    fn clear_cofactor(p: &G2Affine) -> G2Affine {
         // Based on Section 4.1 of https://eprint.iacr.org/2017/419.pdf
         // [h(ψ)]P = [x^2 − x − 1]P + [x − 1]ψ(P) + (ψ^2)(2P)
 
@@ -86,22 +90,22 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         // When multiplying, use -c1 instead, and then negate the result. That's much
         // more efficient, since the scalar -c1 has less limbs and a much lower Hamming
         // weight.
-        let x: &'static [u64] = crate::Config::<H>::X;
+        let x: &'static [u64] = crate::Config::X;
         let p_projective = p.into_group();
 
         // [x]P
-        let x_p = Config::mul_affine(p, x).neg();
+        let x_p = Config::mul_affine(p, &x).neg();
         // ψ(P)
-        let psi_p = p_power_endomorphism(p);
+        let psi_p = p_power_endomorphism(&p);
         // (ψ^2)(2P)
         let mut psi2_p2 = double_p_power_endomorphism(&p_projective.double());
 
         // tmp = [x]P + ψ(P)
-        let mut tmp = x_p;
+        let mut tmp = x_p.clone();
         tmp += &psi_p;
 
         // tmp2 = [x^2]P + [x]ψ(P)
-        let mut tmp2: Projective<Config<H>> = tmp;
+        let mut tmp2: Projective<Config> = tmp;
         tmp2 = tmp2.mul_bigint(x).neg();
 
         // add up all the terms
@@ -179,45 +183,6 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
             2 * G2_SERIALIZED_SIZE
         }
     }
-
-    fn msm(
-        bases: &[Affine<Self>],
-        scalars: &[<Self as CurveConfig>::ScalarField],
-    ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
-
-        let result = H::bls12_381_msm_g2(bases, scalars);
-
-        let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
-        Ok(result.into())
-    }
-
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::bls12_381_mul_projective_g2(serialized_base, serialized_scalar);
-
-        let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
-        result.into()
-    }
-
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::bls12_381_mul_affine_g2(serialized_base, serialized_scalar);
-
-        let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
-        result.into()
-    }
 }
 
 pub const G2_GENERATOR_X: Fq2 = Fq2::new(G2_GENERATOR_X_C0, G2_GENERATOR_X_C1);
@@ -262,15 +227,15 @@ const DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0: Fq2 = Fq2::new(
 );
 
 /// psi(P) is the untwist-Frobenius-twist endomorhism on E'(Fq2)
-fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Config<H>> {
+fn p_power_endomorphism(p: &Affine<Config>) -> Affine<Config> {
     // The p-power endomorphism for G2 is defined as follows:
     // 1. Note that G2 is defined on curve E': y^2 = x^3 + 4(u+1).
     //    To map a point (x, y) in E' to (s, t) in E,
     //    set s = x / ((u+1) ^ (1/3)), t = y / ((u+1) ^ (1/2)),
     //    because E: y^2 = x^3 + 4.
-    // 2. Apply theFrobenius endomorphism (s, t) => (s', t'),
+    // 2. Apply the Frobenius endomorphism (s, t) => (s', t'),
     //    another point on curve E, where s' = s^p, t' = t^p.
-    // 3. Map the point From E back to E'; that is,
+    // 3. Map the point from E back to E'; that is,
     //    set x' = s' * ((u+1) ^ (1/3)), y' = t' * ((u+1) ^ (1/2)).
     //
     // To sum up, it maps
@@ -281,18 +246,16 @@ fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Confi
     res.x.frobenius_map_in_place(1);
     res.y.frobenius_map_in_place(1);
 
-    let tmp_x = res.x;
-    res.x.c0 = -P_POWER_ENDOMORPHISM_COEFF_0.c1 * tmp_x.c1;
-    res.x.c1 = P_POWER_ENDOMORPHISM_COEFF_0.c1 * tmp_x.c0;
+    let tmp_x = res.x.clone();
+    res.x.c0 = -P_POWER_ENDOMORPHISM_COEFF_0.c1 * &tmp_x.c1;
+    res.x.c1 = P_POWER_ENDOMORPHISM_COEFF_0.c1 * &tmp_x.c0;
     res.y *= P_POWER_ENDOMORPHISM_COEFF_1;
 
     res
 }
 
 /// For a p-power endomorphism psi(P), compute psi(psi(P))
-fn double_p_power_endomorphism<H: HostFunctions>(
-    p: &Projective<Config<H>>,
-) -> Projective<Config<H>> {
+fn double_p_power_endomorphism(p: &Projective<Config>) -> Projective<Config> {
     let mut res = *p;
 
     res.x *= DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0;
@@ -301,40 +264,42 @@ fn double_p_power_endomorphism<H: HostFunctions>(
     res
 }
 
+// Parametres from the [IETF draft v16, section E.3](https://www.ietf.org/archive/id/draft-irtf-cfrg-hash-to-curve-16.html#name-3-isogeny-map-for-bls12-381).
+impl WBConfig for Config {
+    type IsogenousCurve = g2_swu_iso::SwuIsoConfig;
+
+    const ISOGENY_MAP: IsogenyMap<'static, Self::IsogenousCurve, Self> =
+        g2_swu_iso::ISOGENY_MAP_TO_G2;
+}
+
 #[cfg(test)]
 mod test {
 
     use super::*;
-    use crate::HostFunctions;
-    use ark_std::UniformRand;
+    use ark_std::{rand::Rng, UniformRand};
 
-    pub struct Host {}
+    fn sample_unchecked() -> Affine<g2::Config> {
+        let mut rng = ark_std::test_rng();
+        loop {
+            let x1 = Fq::rand(&mut rng);
+            let x2 = Fq::rand(&mut rng);
+            let greatest = rng.gen();
+            let x = Fq2::new(x1, x2);
 
-    impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
+            if let Some(p) = Affine::get_point_from_x_unchecked(x, greatest) {
+                return p;
+            }
         }
-        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
-        }
-        fn bls12_381_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
-        }
-        fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_mul_affine_g1(base, scalar)
-        }
-        fn bls12_381_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
-        }
-        fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
-            sp_io::elliptic_curves::bls12_381_mul_affine_g2(base, scalar)
-        }
+    }
+
+    #[test]
+    fn test_psi_2() {
+        let p = sample_unchecked();
+        let psi_p = p_power_endomorphism(&p);
+        let psi2_p_composed = p_power_endomorphism(&psi_p);
+        let psi2_p_optimised = double_p_power_endomorphism(&p.into());
+
+        assert_eq!(psi2_p_composed, psi2_p_optimised);
     }
 
     #[test]
@@ -354,13 +319,14 @@ mod test {
             0xbc69f08f2ee75b3,
         ];
 
-        let mut rng = ark_std::test_rng();
         const SAMPLES: usize = 10;
         for _ in 0..SAMPLES {
-            let p = Affine::<g2::Config<Host>>::rand(&mut rng);
-            let optimised = p.clear_cofactor().into_group();
-            let naive = g2::Config::<Host>::mul_affine(&p, h_eff);
-            assert_eq!(optimised, naive);
+            let p: Affine<g2::Config> = sample_unchecked();
+            let optimised = p.clear_cofactor();
+            let naive = g2::Config::mul_affine(&p, h_eff);
+            assert_eq!(optimised.into_group(), naive);
+            assert!(optimised.is_on_curve());
+            assert!(optimised.is_in_correct_subgroup_assuming_on_curve());
         }
     }
 }

@@ -95,7 +95,7 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         let cursor = Cursor::new(&result[..]);
         let f = <BW6<Self> as Pairing>::TargetField::deserialize_with_mode(
             cursor,
-            Compress::Yes,
+            Compress::No,
             Validate::No,
         )
         .unwrap();
@@ -110,7 +110,7 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 
         let cursor = Cursor::new(&result[..]);
         let result =
-            PairingOutput::<BW6<Self>>::deserialize_with_mode(cursor, Compress::Yes, Validate::No)
+            PairingOutput::<BW6<Self>>::deserialize_with_mode(cursor, Compress::No, Validate::No)
                 .unwrap();
 
         Some(result)

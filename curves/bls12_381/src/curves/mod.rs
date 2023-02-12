@@ -1,7 +1,7 @@
 use crate::*;
 use ark_ff::Fp12;
-use ark_serialize::{CanonicalDeserialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
+use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -55,14 +55,20 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                serialize_argument(elem)
+                let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
+                let mut cursor = Cursor::new(&mut serialized_result[..]);
+                elem.serialize_uncompressed(&mut cursor);
+                serialized_result
             })
             .collect();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                serialize_argument(elem)
+                let mut serialized_result = vec![0u8; elem.serialized_size(Compress::No)];
+                let mut cursor = Cursor::new(&mut serialized_result[..]);
+                elem.serialize_uncompressed(&mut cursor);
+                serialized_result
             })
             .collect();
 
@@ -70,7 +76,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let cursor = Cursor::new(&res[..]);
         let f: <Bls12<Self> as Pairing>::TargetField =
-            Fp12::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
+            Fp12::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
         MillerLoopOutput(f)
     }
 
@@ -83,12 +89,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let result = H::bls12_381_final_exponentiation(serialized_target);
 
         let cursor = Cursor::new(&result[..]);
-        let result = PairingOutput::<Bls12<Self>>::deserialize_with_mode(
-            cursor,
-            Compress::Yes,
-            Validate::No,
-        )
-        .unwrap();
+        let result =
+            PairingOutput::<Bls12<Self>>::deserialize_with_mode(cursor, Compress::No, Validate::No)
+                .unwrap();
 
         Some(result)
     }
