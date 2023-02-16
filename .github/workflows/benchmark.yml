@@ -27,6 +27,8 @@ jobs:
         with:
           ref: main
           path: ark-substrate
+      - name: go to home dir
+        run: cd $HOME
       - name: checkout arkworks examples for benchmarking
         uses: actions/checkout@master
         with:
