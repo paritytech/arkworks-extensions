@@ -34,7 +34,7 @@ jobs:
           ref: refs/heads/main
           path: /home/runner/work/substrate-arkworks-examples
       - name: ls
-        run: cd ${HOME} && ls -la
+        run: cd /home/runner/work && ls -la
       - name: Build benchmarks for main branch
         run: |
           cargo build --package node-template  \
