@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@master
         with:
           name: achimcc/substrate-arkworks-examples
-          ref: refs/heads/release
+          ref: refs/heads/main
       - name: ls
         run: ls -la
       - name: Build benchmarks for main branch
