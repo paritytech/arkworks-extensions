@@ -26,15 +26,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: main
-          path: ~/ark-substrate
+          path: $HOME/ark-substrate
       - name: checkout arkworks examples for benchmarking
         uses: actions/checkout@master
         with:
           name: achimcc/substrate-arkworks-examples
           ref: refs/heads/main
-          path: ~/substrate-arkworks-examples
+          path: $HOME/substrate-arkworks-examples
       - name: ls
-        run: cd ~ && ls -la
+        run: cd $HOME && ls -la
       - name: Build benchmarks for main branch
         run: |
           cargo build --package node-template  \
