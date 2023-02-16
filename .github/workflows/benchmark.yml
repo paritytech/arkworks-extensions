@@ -33,7 +33,7 @@ jobs:
           name: achimcc/substrate-arkworks-examples
           ref: refs/heads/main
       - name: ls
-        run: ls -la
+        run: cd .. && ls -la
       - name: Build benchmarks for main branch
         run: |
           cargo build --package node-template  \
