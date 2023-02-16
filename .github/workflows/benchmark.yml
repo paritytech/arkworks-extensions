@@ -25,7 +25,7 @@ jobs:
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
       - name: clone substrate-arkworks-examples for benchmarking
-        run: git clone https://github.com/paritytech/substrate-arkworks-examples
+        run: git clone https://github.com/achimcc/substrate-arkworks-examples
       - name: ls
         run: cd /home/runner/work && ls -la
       - name: Build benchmarks for main branch
