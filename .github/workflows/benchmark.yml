@@ -1,4 +1,4 @@
-name: Check Set-Up & Build
+name: Run benchmarks
 
 on:
   push:
