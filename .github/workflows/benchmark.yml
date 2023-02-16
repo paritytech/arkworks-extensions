@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:   
-  benchmark:
+  rustfmt:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Install Rust toolchain
@@ -91,4 +91,6 @@ jobs:
           alert-threshold: '130%'
           fail-on-alert: true
           fail-threshold: '150%'
-          github-token: ${{ secrets.GITHUB_TOKEN }}   
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+  
+         
