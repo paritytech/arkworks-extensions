@@ -10,7 +10,6 @@ on:
   workflow_dispatch:
 
 jobs:   
-
   rustfmt:
     runs-on: 'ubuntu-latest'
     steps:
