@@ -32,10 +32,9 @@ jobs:
           cargo build --package node-template  \
           --profile release \
           --features runtime-benchmarks
-      - name: check pwd
-        run: pwd
       - name: Run benchmarks for main branch
         run: |
+          cd substrate-arkworks-examples && \
           ./target/release/node-template benchmark pallet \
               --chain dev \
               --execution=wasm \
@@ -45,18 +44,22 @@ jobs:
               --steps 50 \
               --repeat 20 \
               --json \
-              > results.json
+              > ../results-main.json
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
+      - name: Get patched Cargo.toml
+        run: cp ark-substrate/benchmarking/Cargo.toml substrate-arkworks-examples/Cargo.toml
       - name: Use current PR branch for benchmarking
-        run: sed -i 's/replace-with-pr-branch/${{ github.ref_name }}/g' Cargo.toml
+        run: sed -i 's/replace-with-pr-branch/${{ github.ref_name }}/g' substrate-arkworks-examples/Cargo.toml
       - name: Build benchmarks for PR branch
         run: |
+         cd substrate-arkworks-examples && \
           cargo build --package node-template  \
           --profile release \
           --features runtime-benchmarks
       - name: Run benchmarks for PR branch
         run: |
+          cd substrate-arkworks-examples && \
           ./target/release/node-template benchmark pallet \
               --chain dev \
               --execution=wasm \
@@ -66,14 +69,14 @@ jobs:
               --steps 50 \
               --repeat 20 \
               --json \
-              > results.json
+              > ../results-pr.json
       - name: Compare benchmark result
         uses: openpgpjs/github-action-pull-request-benchmark@v1
         with:
           name: Time benchmark
-          tool: benchmarkjs
-          pr-benchmark-file-path: pr/examples/benchmarks.txt
-          base-benchmark-file-path: master/examples/benchmarks.txt
+          tool: cargo
+          pr-benchmark-file-path: results-main.json
+          base-benchmark-file-path: results-pr.json
           comment-on-alert: true
           alert-threshold: 130%
           fail-on-alert: true
