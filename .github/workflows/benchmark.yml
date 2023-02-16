@@ -22,19 +22,10 @@ jobs:
         uses: taiki-e/install-action@v1
         with:
           tool: protoc
-      - name: checkout repo
-        uses: actions/checkout@v2
-        with:
-          ref: main
-          path: ark-substrate
-      - name: go to home dir
-        run: cd /home/runner/work
-      - name: checkout arkworks examples for benchmarking
-        uses: actions/checkout@master
-        with:
-          name: achimcc/substrate-arkworks-examples
-          ref: refs/heads/main
-          path: substrate-arkworks-examples
+      - name: clone repo
+        run: git clone https://github.com/paritytech/ark-substrate
+      - name: clone substrate-arkworks-examples for benchmarking
+        run: git clone https://github.com/paritytech/substrate-arkworks-examples
       - name: ls
         run: cd /home/runner/work && ls -la
       - name: Build benchmarks for main branch
