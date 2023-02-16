@@ -81,6 +81,6 @@ jobs:
           alert-threshold: 130%
           fail-on-alert: true
           fail-threshold: 150%
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
   
          
