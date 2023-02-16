@@ -22,17 +22,18 @@ jobs:
         uses: taiki-e/install-action@v1
         with:
           tool: protoc
-      - name: clone repo
-        run: git clone https://github.com/paritytech/ark-substrate
       - name: clone substrate-arkworks-examples for benchmarking
         run: git clone https://github.com/achimcc/substrate-arkworks-examples
       - name: ls
         run: cd /home/runner/work && ls -la
       - name: Build benchmarks for main branch
         run: |
+          cd substrate-arkworks-examples && \
           cargo build --package node-template  \
           --profile release \
           --features runtime-benchmarks
+      - name: check pwd
+        run: pwd
       - name: Run benchmarks for main branch
         run: |
           ./target/release/node-template benchmark pallet \
@@ -45,6 +46,8 @@ jobs:
               --repeat 20 \
               --json \
               > results.json
+      - name: clone repo
+        run: git clone https://github.com/paritytech/ark-substrate
       - name: Use current PR branch for benchmarking
         run: sed -i 's/replace-with-pr-branch/${{ github.ref_name }}/g' Cargo.toml
       - name: Build benchmarks for PR branch
