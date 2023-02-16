@@ -1,12 +1,15 @@
-name: Run benchmarks and publish to Github
+name: Check Set-Up & Build
+
 on:
   push:
-    branches:
-      - "*"
+    branches:    
+      - '*'
   pull_request:
-    branches: null
-  workflow_dispatch: null
-jobs:
+    branches: 
+
+  workflow_dispatch:
+
+jobs:   
   benchmark:
     runs-on: ubuntu-latest
     steps:
