@@ -49,12 +49,6 @@ jobs:
         run: git clone https://github.com/paritytech/ark-substrate
       - name: Get patched Cargo.toml
         run: cp ark-substrate/benchmarking/Cargo.toml substrate-arkworks-examples/Cargo.toml
-      - name: Github ref
-        run: echo ${{ github.ref }}
-      - name: Github ref_name
-        run: echo ${{ github.ref_name }}
-      - name: gh show branch
-        run: git branch --show-current
       - name: Use current PR branch for benchmarking
         run: sed -i 's/replace-with-pr-branch/${{ github.ref }}/g' substrate-arkworks-examples/Cargo.toml
       - name: Get branch name
