@@ -43,8 +43,7 @@ jobs:
               --extrinsic "*" \
               --steps 50 \
               --repeat 20 \
-              --json \
-              > ../results-main.json
+              | tee results-main.txt
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
       - name: Get patched Cargo.toml
@@ -68,14 +67,13 @@ jobs:
               --extrinsic "*" \
               --steps 50 \
               --repeat 20 \
-              --json \
-              > ../results-pr.json
+              | tee results-pr.txt
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: cargo
-          output-file-path: ./results-main.json
-          external-data-json-path: ./results-pr.json
+          output-file-path: ./results-main.txt
+          external-data-json-path: ./results-pr.txt
           fail-on-alert: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           comment-on-alert: true
