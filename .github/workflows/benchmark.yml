@@ -43,7 +43,7 @@ jobs:
               --extrinsic "*" \
               --steps 50 \
               --repeat 20 \
-              | tee results-main.txt
+              | tee ../results-main.txt
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
       - name: Get patched Cargo.toml
@@ -67,7 +67,7 @@ jobs:
               --extrinsic "*" \
               --steps 50 \
               --repeat 20 \
-              | tee results-pr.txt
+              | tee ../results-pr.txt
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
         with:
