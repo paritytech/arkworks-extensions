@@ -73,15 +73,12 @@ jobs:
       - name: Store benchmark result
         uses: benchmark-action/github-action-benchmark@v1
         with:
-          tool: 'raw'
+          tool: cargo
           output-file-path: ./results-main.json
           external-data-json-path: ./results-pr.json
           fail-on-alert: true
-          # GitHub API token to make a commit comment
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          # Enable alert commit comment
           comment-on-alert: true
-          # Mention @rhysd in the commit comment
           alert-comment-cc-users: '@achimcc'
   
          
