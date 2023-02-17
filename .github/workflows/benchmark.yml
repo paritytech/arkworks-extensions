@@ -85,7 +85,7 @@ jobs:
         uses: openpgpjs/github-action-pull-request-benchmark@v1
         with:
           name: Time benchmark
-          tool: raw
+          tool: cargo
           pr-benchmark-file-path: results-main.json
           base-benchmark-file-path: results-pr.json
           comment-on-alert: true
