@@ -49,8 +49,25 @@ jobs:
         run: git clone https://github.com/paritytech/ark-substrate
       - name: Get patched Cargo.toml
         run: cp ark-substrate/benchmarking/Cargo.toml substrate-arkworks-examples/Cargo.toml
+      - name: Github ref
+        run: echo ${{ github.ref }}
+      - name: Github ref_name
+        run: echo ${{ github.ref_name }}
+      - name: gh show branch
+        run: git branch --show-current
       - name: Use current PR branch for benchmarking
-        run: sed -i 's,replace-with-pr-branch,${{ github.ref_name }},g' substrate-arkworks-examples/Cargo.toml
+        run: sed -i 's/replace-with-pr-branch/${{ github.ref }}/g' substrate-arkworks-examples/Cargo.toml
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6   
+      - name: Running on the default branch.
+        if: steps.branch-name.outputs.is_default == 'true'
+        run: |
+          echo "Running on default: ${{ steps.branch-name.outputs.current_branch }}"
+      - name: Running on a pull request branch.
+        if: steps.branch-name.outputs.is_default == 'false'
+        run: |
+          echo "Running on pr: ${{ steps.branch-name.outputs.current_branch }}"
       - name: Build benchmarks for PR branch
         run: |
          cd substrate-arkworks-examples && \
@@ -74,7 +91,7 @@ jobs:
         uses: openpgpjs/github-action-pull-request-benchmark@v1
         with:
           name: Time benchmark
-          tool: cargo
+          tool: raw
           pr-benchmark-file-path: results-main.json
           base-benchmark-file-path: results-pr.json
           comment-on-alert: true
