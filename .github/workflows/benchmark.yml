@@ -29,12 +29,7 @@ jobs:
       - name: Compute benchmarks for main branch
         run: |
           cd substrate-arkworks-examples && \
-          cargo +nightly bench  \
-          -p sp-ark-bls12-381 \
-          sp-ark-bls12-377 \
-          sp-ark-bw6-761 \
-          sp-ark-ed-on-bls12-377 \
-          sp-ark-ed-on-bls12-381 \
+          cargo +nightly bench pallet-template \
           | tee ../results-main.txt
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
@@ -56,12 +51,7 @@ jobs:
       - name: Compute benchmarks for pr branch
         run: |
           cd substrate-arkworks-examples && \
-          cargo +nightly bench  \
-          -p sp-ark-bls12-381 \
-          sp-ark-bls12-377 \
-          sp-ark-bw6-761 \
-          sp-ark-ed-on-bls12-377 \
-          sp-ark-ed-on-bls12-381 \
+          cargo +nightly bench pallet-template \
           | tee ../results-pr.txt
       - name: Compare benchmark result
         uses: openpgpjs/github-action-pull-request-benchmark@v1
