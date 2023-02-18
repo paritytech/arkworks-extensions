@@ -26,10 +26,15 @@ jobs:
         run: git clone https://github.com/achimcc/substrate-arkworks-examples
       - name: ls
         run: cd /home/runner/work && ls -la
-      - name: Build benchmarks for main branch
+      - name: Compute benchmarks for main branch
         run: |
           cd substrate-arkworks-examples && \
           cargo +nightly bench  \
+          -p sp-ark-bls12-381 \
+          sp-ark-bls12-377 \
+          sp-ark-bw6-761 \
+          sp-ark-ed-on-bls12-377 \
+          sp-ark-ed-on-bls12-381 \
           | tee ../results-main.txt
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
@@ -48,12 +53,16 @@ jobs:
         if: steps.branch-name.outputs.is_default == 'false'
         run: |
           echo "Running on pr: ${{ steps.branch-name.outputs.current_branch }}"
-      - name: Build benchmarks for PR branch
+      - name: Compute benchmarks for pr branch
         run: |
-         cd substrate-arkworks-examples && \
+          cd substrate-arkworks-examples && \
           cargo +nightly bench  \
-          | tee ../results-pr.txt 
-         
+          -p sp-ark-bls12-381 \
+          sp-ark-bls12-377 \
+          sp-ark-bw6-761 \
+          sp-ark-ed-on-bls12-377 \
+          sp-ark-ed-on-bls12-381 \
+          | tee ../results-pr.txt
       - name: Compare benchmark result
         uses: openpgpjs/github-action-pull-request-benchmark@v1
         with:
