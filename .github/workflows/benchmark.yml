@@ -36,7 +36,7 @@ jobs:
       - name: Get patched Cargo.toml
         run: cp ark-substrate/benchmarking/Cargo.toml substrate-arkworks-examples/Cargo.toml
       - name: Use current PR branch for benchmarking
-        run: sed -i 's,replace-with-pr-branch,${{ github.ref_name }},g' substrate-arkworks-examples/Cargo.toml
+        run: sed -i 's,replace-with-pr-branch,${{ github.ref }},g' substrate-arkworks-examples/Cargo.toml
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v6   
