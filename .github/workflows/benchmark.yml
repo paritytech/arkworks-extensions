@@ -63,13 +63,17 @@ jobs:
           sp-ark-ed-on-bls12-377 \
           sp-ark-ed-on-bls12-381 \
           | tee ../results-pr.txt
+      - name: cat main
+        run: cat results-main.txt
+      - name: cat pr
+        run: cat results-pr.txt
       - name: Compare benchmark result
         uses: openpgpjs/github-action-pull-request-benchmark@v1
         with:
           name: Time benchmark
           tool: cargo
-          pr-benchmark-file-path: results-main.txt
-          base-benchmark-file-path: results-pr.txt
+          pr-benchmark-file-path: ./results-main.txt
+          base-benchmark-file-path: ./results-pr.txt
           comment-on-alert: true
           alert-threshold: 130%
           fail-on-alert: true
