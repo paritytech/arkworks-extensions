@@ -53,6 +53,10 @@ jobs:
           cd substrate-arkworks-examples && \
           cargo +nightly bench pallet-template \
           | tee ../results-pr.txt
+      - name: cat pr
+        run: cat results-pr.txt
+      - name: cat main
+        run: cat results-main.txt
       - name: Compare benchmark result
         uses: openpgpjs/github-action-pull-request-benchmark@v1
         with:
