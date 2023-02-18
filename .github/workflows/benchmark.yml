@@ -68,8 +68,8 @@ jobs:
         with:
           name: Time benchmark
           tool: cargo
-          pr-benchmark-file-path: results-main.txt
-          base-benchmark-file-path: results-pr.txt
+          pr-benchmark-file-path: ./results-main.txt
+          base-benchmark-file-path: ./results-pr.txt
           comment-on-alert: true
           alert-threshold: 130%
           fail-on-alert: true
