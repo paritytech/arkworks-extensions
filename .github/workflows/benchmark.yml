@@ -57,10 +57,10 @@ jobs:
         run: |
           cd substrate-arkworks-examples && \
           cargo +nightly bench  \
-          -p sp-ark-bls12-381 \
-          sp-ark-bls12-377 \
-          sp-ark-bw6-761 \
-          sp-ark-ed-on-bls12-377 \
+          -p sp-ark-bls12-381, \
+          sp-ark-bls12-377, \
+          sp-ark-bw6-761, \
+          sp-ark-ed-on-bls12-377, \
           sp-ark-ed-on-bls12-381 \
           | tee ../results-pr.txt
       - name: cat main
