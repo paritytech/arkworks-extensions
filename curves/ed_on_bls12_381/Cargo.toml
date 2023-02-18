@@ -27,6 +27,9 @@ ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-featu
 ark-ec = { version = "0.4.0", default-features = false }
 sp-io =  { version = "7.0.0",  default-features = false }
 
+[profile.bench]
+lto = true
+
 [features]
 default = [ "std" ]
 std = [
