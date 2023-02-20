@@ -39,7 +39,7 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v6  
       - name: Use current PR branch for benchmarking
-        run: sed -i 's,replace-with-pr-branch,{{ steps.branch-name.outputs.current_branch }},g' substrate-arkworks-examples/Cargo.toml 
+        run: sed -i 's,replace-with-pr-branch,${{ steps.branch-name.outputs.current_branch }},g' substrate-arkworks-examples/Cargo.toml 
       - name: Compute benchmarks for pr branch
         run: |
           cd substrate-arkworks-examples && \
