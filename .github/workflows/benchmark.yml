@@ -35,19 +35,11 @@ jobs:
         run: git clone https://github.com/paritytech/ark-substrate
       - name: Get patched Cargo.toml
         run: cp ark-substrate/benchmarking/Cargo.toml substrate-arkworks-examples/Cargo.toml
-      - name: Use current PR branch for benchmarking
-        run: sed -i 's,replace-with-pr-branch,${{ github.ref }},g' substrate-arkworks-examples/Cargo.toml
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v6   
-      - name: Running on the default branch.
-        if: steps.branch-name.outputs.is_default == 'true'
-        run: |
-          echo "Running on default: ${{ steps.branch-name.outputs.current_branch }}"
-      - name: Running on a pull request branch.
-        if: steps.branch-name.outputs.is_default == 'false'
-        run: |
-          echo "Running on pr: ${{ steps.branch-name.outputs.current_branch }}"
+        uses: tj-actions/branch-names@v6  
+      - name: Use current PR branch for benchmarking
+        run: sed -i 's,replace-with-pr-branch,{{ steps.branch-name.outputs.current_branch }},g' substrate-arkworks-examples/Cargo.toml 
       - name: Compute benchmarks for pr branch
         run: |
           cd substrate-arkworks-examples && \
@@ -68,8 +60,4 @@ jobs:
           alert-threshold: 130%
           fail-on-alert: true
           fail-threshold: 150%
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-  
-         
-  
-         
+          github-token: ${{ secrets.GITHUB_TOKEN }}         
