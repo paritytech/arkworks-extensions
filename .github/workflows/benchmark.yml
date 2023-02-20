@@ -29,7 +29,7 @@ jobs:
       - name: Compute benchmarks for main branch
         run: |
           cd substrate-arkworks-examples && \
-          cargo +nightly bench pallet-template \
+          cargo +nightly bench \
           | tee ../results-main.txt
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
@@ -43,7 +43,7 @@ jobs:
       - name: Compute benchmarks for pr branch
         run: |
           cd substrate-arkworks-examples && \
-          cargo +nightly bench pallet-template \
+          cargo +nightly bench \
           | tee ../results-pr.txt
       - name: cat pr
         run: cat results-pr.txt
