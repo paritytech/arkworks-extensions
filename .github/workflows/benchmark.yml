@@ -30,6 +30,7 @@ jobs:
         run: |
           cd substrate-arkworks-examples && \
           cargo +nightly bench --bench arkworks \
+          --format=json -Z unstable-options \
           | tee ../results-main.txt
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
@@ -44,6 +45,7 @@ jobs:
         run: |
           cd substrate-arkworks-examples && \
           cargo +nightly bench --bench arkworks \
+          --format=json -Z unstable-options \
           | tee ../results-pr.txt
       - name: cat pr
         run: cat results-pr.txt
@@ -53,7 +55,7 @@ jobs:
         uses: openpgpjs/github-action-pull-request-benchmark@v1
         with:
           name: Time benchmark
-          tool: cargo
+          tool: raw
           pr-benchmark-file-path: ./results-main.txt
           base-benchmark-file-path: ./results-pr.txt
           comment-on-alert: true
