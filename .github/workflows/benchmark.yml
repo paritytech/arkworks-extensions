@@ -30,7 +30,7 @@ jobs:
         run: |
           cd substrate-arkworks-examples && \
           cargo +nightly bench pallet-template \
-          | tee ../results-main.txt
+          -- --json > ../results-main.json
       - name: clone repo
         run: git clone https://github.com/paritytech/ark-substrate
       - name: Get patched Cargo.toml
@@ -44,8 +44,7 @@ jobs:
         run: |
           cd substrate-arkworks-examples && \
           cargo +nightly bench pallet-template \
-          -- --json \
-          | tee ../results-pr.txt
+          -- --json > ../results-pr.json
       - name: cat pr
         run: cat results-pr.txt
       - name: cat main
@@ -54,7 +53,7 @@ jobs:
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: 'cargo'
-          output-file-path: results-main.txt
+          output-file-path: results-main.json
           external-data-json-path: results-pr.json
           fail-on-alert: true
           # GitHub API token to make a commit comment
