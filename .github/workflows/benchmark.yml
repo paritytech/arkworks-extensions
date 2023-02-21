@@ -44,23 +44,25 @@ jobs:
         run: |
           cd substrate-arkworks-examples && \
           cargo +nightly bench pallet-template \
+          -- --json \
           | tee ../results-pr.txt
       - name: cat pr
         run: cat results-pr.txt
       - name: cat main
         run: cat results-main.txt
-      - name: Compare benchmark result
-        uses: openpgpjs/github-action-pull-request-benchmark@v1
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
         with:
-          name: Time benchmark
-          tool: raw
-          pr-benchmark-file-path: ./results-main.txt
-          base-benchmark-file-path: ./results-pr.txt
-          comment-on-alert: true
-          alert-threshold: 130%
+          tool: 'cargo'
+          output-file-path: result-main.txt
+          external-data-json-path: results-pr.json
           fail-on-alert: true
-          fail-threshold: 150%
+          # GitHub API token to make a commit comment
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Enable alert commit comment
+          comment-on-alert: true
+          # Mention @rhysd in the commit comment
+          alert-comment-cc-users: '@achimcc'
   
          
   
