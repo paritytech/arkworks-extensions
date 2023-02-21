@@ -54,7 +54,7 @@ jobs:
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: 'cargo'
-          output-file-path: result-main.txt
+          output-file-path: results-main.txt
           external-data-json-path: results-pr.json
           fail-on-alert: true
           # GitHub API token to make a commit comment
