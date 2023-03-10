@@ -174,7 +174,9 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_sw_msm(bases, scalars);
 
-        let result = deserialize_result::<sp_ark_models::short_weierstrass::Projective<JubjubConfig<H>>>(&result);
+        let result = deserialize_result::<
+            sp_ark_models::short_weierstrass::Projective<JubjubConfig<H>>,
+        >(&result);
         Ok(result)
     }
 
