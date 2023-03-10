@@ -1,6 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
-use ark_serialize::{Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_std::{marker::PhantomData, vec::Vec};
 use core::ops::Neg;
 use sp_ark_models::{
     bls12,
@@ -10,7 +9,7 @@ use sp_ark_models::{
     },
     CurveConfig,
 };
-use sp_ark_utils::serialize_argument;
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
@@ -59,10 +58,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_msm_g1(bases, scalars);
 
-        let cursor = Cursor::new(&result[..]);
-        let result =
-            <Config<H> as SWCurveConfig>::deserialize_with_mode(cursor, Compress::No, Validate::No)
-                .unwrap();
+        let result = deserialize_result::<Affine<Self>>(&result);
         Ok(result.into())
     }
 
@@ -72,10 +68,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_mul_projective_g1(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-        let result =
-            <Config<H> as SWCurveConfig>::deserialize_with_mode(cursor, Compress::No, Validate::No)
-                .unwrap();
+        let result = deserialize_result::<Affine<Self>>(&result);
         result.into()
     }
 
@@ -86,10 +79,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_mul_affine_g1(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-        let result =
-            <Config<H> as SWCurveConfig>::deserialize_with_mode(cursor, Compress::No, Validate::No)
-                .unwrap();
+        let result = deserialize_result::<Affine<Self>>(&result);
         result.into()
     }
 }

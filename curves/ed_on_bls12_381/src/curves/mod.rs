@@ -1,12 +1,11 @@
 use ark_ff::MontFp;
-use ark_serialize::{CanonicalDeserialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     short_weierstrass::{self, SWCurveConfig},
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-use sp_ark_utils::serialize_argument;
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use crate::{Fq, Fr};
 
@@ -112,13 +111,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_te_msm(bases, scalars);
 
-        let cursor = Cursor::new(&result[..]);
-        let result = <JubjubConfig<H> as TECurveConfig>::deserialize_with_mode(
-            cursor,
-            Compress::No,
-            Validate::No,
-        )
-        .unwrap();
+        let result = deserialize_result::<Affine<JubjubConfig<H>>>(&result);
         Ok(result.into())
     }
 
@@ -128,9 +121,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_te_mul_projective(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
+        deserialize_result::<Projective<Self>>(&result)
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -139,9 +130,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_te_mul_affine(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
+        deserialize_result::<Projective<Self>>(&result)
     }
 }
 
@@ -185,9 +174,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_sw_msm(bases, scalars);
 
-        let cursor = Cursor::new(&result[..]);
-        let result =
-            SWProjective::<H>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = deserialize_result::<sp_ark_models::short_weierstrass::Projective<JubjubConfig<H>>>(&result);
         Ok(result)
     }
 
@@ -197,9 +184,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_sw_mul_projective(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-
-        SWProjective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
+        deserialize_result::<SWProjective<H>>(&result)
     }
 
     fn mul_affine(base: &SWAffine<H>, scalar: &[u64]) -> SWProjective<H> {
@@ -208,9 +193,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_sw_mul_affine(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-
-        SWProjective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
+        deserialize_result::<SWProjective<H>>(&result)
     }
 }
 

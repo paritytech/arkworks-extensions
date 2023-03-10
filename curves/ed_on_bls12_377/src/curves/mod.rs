@@ -1,11 +1,10 @@
 use ark_ff::MontFp;
-use ark_serialize::{CanonicalDeserialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-use sp_ark_utils::serialize_argument;
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use crate::{fq::Fq, fr::Fr};
 
@@ -68,8 +67,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let result = H::ed_on_bls12_377_msm(bases, scalars);
 
-        let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = deserialize_result::<Affine<Self>>(&result);
         Ok(result.into())
     }
 
@@ -79,9 +77,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let result = H::ed_on_bls12_377_mul_projective(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
+        deserialize_result::<Projective<Self>>(&result)
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -90,9 +86,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let result = H::ed_on_bls12_377_mul_affine(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-
-        Projective::<Self>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
+        deserialize_result::<Projective<Self>>(&result)
     }
 }
 

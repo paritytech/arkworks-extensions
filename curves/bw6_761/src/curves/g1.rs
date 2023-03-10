@@ -1,12 +1,11 @@
 use ark_ff::{Field, MontFp};
-use ark_serialize::{Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     bw6,
     short_weierstrass::{Affine, Projective},
     {short_weierstrass::SWCurveConfig, CurveConfig},
 };
-use sp_ark_utils::serialize_argument;
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use crate::{Fq, Fr, HostFunctions};
 
@@ -65,8 +64,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bw6_761_msm_g1(bases, scalars);
 
-        let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = deserialize_result::<Affine<Self>>(&result);
         Ok(result.into())
     }
 
@@ -76,8 +74,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bw6_761_mul_projective_g1(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = deserialize_result::<Affine<Self>>(&result);
         result.into()
     }
 
@@ -87,8 +84,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bw6_761_mul_affine_g1(serialized_base, serialized_scalar);
 
-        let cursor = Cursor::new(&result[..]);
-        let result = Self::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+        let result = deserialize_result::<Affine<Self>>(&result);
         result.into()
     }
 }

@@ -1,12 +1,11 @@
 use crate::{Fq, Fq3Config, Fq6Config};
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
-use ark_serialize::{CanonicalDeserialize, Compress, Validate};
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use sp_ark_utils::serialize_argument;
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 pub mod g1;
 pub mod g2;
@@ -92,14 +91,8 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 
         let result = H::bw6_761_multi_miller_loop(a, b);
 
-        let cursor = Cursor::new(&result[..]);
-        let f = <BW6<Self> as Pairing>::TargetField::deserialize_with_mode(
-            cursor,
-            Compress::No,
-            Validate::No,
-        )
-        .unwrap();
-        MillerLoopOutput(f)
+        let result = deserialize_result::<<BW6<Self> as Pairing>::TargetField>(&result);
+        MillerLoopOutput(result)
     }
 
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
@@ -108,11 +101,7 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 
         let result = H::bw6_761_final_exponentiation(serialized_target);
 
-        let cursor = Cursor::new(&result[..]);
-        let result =
-            PairingOutput::<BW6<Self>>::deserialize_with_mode(cursor, Compress::No, Validate::No)
-                .unwrap();
-
+        let result = deserialize_result::<PairingOutput<BW6<Self>>>(&result);
         Some(result)
     }
 }
