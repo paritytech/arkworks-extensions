@@ -92,10 +92,9 @@ impl<H: HostFunctions> BW6Config for Config<H> {
     }
 
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
-        let target = f.0;
-        let serialized_target = serialize_argument(target);
+        let target = serialize_argument(f.0);
 
-        let result = H::bw6_761_final_exponentiation(serialized_target);
+        let result = H::bw6_761_final_exponentiation(target);
 
         let result = deserialize_result::<PairingOutput<BW6<Self>>>(&result);
         Some(result)

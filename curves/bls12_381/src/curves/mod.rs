@@ -70,8 +70,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     fn final_exponentiation(
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
-        let target = f.0;
-        let serialized_target = serialize_argument(target);
+        let target = serialize_argument(f.0);
 
         let result = H::bls12_381_final_exponentiation(serialized_target);
 
