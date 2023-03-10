@@ -154,26 +154,6 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let result = deserialize_result::<Affine<Self>>(&result);
         Ok(result.into())
     }
-
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::bls12_381_mul_projective_g1(serialized_base, serialized_scalar);
-
-        let result = deserialize_result::<Affine<Self>>(&result);
-        result.into()
-    }
-
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::bls12_381_mul_affine_g1(serialized_base, serialized_scalar);
-
-        let result = deserialize_result::<Affine<Self>>(&result);
-        result.into()
-    }
 }
 
 fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) -> Fr {

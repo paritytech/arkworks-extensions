@@ -18,8 +18,6 @@ pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 pub struct EdwardsConfig<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn ed_on_bls12_377_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
     fn ed_on_bls12_377_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
 }
 
@@ -69,24 +67,6 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let result = deserialize_result::<Affine<Self>>(&result);
         Ok(result.into())
-    }
-
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::ed_on_bls12_377_mul_projective(serialized_base, serialized_scalar);
-
-        deserialize_result::<Projective<Self>>(&result)
-    }
-
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::ed_on_bls12_377_mul_affine(serialized_base, serialized_scalar);
-
-        deserialize_result::<Projective<Self>>(&result)
     }
 }
 
