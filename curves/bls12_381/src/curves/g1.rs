@@ -6,7 +6,7 @@ use sp_ark_models::{
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     AffineRepr, CurveConfig, Group,
 };
-use sp_ark_utils::{serialize_argument, deserialize_result};
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
