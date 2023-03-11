@@ -72,7 +72,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     ) -> Option<PairingOutput<Bls12<Self>>> {
         let target = serialize_argument(f.0);
 
-        let result = H::bls12_381_final_exponentiation(serialized_target);
+        let result = H::bls12_381_final_exponentiation(target);
 
         let result = deserialize_result::<PairingOutput<Bls12<Self>>>(&result);
         Some(result)
