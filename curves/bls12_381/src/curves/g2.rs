@@ -123,7 +123,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         if validate == ark_serialize::Validate::Yes && !p.is_in_correct_subgroup_assuming_on_curve()
         {
-            return Err(SerializationError::InvalidData);
+            return Err(ark_serialize::SerializationError::InvalidData);
         }
         Ok(p)
     }
@@ -132,7 +132,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         item: &Affine<Self>,
         mut writer: W,
         compress: ark_serialize::Compress,
-    ) -> Result<(), SerializationError> {
+    ) -> Result<(), ark_serialize::SerializationError> {
         let encoding = EncodingFlags {
             is_compressed: compress == ark_serialize::Compress::Yes,
             is_infinity: item.is_zero(),
@@ -172,7 +172,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn serialized_size(compress: ark_serialize::Compress) -> usize {
-        if compress == Compress::Yes {
+        if compress == ark_serialize::Compress::Yes {
             G2_SERIALIZED_SIZE
         } else {
             2 * G2_SERIALIZED_SIZE
