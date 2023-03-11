@@ -60,7 +60,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_377_multi_miller_loop(a, b);
 
-        let f = deserialize_result::<Fp12<Fp12Config>>(&result);
+        let f = deserialize_result::<Fp12<Self::Fp12Config>>(&result);
         MillerLoopOutput(f)
     }
 
