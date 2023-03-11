@@ -58,7 +58,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_msm_g1(bases, scalars);
 
-        let result = deserialize_result::<G1Affine>(&result);
+        let result = deserialize_result::<SWAffine<Self>>(&result);
         Ok(result.into())
     }
 }
