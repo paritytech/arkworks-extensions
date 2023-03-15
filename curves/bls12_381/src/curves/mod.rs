@@ -1,4 +1,5 @@
 use crate::*;
+use ark_ec::pairing::MillerLoopOutput;
 use ark_ff::Fp12;
 use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
 use sp_ark_models::{
@@ -6,6 +7,7 @@ use sp_ark_models::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
 use sp_ark_utils::{deserialize_result, serialize_argument};
+use sp_io::arkworks::PairingError;
 
 pub mod g1;
 pub mod g2;
@@ -63,7 +65,8 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_381_multi_miller_loop(a, b);
 
-        let result = deserialize_result::<Fp12<Self::Fp12Config>>(&result);
+        let result =
+            deserialize_result::<Result<MillerLoopOutput<Bls12<Self>>, PairingError>>(&result);
         MillerLoopOutput(result)
     }
 
@@ -71,11 +74,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
         let target = serialize_argument(f.0);
-
         let result = H::bls12_381_final_exponentiation(target);
 
-        let result = deserialize_result::<PairingOutput<Bls12<Self>>>(&result);
-        Some(result)
+        deserialize_result::<Result<PairingOutput<Bls12<Self>>, PairingError>>(&result)
     }
 }
 
