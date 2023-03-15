@@ -7,7 +7,7 @@ use sp_ark_models::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
 use sp_ark_utils::{deserialize_result, serialize_argument};
-use sp_io::arkworks::PairingError;
+use sp_arkworks::PairingError;
 
 pub mod g1;
 pub mod g2;
