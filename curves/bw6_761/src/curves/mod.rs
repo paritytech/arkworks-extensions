@@ -1,5 +1,4 @@
 use crate::{Fq, Fq3Config, Fq6Config};
-use ark_ec::pairing::MillerLoopOutput;
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
@@ -7,7 +6,6 @@ use sp_ark_models::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
 use sp_ark_utils::{deserialize_result, serialize_argument};
-use sp_io::arkworks::PairingError;
 
 pub mod g1;
 pub mod g2;
@@ -89,7 +87,8 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 
         let result = H::bw6_761_multi_miller_loop(a, b);
 
-        deserialize_result::<Result<PairingOutput<BW6<Self>>, PairingError>>(&result)
+        let result = deserialize_result::<<BW6<Self> as Pairing>::TargetField>(&result);
+        MillerLoopOutput(result)
     }
 
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
@@ -97,7 +96,8 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 
         let result = H::bw6_761_final_exponentiation(target);
 
-        deserialize_result::<Result<PairingOutput<BW6<Self>>, PairingError>>(&result)
+        let result = deserialize_result::<PairingOutput<BW6<Self>>>(&result);
+        Some(result)
     }
 }
 
