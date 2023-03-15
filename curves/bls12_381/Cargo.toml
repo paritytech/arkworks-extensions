@@ -21,7 +21,7 @@ ark-serialize = { version = "0.4.0", default-features = false }
 ark-bls12-381 = { version = "0.4.0",features = [ "curve" ], default-features = false }
 sp-ark-models = { path = "../../models", default-features = false }
 sp-ark-utils = { path = "../utils", default-features = false  }
-sp-arkworks =  { version = "0.4.0",  default-features = false }
+sp-arkworks =  { version = "7.0.0",  default-features = false }
 
 [dev-dependencies] 
 sp-io = { version = "7.0.0", default-features= false }
