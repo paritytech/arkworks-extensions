@@ -59,8 +59,8 @@ pub type EdwardsConfig<H> = JubjubConfig<H>;
 pub type SWConfig<H> = JubjubConfig<H>;
 
 pub trait HostFunctions: 'static {
-    fn ed_on_bls12_381_te_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
-    fn ed_on_bls12_381_sw_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
+    fn ed_on_bls12_381_te_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Vec<u8>;
+    fn ed_on_bls12_381_sw_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Vec<u8>;
 }
 
 impl<H: HostFunctions> CurveConfig for JubjubConfig<H> {
@@ -99,11 +99,11 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
+        let scalars: Vec<u8> = scalars
             .iter()
             .map(|elem| serialize_argument(*elem))
-            .collect();
+            .join();
 
         let result = H::ed_on_bls12_381_te_msm(bases, scalars);
 
@@ -144,11 +144,11 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         bases: &[SWAffine<H>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<SWProjective<H>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
+        let scalars: Vec<u8> = scalars
             .iter()
             .map(|elem| serialize_argument(*elem))
-            .collect();
+            .join();
 
         let result = H::ed_on_bls12_381_sw_msm(bases, scalars);
 

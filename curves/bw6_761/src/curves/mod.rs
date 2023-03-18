@@ -23,11 +23,11 @@ pub use self::{
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn bw6_761_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>)
+    fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>)
         -> Result<Vec<u8>, PairingError>;
     fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError>;
-    fn bw6_761_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
-    fn bw6_761_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
+    fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Vec<u8>;
+    fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Vec<u8>;
 }
 
 impl<H: HostFunctions> BW6Config for Config<H> {
@@ -72,20 +72,20 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<BW6<Self>> {
-        let a: Vec<Vec<u8>> = a
+        let a: Vec<u8> = a
             .into_iter()
             .map(|elem| {
                 let elem: <BW6<Self> as Pairing>::G1Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .collect();
+            .join();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <BW6<Self> as Pairing>::G2Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .collect();
+            .join();
 
         let result = H::bw6_761_multi_miller_loop(a, b).unwrap();
 

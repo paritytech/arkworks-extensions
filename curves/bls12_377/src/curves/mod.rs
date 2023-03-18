@@ -23,12 +23,12 @@ pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
     fn bls12_377_multi_miller_loop(
-        a: Vec<Vec<u8>>,
-        b: Vec<Vec<u8>>,
+        a: Vec<u8>,
+        b: Vec<u8>,
     ) -> Result<Vec<u8>, PairingError>;
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError>;
-    fn bls12_377_msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
-    fn bls12_377_msm_g2(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
+    fn bls12_377_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Vec<u8>;
+    fn bls12_377_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Vec<u8>;
 }
 
 impl<H: HostFunctions> Bls12Config for Config<H> {
@@ -47,20 +47,20 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>> {
-        let a: Vec<Vec<u8>> = a
+        let a: Vec<u8> = a
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .collect();
+            .join();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .collect();
+            .join();
 
         let result = H::bls12_377_multi_miller_loop(a, b).unwrap();
 

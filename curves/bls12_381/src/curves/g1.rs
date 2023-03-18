@@ -143,11 +143,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
+        let scalars: Vec<u8> = scalars
             .iter()
             .map(|elem| serialize_argument(*elem))
-            .collect();
+            .join();
 
         let result = H::bls12_381_msm_g1(bases, scalars);
 
@@ -191,13 +191,13 @@ mod test {
     pub struct Host {}
 
     impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
+        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Vec<u8> {
             sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
         }
         fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Vec<u8> {
             sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
         }
-        fn bls12_381_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
+        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Vec<u8> {
             sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
         }
         fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
@@ -206,7 +206,7 @@ mod test {
         fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
             sp_io::elliptic_curves::bls12_381_mul_affine_g1(base, scalar)
         }
-        fn bls12_381_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
+        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Vec<u8> {
             sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
         }
         fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {

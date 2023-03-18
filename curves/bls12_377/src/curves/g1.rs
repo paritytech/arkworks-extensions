@@ -50,11 +50,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[SWAffine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
+        let scalars: Vec<u8> = scalars
             .iter()
             .map(|elem| serialize_argument(*elem))
-            .collect();
+            .join();
 
         let result = H::bls12_377_msm_g1(bases, scalars);
 
