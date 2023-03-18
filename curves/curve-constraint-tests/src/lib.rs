@@ -219,7 +219,6 @@ pub mod curves {
     use ark_ff::{BitIteratorLE, Field, One, PrimeField};
     use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
     use ark_std::{test_rng, vec, vec::Vec, UniformRand};
-    use itertools::Itertools;
     use sp_ark_models::{
         short_weierstrass::Projective as SWProjective, twisted_edwards::Projective as TEProjective,
         CurveGroup, Group,
@@ -339,7 +338,7 @@ pub mod curves {
                 let native_result = a_native.mul_bigint(scalar);
                 let native_result = native_result.into_affine();
 
-                let scalar_bits: Vec<bool> = BitIteratorLE::new(&scalar).join();
+                let scalar_bits: Vec<bool> = BitIteratorLE::new(&scalar).collect();
                 input =
                     Vec::new_witness(ark_relations::ns!(cs, "bits"), || Ok(scalar_bits)).unwrap();
                 let result = a
