@@ -1,5 +1,6 @@
 use ark_ff::MontFp;
 use ark_std::{marker::PhantomData, vec::Vec};
+use itertools::Itertools;
 use sp_ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
@@ -58,10 +59,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
-        let scalars: Vec<u8> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .join();
+        let scalars: Vec<u8> = scalars.iter().map(|elem| serialize_argument(*elem)).join();
 
         let result = H::ed_on_bls12_377_msm(bases, scalars);
 

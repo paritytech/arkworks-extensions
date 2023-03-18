@@ -1,6 +1,7 @@
 use crate::{Fq, Fq3Config, Fq6Config};
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
 use ark_std::{marker::PhantomData, vec::Vec};
+use itertools::Itertools;
 use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -23,8 +24,7 @@ pub use self::{
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>)
-        -> Result<Vec<u8>, PairingError>;
+    fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, PairingError>;
     fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError>;
     fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Vec<u8>;
     fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Vec<u8>;
