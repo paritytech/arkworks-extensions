@@ -219,6 +219,7 @@ pub mod curves {
     use ark_ff::{BitIteratorLE, Field, One, PrimeField};
     use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
     use ark_std::{test_rng, vec, vec::Vec, UniformRand};
+    use itertools::Itertools;
     use sp_ark_models::{
         short_weierstrass::Projective as SWProjective, twisted_edwards::Projective as TEProjective,
         CurveGroup, Group,
