@@ -13,8 +13,9 @@ publish = true
 
 [dependencies]
 ark-std = { version = "0.4.0", default-features = false }
+ark-ec = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.0", default-features = false }
 
 [features]
 default = [ "std" ]
-std = [ "ark-std/std", "ark-serialize/std" ]
+std = [ "ark-std/std", "ark-serialize/std", "ark-ec/std" ]

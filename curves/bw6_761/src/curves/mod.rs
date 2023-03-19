@@ -1,11 +1,12 @@
 use crate::{Fq, Fq3Config, Fq6Config};
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
+use ark_serialize::CanonicalSerialize;
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
+use sp_ark_utils::{deserialize_result, serialize_argument, serialize_into_iter_to_vec};
 use sp_arkworks::PairingError;
 
 pub mod g1;
@@ -71,20 +72,10 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<BW6<Self>> {
-        let a: Vec<u8> = a
-            .into_iter()
-            .flat_map(|elem| {
-                let elem: <BW6<Self> as Pairing>::G1Prepared = elem.into();
-                serialize_argument(elem)
-            })
-            .collect();
-        let b = b
-            .into_iter()
-            .flat_map(|elem| {
-                let elem: <BW6<Self> as Pairing>::G2Prepared = elem.into();
-                serialize_argument(elem)
-            })
-            .collect();
+        let a_size = G1Prepared::<Self>::default().uncompressed_size();
+        let a: Vec<u8> = serialize_into_iter_to_vec::<G1Prepared<Self>>(a, a_size).unwrap();
+        let b_size = G2Prepared::<Self>::default().uncompressed_size();
+        let b: Vec<u8> = serialize_into_iter_to_vec::<G2Prepared<Self>>(b, b_size).unwrap();
 
         let result = H::bw6_761_multi_miller_loop(a, b).unwrap();
 
