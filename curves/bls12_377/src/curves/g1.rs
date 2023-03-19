@@ -53,7 +53,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<u8> = scalars
             .iter()
-            .map(|elem| serialize_argument(*elem))
+            .flat_map(|elem| serialize_argument(*elem))
             .collect();
 
         let result = H::bls12_377_msm_g1(bases, scalars);

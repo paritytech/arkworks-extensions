@@ -72,15 +72,15 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<BW6<Self>> {
         let a: Vec<u8> = a
-            .into_iter()
-            .map(|elem| {
+            .iter()
+            .flat_map(|elem| {
                 let elem: <BW6<Self> as Pairing>::G1Prepared = elem.into();
                 serialize_argument(elem)
             })
             .collect();
         let b = b
-            .into_iter()
-            .map(|elem| {
+            .iter()
+            .flat_map(|elem| {
                 let elem: <BW6<Self> as Pairing>::G2Prepared = elem.into();
                 serialize_argument(elem)
             })
