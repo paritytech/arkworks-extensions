@@ -4,7 +4,6 @@ use ark_algebra_test_templates::*;
 use ark_std::vec::Vec;
 use sp_arkworks::PairingError;
 
-#[derive(PartialEq, Eq)]
 pub struct Host {}
 
 impl HostFunctions for Host {
