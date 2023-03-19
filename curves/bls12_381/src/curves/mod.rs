@@ -1,7 +1,6 @@
 use crate::*;
 use ark_ff::Fp12;
 use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
-use itertools::Itertools;
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -27,7 +26,10 @@ pub use self::{
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, PairingError>;
+    fn bls12_381_multi_miller_loop(
+        a: Vec<u8>,
+        b: Vec<u8>,
+    ) -> Result<Vec<u8>, PairingError>;
     fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError>;
     fn bls12_381_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Vec<u8>;
     fn bls12_381_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Vec<u8>;
