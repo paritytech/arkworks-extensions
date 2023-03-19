@@ -1,6 +1,7 @@
 use crate::{Fq, Fq3Config, Fq6Config};
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
 use ark_std::{marker::PhantomData, vec::Vec};
+use itertools::Itertools;
 use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -77,14 +78,14 @@ impl<H: HostFunctions> BW6Config for Config<H> {
                 let elem: <BW6<Self> as Pairing>::G1Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .collect();
+            .join();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <BW6<Self> as Pairing>::G2Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .collect();
+            .join();
 
         let result = H::bw6_761_multi_miller_loop(a, b).unwrap();
 

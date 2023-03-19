@@ -1,5 +1,6 @@
 use ark_ff::{Field, MontFp, PrimeField, Zero};
 use ark_std::{marker::PhantomData, ops::Neg, vec::Vec, One};
+use itertools::Itertools;
 use sp_ark_models::{
     bls12,
     bls12::Bls12Config,
@@ -143,11 +144,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<u8> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
+        let scalars: Vec<u8> = scalars.iter().map(|elem| serialize_argument(*elem)).join();
 
         let result = H::bls12_381_msm_g1(bases, scalars);
 
