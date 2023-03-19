@@ -56,10 +56,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<u8> = bases
-            .iter()
-            .flat_map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<u8> = scalars
             .iter()
             .flat_map(|elem| serialize_argument(*elem))
