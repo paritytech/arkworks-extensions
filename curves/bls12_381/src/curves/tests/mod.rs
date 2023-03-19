@@ -11,6 +11,7 @@ use crate::{
     G2Affine as G2Affine_Host, G2Projective as G2Projective_Host, HostFunctions,
 };
 
+#[derive(PartialEq, Eq)]
 pub struct Host {}
 
 impl HostFunctions for Host {
