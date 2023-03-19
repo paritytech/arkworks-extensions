@@ -1,11 +1,13 @@
-use ark_ff::{Field, MontFp};
+use ark_ff::{Field, MontFp, Zero};
+use ark_serialize::CanonicalSerialize;
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     bw6,
     short_weierstrass::{Affine, Projective},
+    AffineRepr,
     {short_weierstrass::SWCurveConfig, CurveConfig},
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
+use sp_ark_utils::{deserialize_result, serialize_to_vec};
 
 use crate::{Fq, Fr, HostFunctions};
 
@@ -48,7 +50,6 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     const GENERATOR: G1Affine<H> = G1Affine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
     #[inline(always)]
     fn mul_by_a(_elem: Self::BaseField) -> Self::BaseField {
-        use ark_ff::Zero;
         Self::BaseField::zero()
     }
 
@@ -56,14 +57,13 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<u8> = bases
-            .iter()
-            .flat_map(|elem| serialize_argument(*elem))
-            .collect();
-        let scalars: Vec<u8> = scalars
-            .iter()
-            .flat_map(|elem| serialize_argument(*elem))
-            .collect();
+        let base_size = <Affine<Self>>::generator().uncompressed_size();
+        let bases: Vec<u8> = serialize_to_vec::<Affine<Self>>(bases.to_vec(), base_size)
+            .map_err(|_| usize::zero())?;
+        let scalar_size = <Self as CurveConfig>::ScalarField::zero().uncompressed_size();
+        let scalars: Vec<u8> =
+            serialize_to_vec::<<Self as CurveConfig>::ScalarField>(scalars.to_vec(), scalar_size)
+                .map_err(|_| usize::zero())?;
 
         let result = H::bw6_761_msm_g1(bases, scalars);
 

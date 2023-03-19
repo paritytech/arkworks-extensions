@@ -5,7 +5,7 @@ use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
+use sp_ark_utils::{deserialize_into_iter_to_vec, deserialize_result, serialize_argument};
 use sp_arkworks::PairingError;
 
 pub mod g1;
@@ -44,21 +44,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>> {
-        let a: Vec<u8> = a
-            .iter()
-            .flat_map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                serialize_argument(elem)
-            })
-            .collect();
-        let b = b
-            .iter()
-            .flat_map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                serialize_argument(elem)
-            })
-            .collect();
-
+        let a_size = G1Prepared::<Self>::generator().uncompressed_size();
+        let a: Vec<u8> =
+            deserialize_into_iter_to_vec::<<Bls12<Self> as Pairing>::G1Prepared>(a, a_size)
+                .unwrap();
+        let b_size = G2Prepared::<Self>::generator().uncompressed_size();
+        let b: Vec<u8> =
+            deserialize_into_iter_to_vec::<<Bls12<Self> as Pairing>::G2Prepared>(b, b_size)
+                .unwrap();
         let result = H::bls12_377_multi_miller_loop(a, b).unwrap();
 
         let f = deserialize_result::<Fp12<Self::Fp12Config>>(&result);
