@@ -45,15 +45,15 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>> {
         let a: Vec<u8> = a
-            .iter()
-            .flat_map(|elem| {
+            .into_iter()
+            .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
                 serialize_argument(elem)
             })
             .collect();
         let b = b
-            .iter()
-            .flat_map(|elem| {
+            .into_iter()
+            .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
                 serialize_argument(elem)
             })
