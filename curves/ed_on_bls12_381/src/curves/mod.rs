@@ -1,5 +1,6 @@
 use ark_ff::MontFp;
 use ark_std::{marker::PhantomData, vec::Vec};
+use itertools::Itertools;
 use sp_ark_models::{
     short_weierstrass::{self, SWCurveConfig},
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
@@ -100,10 +101,7 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
-        let scalars: Vec<u8> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .join();
+        let scalars: Vec<u8> = scalars.iter().map(|elem| serialize_argument(*elem)).join();
 
         let result = H::ed_on_bls12_381_te_msm(bases, scalars);
 
@@ -145,10 +143,7 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<SWProjective<H>, usize> {
         let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
-        let scalars: Vec<u8> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .join();
+        let scalars: Vec<u8> = scalars.iter().map(|elem| serialize_argument(*elem)).join();
 
         let result = H::ed_on_bls12_381_sw_msm(bases, scalars);
 

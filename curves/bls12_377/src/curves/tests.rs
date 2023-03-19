@@ -8,10 +8,7 @@ use sp_arkworks::PairingError;
 pub struct Host {}
 
 impl HostFunctions for Host {
-    fn bls12_377_multi_miller_loop(
-        a: Vec<u8>,
-        b: Vec<u8>,
-    ) -> Result<Vec<u8>, PairingError> {
+    fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, PairingError> {
         sp_io::elliptic_curves::bls12_377_multi_miller_loop(a, b)
     }
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError> {
