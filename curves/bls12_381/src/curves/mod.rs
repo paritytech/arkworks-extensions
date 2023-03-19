@@ -1,7 +1,6 @@
 use crate::*;
 use ark_ff::Fp12;
 use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
-use itertools::Itertools;
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -54,14 +53,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .join();
+            .collect();
         let b = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
                 serialize_argument(elem)
             })
-            .join();
+            .collect();
 
         let result = H::bls12_381_multi_miller_loop(a, b).unwrap();
 

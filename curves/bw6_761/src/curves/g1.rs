@@ -1,6 +1,5 @@
 use ark_ff::{Field, MontFp};
 use ark_std::{marker::PhantomData, vec::Vec};
-use itertools::Itertools;
 use sp_ark_models::{
     bw6,
     short_weierstrass::{Affine, Projective},
@@ -57,8 +56,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).join();
-        let scalars: Vec<u8> = scalars.iter().map(|elem| serialize_argument(*elem)).join();
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
+        let scalars: Vec<u8> = scalars
+            .iter()
+            .map(|elem| serialize_argument(*elem))
+            .collect();
 
         let result = H::bw6_761_msm_g1(bases, scalars);
 
