@@ -99,13 +99,10 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<u8> = bases
-            .iter()
-            .flat_map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<u8> = scalars
             .iter()
-            .flat_map(|elem| serialize_argument(*elem))
+            .map(|elem| serialize_argument(*elem))
             .collect();
 
         let result = H::ed_on_bls12_381_te_msm(bases, scalars);
@@ -147,13 +144,10 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         bases: &[SWAffine<H>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<SWProjective<H>, usize> {
-        let bases: Vec<u8> = bases
-            .iter()
-            .flat_map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
         let scalars: Vec<u8> = scalars
             .iter()
-            .flat_map(|elem| serialize_argument(*elem))
+            .map(|elem| serialize_argument(*elem))
             .collect();
 
         let result = H::ed_on_bls12_381_sw_msm(bases, scalars);
