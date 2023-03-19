@@ -9,7 +9,7 @@ use sp_ark_models::{
     },
     CurveConfig,
 };
-use sp_ark_utils::{deserialize_result, serialize_argument, serialize_into_iter_to_vec};
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
@@ -50,10 +50,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[SWAffine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<u8> = serialize_into_iter_to_vec::<SWAffine<Self>>(bases).map_err(|_| 0)?;
-        let scalars: Vec<u8> =
-            serialize_into_iter_to_vec::<<Self as CurveConfig>::ScalarField>(scalars)
-                .map_err(|_| 0)?;
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
+        let scalars: Vec<u8> = scalars
+            .iter()
+            .flat_map(|elem| serialize_argument(*elem))
+            .collect();
 
         let result = H::bls12_377_msm_g1(bases, scalars);
 

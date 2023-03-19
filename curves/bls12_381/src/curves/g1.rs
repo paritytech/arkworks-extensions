@@ -6,7 +6,7 @@ use sp_ark_models::{
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     AffineRepr, CurveConfig, Group,
 };
-use sp_ark_utils::{deserialize_result, serialize_argument, serialize_into_iter_to_vec};
+use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
@@ -143,12 +143,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let base_size = Affine::<Self>::generator().uncompressed_size();
-        let bases: Vec<u8> = serialize_to_vec::<Affine<Self>>(bases, base_size).map_err(|_| 0)?;
-        let scalar_size = <Self as CurveConfig>::ScalarField::zero().uncompressed_size();
-        let scalars: Vec<u8> =
-            serialize_to_vec::<<Self as CurveConfig>::ScalarField>(scalars, scalar_size)
-                .map_err(|_| 0)?;
+        let bases: Vec<u8> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
+        let scalars: Vec<u8> = scalars
+            .iter()
+            .flat_map(|elem| serialize_argument(*elem))
+            .collect();
 
         let result = H::bls12_381_msm_g1(bases, scalars);
 
