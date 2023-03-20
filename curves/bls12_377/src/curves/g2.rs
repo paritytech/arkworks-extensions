@@ -85,7 +85,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_mul_projective_g2(serialized_base, serialized_scalar);
 
-        deserialize_result::<Affine<Self>>(&result);
+        let result = deserialize_result::<Affine<Self>>(&result);
         result.into()
     }
 
@@ -95,7 +95,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_mul_affine_g2(serialized_base, serialized_scalar);
 
-        deserialize_result::<Affine<Self>>(&result);
+        let result = deserialize_result::<Affine<Self>>(&result);
         result.into()
     }
 }
