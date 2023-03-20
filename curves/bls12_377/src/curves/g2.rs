@@ -1,4 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError};
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     bls12,
