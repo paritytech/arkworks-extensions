@@ -6,6 +6,7 @@ use sp_ark_models::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
 use sp_ark_utils::{deserialize_result, serialize_argument};
+use sp_arkworks::PairingError;
 
 pub mod g1;
 pub mod g2;
@@ -22,12 +23,9 @@ pub use self::{
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn bw6_761_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8>;
-    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Vec<u8>;
-    fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bw6_761_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bw6_761_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
+    fn bw6_761_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>)
+        -> Result<Vec<u8>, PairingError>;
+    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError>;
     fn bw6_761_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
     fn bw6_761_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
 }
@@ -89,20 +87,21 @@ impl<H: HostFunctions> BW6Config for Config<H> {
             })
             .collect();
 
-        let result = H::bw6_761_multi_miller_loop(a, b);
+        let result = H::bw6_761_multi_miller_loop(a, b).unwrap();
 
         let result = deserialize_result::<<BW6<Self> as Pairing>::TargetField>(&result);
         MillerLoopOutput(result)
     }
 
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
-        let target = f.0;
-        let serialized_target = serialize_argument(target);
+        let target = serialize_argument(f.0);
 
-        let result = H::bw6_761_final_exponentiation(serialized_target);
+        let result = H::bw6_761_final_exponentiation(target);
 
-        let result = deserialize_result::<PairingOutput<BW6<Self>>>(&result);
-        Some(result)
+        match result {
+            Ok(result) => Some(deserialize_result::<PairingOutput<BW6<Self>>>(&result)),
+            Err(_error) => None,
+        }
     }
 }
 

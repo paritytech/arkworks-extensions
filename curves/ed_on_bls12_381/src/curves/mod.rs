@@ -59,10 +59,6 @@ pub type EdwardsConfig<H> = JubjubConfig<H>;
 pub type SWConfig<H> = JubjubConfig<H>;
 
 pub trait HostFunctions: 'static {
-    fn ed_on_bls12_381_sw_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_381_te_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_381_te_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_381_sw_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
     fn ed_on_bls12_381_te_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
     fn ed_on_bls12_381_sw_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
 }
@@ -114,24 +110,6 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         let result = deserialize_result::<Affine<JubjubConfig<H>>>(&result);
         Ok(result.into())
     }
-
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::ed_on_bls12_381_te_mul_projective(serialized_base, serialized_scalar);
-
-        deserialize_result::<Projective<Self>>(&result)
-    }
-
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::ed_on_bls12_381_te_mul_affine(serialized_base, serialized_scalar);
-
-        deserialize_result::<Projective<Self>>(&result)
-    }
 }
 
 impl<H: HostFunctions> MontCurveConfig for JubjubConfig<H> {
@@ -178,24 +156,6 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
             sp_ark_models::short_weierstrass::Projective<JubjubConfig<H>>,
         >(&result);
         Ok(result)
-    }
-
-    fn mul_projective(base: &SWProjective<H>, scalar: &[u64]) -> SWProjective<H> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::ed_on_bls12_381_sw_mul_projective(serialized_base, serialized_scalar);
-
-        deserialize_result::<SWProjective<H>>(&result)
-    }
-
-    fn mul_affine(base: &SWAffine<H>, scalar: &[u64]) -> SWProjective<H> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
-
-        let result = H::ed_on_bls12_381_sw_mul_affine(serialized_base, serialized_scalar);
-
-        deserialize_result::<SWProjective<H>>(&result)
     }
 }
 
