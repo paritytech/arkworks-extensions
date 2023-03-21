@@ -1,4 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError};
 use ark_std::{marker::PhantomData, ops::Neg, vec::Vec};
 use sp_ark_models::{
     bls12,
@@ -193,6 +194,26 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = deserialize_result::<Affine<Self>>(&result);
         Ok(result.into())
+    }
+
+    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
+
+        let result = H::bls12_381_mul_projective_g2(serialized_base, serialized_scalar);
+
+        let result = deserialize_result::<Affine<Self>>(&result);
+        result.into()
+    }
+
+    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
+
+        let result = H::bls12_381_mul_affine_g2(serialized_base, serialized_scalar);
+
+        let result = deserialize_result::<Affine<Self>>(&result);
+        result.into()
     }
 }
 

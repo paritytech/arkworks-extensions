@@ -2246,7 +2246,7 @@ dependencies = [
 [[package]]
 name = "sp-arkworks"
 version = "0.4.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
@@ -2264,7 +2264,7 @@ dependencies = [
 [[package]]
 name = "sp-core"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "array-bytes",
  "base58",
@@ -2307,7 +2307,7 @@ dependencies = [
 [[package]]
 name = "sp-core-hashing"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -2321,7 +2321,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2331,7 +2331,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -2342,7 +2342,7 @@ dependencies = [
 [[package]]
 name = "sp-io"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "bytes",
  "ed25519",
@@ -2368,7 +2368,7 @@ dependencies = [
 [[package]]
 name = "sp-keystore"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "async-trait",
  "futures",
@@ -2384,7 +2384,7 @@ dependencies = [
 [[package]]
 name = "sp-panic-handler"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "backtrace",
  "lazy_static",
@@ -2394,7 +2394,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -2412,7 +2412,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -2424,7 +2424,7 @@ dependencies = [
 [[package]]
 name = "sp-state-machine"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "hash-db",
  "log",
@@ -2444,12 +2444,12 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 
 [[package]]
 name = "sp-storage"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -2462,7 +2462,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "parity-scale-codec",
  "sp-std",
@@ -2474,7 +2474,7 @@ dependencies = [
 [[package]]
 name = "sp-trie"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "ahash 0.8.3",
  "hash-db",
@@ -2497,7 +2497,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f41784912bc9ebdc0064c8068c41e5cf1d2fdbf9"
+source = "git+https://github.com/paritytech/substrate.git?branch=arkworks-host-function-mul#c282f6244630674dc390b4891f2e41b95bfd346c"
 dependencies = [
  "anyhow",
  "impl-trait-for-tuples",
@@ -2768,9 +2768,9 @@ dependencies = [
 
 [[package]]
 name = "trie-db"
-version = "0.27.1"
+version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "767abe6ffed88a1889671a102c2861ae742726f52e0a5a425b92c9fbfa7e9c85"
+checksum = "879380c0061b165ba1f036325b7f3478bc1a947814d9fc36d22c5d8e960b11bd"
 dependencies = [
  "hash-db",
  "hashbrown 0.13.2",
