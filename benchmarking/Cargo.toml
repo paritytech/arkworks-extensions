@@ -36,11 +36,11 @@ sp-transaction-pool = { git = "https://github.com/paritytech/substrate.git", "br
 sp-version = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
 sp-offchain = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
 sp-inherents = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
-sp-ark-bls12-381 = { git = "https://github.com/paritytech/ark-substrate", branch = "replace-with-pr-branch" }
-sp-ark-bls12-377 = { git = "https://github.com/paritytech/ark-substrate", branch = "replace-with-pr-branch" }
-sp-ark-bw6-761 = { git = "https://github.com/paritytech/ark-substrate", branch = "replace-with-pr-branch" }
-sp-ark-ed-on-bls12-377 = { git = "https://github.com/paritytech/ark-substrate", branch = "replace-with-pr-branch" }
-sp-ark-ed-on-bls12-381 = { git = "https://github.com/paritytech/ark-substrate", branch = "replace-with-pr-branch" }
-sp-ark-models = { git = "https://github.com/paritytech/ark-substrate", branch = "replace-with-pr-branch" }
+sp-ark-bls12-381 = { git = "https://github.com/paritytech/ark-substrate" }
+sp-ark-bls12-377 = { git = "https://github.com/paritytech/ark-substrate" }
+sp-ark-bw6-761 = { git = "https://github.com/paritytech/ark-substrate" }
+sp-ark-ed-on-bls12-377 = { git = "https://github.com/paritytech/ark-substrate" }
+sp-ark-ed-on-bls12-381 = { git = "https://github.com/paritytech/ark-substrate" }
+sp-ark-models = { git = "https://github.com/paritytech/ark-substrate" }
 ark-groth16 = { git = "https://github.com/achimcc/groth16", "branch" = "master" }
 
