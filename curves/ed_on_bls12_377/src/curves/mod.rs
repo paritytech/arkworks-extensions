@@ -70,6 +70,24 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         let result = deserialize_result::<Affine<Self>>(&result);
         Ok(result.into())
     }
+
+    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
+
+        let result = H::ed_on_bls12_377_mul_projective(serialized_base, serialized_scalar);
+
+        deserialize_result::<Projective<Self>>(&result)
+    }
+
+    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
+        let serialized_base = serialize_argument(*base);
+        let serialized_scalar = serialize_argument(scalar);
+
+        let result = H::ed_on_bls12_377_mul_affine(serialized_base, serialized_scalar);
+
+        deserialize_result::<Projective<Self>>(&result)
+    }
 }
 
 impl<H: HostFunctions> MontCurveConfig for EdwardsConfig<H> {
