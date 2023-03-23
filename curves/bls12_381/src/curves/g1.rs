@@ -166,7 +166,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         result.into()
     }
 
-    fn mul_affine(base: &SWAffine<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
         let serialized_base = serialize_argument(*base);
 
         let serialized_scalar = serialize_argument(scalar);
