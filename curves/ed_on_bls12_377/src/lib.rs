@@ -6,6 +6,7 @@
     nonstandard_style,
     rust_2018_idioms
 )]
+#![allow(clippy::result_unit_err)]
 #![forbid(unsafe_code)]
 
 //! This library implements a twisted Edwards curve whose base field is the

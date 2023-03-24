@@ -1,6 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![macro_use]
 #![allow(clippy::eq_op)]
+#![allow(clippy::result_unit_err)]
 extern crate ark_relations;
 
 pub mod fields {

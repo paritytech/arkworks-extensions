@@ -3,15 +3,11 @@ use crate::HostFunctions;
 use ark_algebra_test_templates::*;
 use ark_std::vec::Vec;
 
-
 #[derive(PartialEq, Eq)]
 pub struct Host {}
 
 impl HostFunctions for Host {
-    fn bls12_377_multi_miller_loop(
-        a: Vec<Vec<u8>>,
-        b: Vec<Vec<u8>>,
-    ) -> Result<Vec<u8>, ()> {
+    fn bls12_377_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Result<Vec<u8>, ()> {
         sp_io::elliptic_curves::bls12_377_multi_miller_loop(a, b)
     }
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {

@@ -6,6 +6,7 @@
     nonstandard_style,
     rust_2018_idioms
 )]
+#![allow(clippy::result_unit_err)]
 #![forbid(unsafe_code)]
 
 //! This library implements the BW6_761 curve generated in [\[EG20\]](https://eprint.iacr.org/2020/351).

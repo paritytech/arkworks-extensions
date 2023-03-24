@@ -6,6 +6,7 @@
     nonstandard_style,
     rust_2018_idioms
 )]
+#![allow(clippy::result_unit_err)]
 #![forbid(unsafe_code)]
 
 //! This library implements the BLS12_377 curve generated in [\[BCGMMW20, “Zexe”\]](https://eprint.iacr.org/2018/962).
