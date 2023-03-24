@@ -6,7 +6,7 @@ use sp_ark_models::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
 use sp_ark_utils::{deserialize_result, serialize_argument};
-use sp_arkworks::PairingError;
+
 
 pub mod g1;
 pub mod g2;
@@ -24,8 +24,8 @@ pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
     fn bw6_761_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>)
-        -> Result<Vec<u8>, PairingError>;
-    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError>;
+        -> Result<Vec<u8>, ()>;
+    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bw6_761_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
     fn bw6_761_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
     fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;

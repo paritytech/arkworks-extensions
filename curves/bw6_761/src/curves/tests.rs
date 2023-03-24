@@ -2,7 +2,7 @@
 use crate::HostFunctions;
 use ark_algebra_test_templates::*;
 use ark_std::vec::Vec;
-use sp_arkworks::PairingError;
+
 
 #[derive(PartialEq, Eq)]
 pub struct Host;
@@ -11,10 +11,10 @@ impl HostFunctions for Host {
     fn bw6_761_multi_miller_loop(
         a: Vec<Vec<u8>>,
         b: Vec<Vec<u8>>,
-    ) -> Result<Vec<u8>, PairingError> {
+    ) -> Result<Vec<u8>, ()> {
         sp_io::elliptic_curves::bw6_761_multi_miller_loop(a, b)
     }
-    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, PairingError> {
+    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
         sp_io::elliptic_curves::bw6_761_final_exponentiation(f12)
     }
     fn bw6_761_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
