@@ -10,7 +10,7 @@ We also provide forks of the models `BW6` and `BLS12`. The reason for this is th
 
 ## Benchmark results
 
-| extrinsic                               |  normal(µs)[^1]  |optimized(µs)[^2]|   speedup[^3]   |  dummy(µs)[^4]  |   wasm(µs)[^5]  |  native(µs)[^6] |
+| extrinsic                               |  arkworkrs(µs)[^1]  |ark-substrate(µs)[^2]|   speedup[^3]   |  dummy(µs)[^4]  |   wasm(µs)[^5]  |  native(µs)[^6] |
 | --------------------------------------- |  --------------- | --------------- | --------------- | --------------- | --------------- | --------------- |
 | groth16_verification (bls12_381)        |    23551.78      |    3548.19      |${\color{green}\bf 6.64 \boldsymbol{\times}}$|    5800.99      |                     |      4080       | 
 | bls12_381_pairing                       |    10402.36      |    1590.62      |${\color{green}\bf 6.54 \boldsymbol{\times}}$|    448.97       |                     |      1340       |
