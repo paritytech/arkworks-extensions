@@ -100,10 +100,9 @@ impl<H: HostFunctions> BW6Config for Config<H> {
 
         let result = H::bw6_761_final_exponentiation(target);
 
-        match result {
-            Ok(result) => Some(deserialize_result::<PairingOutput<BW6<Self>>>(&result)),
-            Err(_error) => None,
-        }
+        result
+            .ok()
+            .map(|res| deserialize_result::<PairingOutput<BW6<Self>>>(&res))
     }
 }
 

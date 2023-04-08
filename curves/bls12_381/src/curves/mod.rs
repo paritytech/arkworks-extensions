@@ -78,10 +78,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_381_final_exponentiation(target);
 
-        match result {
-            Ok(result) => Some(deserialize_result::<PairingOutput<Bls12<Self>>>(&result)),
-            Err(error) => None,
-        }
+        result
+            .ok()
+            .map(|res| deserialize_result::<PairingOutput<Bls12<Self>>>(&res))
     }
 }
 
