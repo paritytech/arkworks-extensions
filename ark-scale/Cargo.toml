@@ -3,7 +3,7 @@ name = "ark-scale"
 description = "Arkworks serialization wrapped in Parity SCALE codec"
 authors = ["Jeff Burdges <jeff@web3.foundation>"]
 version = "0.0.1"
-repository = ""
+repository = "https://github.com/paritytech/ark-substrate/tree/main/ark-scale"
 edition = "2021"
 license = "MIT/Apache-2.0"
 
