@@ -1,8 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(clippy::result_unit_err)]
 
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{io::Cursor, vec, vec::Vec};
+use ark_serialize::{
+    CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError, Validate,
+};
+use ark_std::{borrow::Borrow, io::Cursor, vec, vec::Vec};
 
 pub fn serialize_argument(result: impl CanonicalSerialize) -> Vec<u8> {
     let mut serialized_result = vec![0u8; result.serialized_size(Compress::No)];
@@ -14,6 +16,43 @@ pub fn serialize_argument(result: impl CanonicalSerialize) -> Vec<u8> {
 pub fn deserialize_result<Field: CanonicalDeserialize>(result: &Vec<u8>) -> Field {
     let cursor = Cursor::new(result);
     Field::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap()
+}
+
+/// Arkworks' serialization modes, morally (Compress, Validate) but
+/// const generics only supports integers, `bool` and `char` right now.
+pub type Usage = u8; // (Compress, Validate)
+
+/// Arkworks' serialization modes hack.
+pub const fn make_usage(compress: Compress, validate: Validate) -> Usage {
+    let c = match compress {
+        Compress::Yes => 0,
+        Compress::No => 1,
+    };
+    let v = match validate {
+        Validate::Yes => 0,
+        Validate::No => 2,
+    };
+    c | v
+}
+
+pub const fn is_compressed(u: Usage) -> Compress {
+    // u.0
+    assert!(u < 4);
+    if u & 1 == 1 {
+        Compress::No
+    } else {
+        Compress::Yes
+    }
+}
+
+pub const fn is_validated(u: Usage) -> Validate {
+    // u.1
+    assert!(u < 4);
+    if u & 2 == 2 {
+        Validate::No
+    } else {
+        Validate::Yes
+    }
 }
 
 pub fn iter_ark_to_ark_bytes<T, B, I>(iter: I, usage: Usage) -> Result<Vec<u8>, SerializationError>
