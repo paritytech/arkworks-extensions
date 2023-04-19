@@ -91,7 +91,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         let base: ArkScale<Affine<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::bls12_377_mul_affine_g2(base.encode(), scalar.into()).unwrap();
+        let result = H::bls12_377_mul_affine_g2(base.encode(), scalar.encode()).unwrap();
 
         let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
         result.unwrap().0
