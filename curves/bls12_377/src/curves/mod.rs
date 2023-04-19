@@ -78,7 +78,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     fn final_exponentiation(
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
-        let target: ArkScale<Bls12<Self>> = f.0.into();
+        let target: ArkScale<<Bls12<Self> as Pairing>::TargetField> = f.0.into();
 
         let result = H::bls12_377_final_exponentiation(target.encode()).unwrap();
 
