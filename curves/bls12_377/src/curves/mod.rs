@@ -69,9 +69,11 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_377_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
-        let result = <ArkScale<Bls12<Self>> as Decode>::decode(&mut result.clone().as_slice())
-            .unwrap()
-            .0;
+        let result = <ArkScale<<Bls12<Self> as Pairing>::TargetField> as Decode>::decode(
+            &mut result.clone().as_slice(),
+        )
+        .unwrap()
+        .0;
         MillerLoopOutput(result)
     }
 
