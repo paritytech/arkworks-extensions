@@ -51,17 +51,19 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>> {
-        let a: ArkScale<Vec<<Bls12<Self>  as Pairing>::G1Prepared>> = a
+        let a: ArkScale<Vec<<Bls12<Self> as Pairing>::G1Prepared>> = a
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
+                elem
             })
             .collect::<Vec<_>>()
             .into();
-        let b: ArkScale<Vec<<Bls12<Self>  as Pairing>::G2Prepared>> = b
+        let b: ArkScale<Vec<<Bls12<Self> as Pairing>::G2Prepared>> = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
+                elem
             })
             .collect::<Vec<_>>()
             .into();
