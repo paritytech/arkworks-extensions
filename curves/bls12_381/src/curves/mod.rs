@@ -57,7 +57,8 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let a: ArkScale<Vec<<Bls12<Self> as Pairing>::G1Affine>> = a
             .into_iter()
             .map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
+                let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();\
+                elem
             })
             .collect::<Vec<_>>()
             .into();
@@ -65,6 +66,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
+                elem
             })
             .collect::<Vec<_>>()
             .into();
