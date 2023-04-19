@@ -19,6 +19,8 @@ ark-serialize = { version = "0.4.0", default-features = false }
 ark-ed-on-bls12-381 = { version = "0.4.0",default-features = false }
 sp-ark-models = { path = "../../models", default-features = false }
 sp-ark-utils = { path = "../utils", default-features = false  }
+codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
+ark-scale = { git = "https://github.com/w3f/ark-scale", default-features = false }
 
 [dev-dependencies]
 ark-relations = { version = "0.4.0", default-features = false }
@@ -37,6 +39,8 @@ std = [
      "ark-ed-on-bls12-381/std", 
      "sp-ark-models/std", 
      "sp-ark-utils/std",
+     "codec/std",
+     "ark-scale/std",
      "ark-relations/std",
      "ark-algebra-test-templates/std",
      "ark-curve-constraint-tests/std",

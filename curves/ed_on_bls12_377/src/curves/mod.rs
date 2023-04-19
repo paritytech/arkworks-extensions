@@ -1,12 +1,15 @@
 use ark_ff::MontFp;
 use ark_std::{marker::PhantomData, vec::Vec};
+use codec::{Decode, Encode};
 use sp_ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use crate::{fq::Fq, fr::Fr};
+
+const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
+type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;
@@ -18,9 +21,9 @@ pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 pub struct EdwardsConfig<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn ed_on_bls12_377_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
-    fn ed_on_bls12_377_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
+    fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_377_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
 impl<H: HostFunctions> CurveConfig for EdwardsConfig<H> {
@@ -59,34 +62,35 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: ArkScale<&[Affine<Self>]> = bases.into();
+        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
 
-        let result = H::ed_on_bls12_377_msm(bases, scalars);
+        let result = H::ed_on_bls12_377_msm(bases.encode(), scalars.encode()).unwrap();
 
-        let result = deserialize_result::<Affine<Self>>(&result);
-        Ok(result.into())
+        let result = <ArkScale<Projective<EdwardsConfig<H>>> as Decode>::decode(
+            &mut result.clone().as_slice(),
+        );
+        result.map_err(|_| 0).map(|res| res.0)
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScale<Projective<Self>> = (*base).into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::ed_on_bls12_377_mul_projective(serialized_base, serialized_scalar);
+        let result = H::ed_on_bls12_377_mul_projective(base.encode(), scalar.encode()).unwrap();
 
-        deserialize_result::<Projective<Self>>(&result)
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        result.unwrap().0
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScale<Affine<Self>> = (*base).into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::ed_on_bls12_377_mul_affine(serialized_base, serialized_scalar);
+        let result = H::ed_on_bls12_377_mul_affine(base.encode(), scalar.encode()).unwrap();
 
-        deserialize_result::<Projective<Self>>(&result)
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        result.unwrap().0
     }
 }
 

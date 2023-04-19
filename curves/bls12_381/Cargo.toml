@@ -22,6 +22,8 @@ ark-bls12-381 = { version = "0.4.0",features = [ "curve" ], default-features = f
 sp-ark-models = { path = "../../models", default-features = false }
 sp-ark-utils = { path = "../utils", default-features = false  }
 sp-arkworks = { version = "0.4.0", default-features = false }
+codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
+ark-scale = { git = "https://github.com/w3f/ark-scale", default-features = false }
 
 [dev-dependencies] 
 ark-algebra-test-templates = { version = "0.4.0", default-features = false }
@@ -39,9 +41,12 @@ std = [
     "sp-ark-models/std", 
     "sp-ark-utils/std",
     "sp-arkworks/std",
+    "codec/std",
+    "ark-scale/std",
     "ark-algebra-test-templates/std",
     "sp-io/std",
-    "hex/std"
+    "hex/std",
+    "ark-scale/std",
 ]
 
 curve = [ "scalar_field" ]

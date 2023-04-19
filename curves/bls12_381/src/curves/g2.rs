@@ -1,6 +1,7 @@
 use ark_ff::{Field, MontFp, Zero};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError};
 use ark_std::{marker::PhantomData, ops::Neg, vec::Vec};
+use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12,
     bls12::Bls12Config,
@@ -12,7 +13,7 @@ use sp_ark_utils::{deserialize_result, serialize_argument};
 use super::util::{
     read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
 };
-use crate::{g1, HostFunctions};
+use crate::{g1, ArkScale, HostFunctions};
 use ark_bls12_381::{fq2::Fq2, fr, fr::Fr, Fq};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
@@ -184,36 +185,33 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: ArkScale<&[Affine<Self>]> = bases.into();
+        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
 
-        let result = H::bls12_381_msm_g2(bases, scalars);
+        let result = H::bls12_381_msm_g2(bases.encode(), scalars.encode()).unwrap();
 
-        let result = deserialize_result::<Affine<Self>>(&result);
-        Ok(result.into())
+        let result: ArkScale<Affine<Self>> = result.into();
+        result.decode().map_err(|_| 0)
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScale<Projective<Self>> = *base.into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::bls12_381_mul_projective_g2(serialized_base, serialized_scalar);
+        let result = H::bls12_381_mul_projective_g2(base.encode(), scalar.encode()).unwrap();
 
-        let result = deserialize_result::<Affine<Self>>(&result);
-        result.into()
+        let result: ArkScale<Affine<Self>> = result.into();
+        result.decode().unwrap()
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScale<Affine<Self>> = *base.into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::bls12_381_mul_affine_g2(serialized_base, serialized_scalar);
+        let result = H::bls12_381_mul_affine_g2(base.encode(), scalar.into()).unwrap();
 
-        let result = deserialize_result::<Affine<Self>>(&result);
-        result.into()
+        let result: ArkScale<Affine<Self>> = result.into();
+        result.decode().unwrap()
     }
 }
 
@@ -308,28 +306,28 @@ mod test {
     pub struct Host {}
 
     impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
+        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Vec<u8> {
             sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
         }
         fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Vec<u8> {
             sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
         }
-        fn bls12_381_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
+        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
         }
-        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
         }
-        fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+        fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_mul_affine_g1(base, scalar)
         }
-        fn bls12_381_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8> {
+        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
         }
-        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
         }
-        fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
+        fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_mul_affine_g2(base, scalar)
         }
     }
