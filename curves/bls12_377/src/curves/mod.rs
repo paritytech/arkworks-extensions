@@ -2,7 +2,6 @@ use crate::*;
 use ark_ff::Fp12;
 use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
 use codec::{Decode, Encode};
-use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -52,14 +51,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>> {
-        let a: ArkScale<Vec<<Curve as Pairing>::G1Prepared>> = a
+        let a: ArkScale<Vec<<Bls12<Self>  as Pairing>::G1Prepared>> = a
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
             })
             .collect::<Vec<_>>()
             .into();
-        let b: ArkScale<Vec<<Curve as Pairing>::G2Prepared>> = b
+        let b: ArkScale<Vec<<Bls12<Self>  as Pairing>::G2Prepared>> = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
