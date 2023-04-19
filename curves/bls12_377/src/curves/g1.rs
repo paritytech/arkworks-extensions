@@ -62,7 +62,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScale<Projective<Self>> = *base.into();
+        let base: ArkScale<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
         let result = H::bls12_377_mul_projective_g1(base.encode(), scalar.encode()).unwrap();
@@ -72,7 +72,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn mul_affine(base: &SWAffine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScale<&SWAffine<Self>> = *base.into();
+        let base: ArkScale<&SWAffine<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
         let result = H::bls12_377_mul_affine_g1(base.encode(), scalar.encode()).unwrap();

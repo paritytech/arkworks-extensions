@@ -83,8 +83,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_381_final_exponentiation(target.encode()).unwrap();
 
-        let result =
-            <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&result.clone().as_slice());
+        let result = <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(
+            &mut result.clone().as_slice(),
+        );
 
         result.ok().map(|res| res.0)
     }
