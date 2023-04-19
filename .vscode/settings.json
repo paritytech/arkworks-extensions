@@ -7,6 +7,7 @@
         "./curves/bls12_377/Cargo.toml",
         "./curves/bls12_381/Cargo.toml",
         "./curves/bls12_381/Cargo.toml",
+        "./curves/bls12_381/Cargo.toml",
         "./curves/bls12_381/Cargo.toml"
     ]
 }
