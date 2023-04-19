@@ -85,7 +85,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let result = <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(
             &mut result.clone().as_slice(),
         );
-        result.ok()
+        result.ok().map(|res| res.0)
     }
 }
 
