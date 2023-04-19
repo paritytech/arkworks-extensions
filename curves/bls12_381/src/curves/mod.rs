@@ -71,8 +71,9 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_381_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
-        let result: ArkScale<Fp12<Self::Fp12Config>> = result.into().unwrap();
-        MillerLoopOutput(result.decode())
+        let result =
+            <ArkScale<Fp12<Self::Fp12Config>> as Decode>::decode(&mut result.clone().as_slice());
+        MillerLoopOutput(result.unwrap().0)
     }
 
     fn final_exponentiation(
@@ -82,10 +83,10 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_381_final_exponentiation(target.encode());
 
-        result.ok().map(|res| {
-            let res: ArkScale<PairingOutput<Bls12<Self>>> = res.into();
-            res.decode()
-        })
+        let result =
+            <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&result.clone().as_slice());
+
+        result.ok().map(|res| res.0)
     }
 }
 

@@ -190,8 +190,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_381_msm_g2(bases.encode(), scalars.encode()).unwrap();
 
-        let result: ArkScale<Affine<Self>> = result.into();
-        result.decode().map_err(|_| 0)
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        result.map_err(|_| 0).map(|res| res.0)
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -200,8 +200,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_381_mul_projective_g2(base.encode(), scalar.encode()).unwrap();
 
-        let result: ArkScale<Affine<Self>> = result.into();
-        result.decode().unwrap()
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        result.unwrap().0
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
@@ -210,8 +210,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_381_mul_affine_g2(base.encode(), scalar.into()).unwrap();
 
-        let result: ArkScale<Affine<Self>> = result.into();
-        result.decode().unwrap()
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        result.unwrap().0
     }
 }
 
