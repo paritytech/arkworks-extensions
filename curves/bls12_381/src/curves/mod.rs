@@ -81,7 +81,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     ) -> Option<PairingOutput<Bls12<Self>>> {
         let target: ArkScale<MillerLoopOutput<Bls12<Self>>> = f.0.into();
 
-        let result = H::bls12_381_final_exponentiation(target.encode());
+        let result = H::bls12_381_final_exponentiation(target.encode()).unwrap();
 
         let result =
             <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&result.clone().as_slice());
