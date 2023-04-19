@@ -59,14 +59,14 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
             })
-            .collect()
+            .collect::<Vec<_>>()
             .into();
         let b: ArkScale<Vec<<Bls12<Self> as Pairing>::G2Affine>> = b
             .into_iter()
             .map(|elem| {
                 let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
             })
-            .collect()
+            .collect::<Vec<_>>()
             .into();
 
         let result = H::bls12_381_multi_miller_loop(a.encode(), b.encode()).unwrap();
