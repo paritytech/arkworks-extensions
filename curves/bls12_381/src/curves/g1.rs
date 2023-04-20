@@ -203,8 +203,8 @@ mod test {
 
     use super::*;
     use crate::HostFunctions;
-    use ark_bls12_381::fq;
-    use ark_std::{rand::Rng, UniformRand};
+    use ark_bls12_381::{fq, g1};
+    use ark_std::rand::Rng;
 
     pub struct Host {}
 

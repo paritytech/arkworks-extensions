@@ -299,7 +299,7 @@ mod test {
 
     use super::*;
     use crate::HostFunctions;
-    use ark_std::UniformRand;
+    use ark_bls12_381::g2;
 
     pub struct Host {}
 

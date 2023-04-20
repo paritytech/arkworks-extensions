@@ -1,8 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 use ark_algebra_test_templates::*;
+use ark_bls12_381::{g1, g2, Fq, Fq2};
 use ark_ff::{fields::Field, One, UniformRand, Zero};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, vec::Vec};
+use ark_std::{rand::Rng, UniformRand};
 use sp_ark_models::{pairing::PairingOutput, AffineRepr, CurveGroup, Group};
 
 use crate::{
