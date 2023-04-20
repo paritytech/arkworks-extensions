@@ -299,7 +299,7 @@ dependencies = [
 [[package]]
 name = "ark-scale"
 version = "0.0.2"
-source = "git+https://github.com/w3f/ark-scale#ded339ee875fbb8901d89ab3ea6f1e0ccde2f842"
+source = "git+https://github.com/w3f/ark-scale#ddd0b655b639cd91b49aff2fe29b9ccfc92903e1"
 dependencies = [
  "ark-serialize",
  "ark-std",
@@ -1358,9 +1358,9 @@ checksum = "f051f77a7c8e6957c0696eac88f26b0117e54f52d3fc682ab19397a8812846a4"
 
 [[package]]
 name = "linux-raw-sys"
-version = "0.3.1"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d59d8c75012853d2e872fb56bc8a2e53718e2cafe1a4c823143141c6d90c322f"
+checksum = "9b085a4f2cde5781fc4b1717f2e86c62f5cda49de7ba99a7c2eae02b61c9064c"
 
 [[package]]
 name = "lock_api"
@@ -1411,7 +1411,7 @@ version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ffc89ccdc6e10d6907450f753537ebc5c5d3460d2e4e62ea74bd571db62c0f9e"
 dependencies = [
- "rustix 0.37.11",
+ "rustix 0.37.13",
 ]
 
 [[package]]
@@ -1926,15 +1926,15 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.37.11"
+version = "0.37.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "85597d61f83914ddeba6a47b3b8ffe7365107221c2e557ed94426489fefb5f77"
+checksum = "f79bef90eb6d984c72722595b5b1348ab39275a5e5123faca6863bf07d75a4e0"
 dependencies = [
  "bitflags",
  "errno",
  "io-lifetimes",
  "libc",
- "linux-raw-sys 0.3.1",
+ "linux-raw-sys 0.3.3",
  "windows-sys 0.48.0",
 ]
 
@@ -2268,7 +2268,7 @@ dependencies = [
 [[package]]
 name = "sp-arkworks"
 version = "0.4.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
@@ -2287,7 +2287,7 @@ dependencies = [
 [[package]]
 name = "sp-core"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "array-bytes",
  "bitflags",
@@ -2330,7 +2330,7 @@ dependencies = [
 [[package]]
 name = "sp-core-hashing"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -2344,7 +2344,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2354,7 +2354,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -2365,7 +2365,7 @@ dependencies = [
 [[package]]
 name = "sp-io"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "bytes",
  "ed25519",
@@ -2392,7 +2392,7 @@ dependencies = [
 [[package]]
 name = "sp-keystore"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "futures",
  "merlin",
@@ -2407,7 +2407,7 @@ dependencies = [
 [[package]]
 name = "sp-panic-handler"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "backtrace",
  "lazy_static",
@@ -2417,7 +2417,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -2435,7 +2435,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -2447,7 +2447,7 @@ dependencies = [
 [[package]]
 name = "sp-state-machine"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "hash-db",
  "log",
@@ -2467,12 +2467,12 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 
 [[package]]
 name = "sp-storage"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -2485,7 +2485,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "parity-scale-codec",
  "sp-std",
@@ -2497,7 +2497,7 @@ dependencies = [
 [[package]]
 name = "sp-trie"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "ahash 0.8.3",
  "hash-db",
@@ -2520,7 +2520,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-ark-scale#aa44e08570b7796e30d79d0a8e66a339ed3d1564"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#70bcea0fa239a602ff9f567264cc961f0f76bc36"
 dependencies = [
  "anyhow",
  "impl-trait-for-tuples",
