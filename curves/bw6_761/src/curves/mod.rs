@@ -103,7 +103,7 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         let result = H::bw6_761_final_exponentiation(target.encode());
 
         result.ok().map(|res| {
-            <ArkScale<PairingOutput<BW6<Self>>> as Decode>::decode(&mut res.clone().as_slice())
+            <ArkScale<PairingOutput<BW6<Self>>> as Decode>::decode(&mut res.as_slice())
                 .unwrap()
                 .0
         })
