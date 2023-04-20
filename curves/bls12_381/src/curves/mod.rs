@@ -56,18 +56,12 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     ) -> MillerLoopOutput<Bls12<Self>> {
         let a: ArkScale<Vec<<Bls12<Self> as Pairing>::G1Prepared>> = a
             .into_iter()
-            .map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                elem
-            })
+            .map(<Bls12<Self> as Pairing>::G1Prepared::from)
             .collect::<Vec<_>>()
             .into();
         let b: ArkScale<Vec<<Bls12<Self> as Pairing>::G2Prepared>> = b
             .into_iter()
-            .map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                elem
-            })
+            .map(<Bls12<Self> as Pairing>::G2Prepared::from)
             .collect::<Vec<_>>()
             .into();
 

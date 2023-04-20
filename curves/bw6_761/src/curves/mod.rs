@@ -79,18 +79,12 @@ impl<H: HostFunctions> BW6Config for Config<H> {
     ) -> MillerLoopOutput<BW6<Self>> {
         let a: ArkScale<Vec<<BW6<Self> as Pairing>::G1Prepared>> = a
             .into_iter()
-            .map(|elem| {
-                let elem: <BW6<Self> as Pairing>::G1Prepared = elem.into();
-                elem
-            })
+            .map(<BW6<Self> as Pairing>::G1Prepared::from)
             .collect::<Vec<_>>()
             .into();
         let b: ArkScale<Vec<<BW6<Self> as Pairing>::G2Prepared>> = b
             .into_iter()
-            .map(|elem| {
-                let elem: <BW6<Self> as Pairing>::G2Prepared = elem.into();
-                elem
-            })
+            .map(<BW6<Self> as Pairing>::G2Prepared::from)
             .collect::<Vec<_>>()
             .into();
 
