@@ -1,12 +1,10 @@
 use crate::*;
-use ark_ff::Fp12;
-use ark_std::{io::Cursor, marker::PhantomData, vec::Vec};
+use ark_std::{marker::PhantomData, vec::Vec};
 use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
 
 pub mod g1;
 pub mod g2;

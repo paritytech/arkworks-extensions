@@ -25,10 +25,7 @@
 //! * G1 curve equation: y^2 = x^3 + 4
 //! * G2 curve equation: y^2 = x^3 + Fq2(4, 4)
 
-#[cfg(feature = "curve")]
 mod curves;
 
-// #[cfg(feature = "curve")]
 pub use ark_bls12_381::{fq, fq12, fq2, fq6, fr};
-#[cfg(feature = "curve")]
 pub use curves::*;

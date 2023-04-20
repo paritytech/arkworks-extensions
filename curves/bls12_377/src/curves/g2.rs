@@ -1,15 +1,12 @@
+use crate::{g1, ArkScale, Fq, Fq2, Fr, HostFunctions};
 use ark_ff::{Field, MontFp, Zero};
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError};
-use ark_std::{marker::PhantomData, vec::Vec};
+use ark_std::marker::PhantomData;
 use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12,
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     CurveConfig,
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
-
-use crate::{g1, ArkScale, Fq, Fq2, Fr, HostFunctions};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;

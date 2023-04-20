@@ -1,6 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError};
-use ark_std::{marker::PhantomData, ops::Neg, vec::Vec};
+use ark_std::{marker::PhantomData, ops::Neg};
 use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12,
@@ -8,13 +7,12 @@ use sp_ark_models::{
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     AffineRepr, CurveConfig, CurveGroup, Group,
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use super::util::{
     read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
 };
 use crate::{g1, ArkScale, HostFunctions};
-use ark_bls12_381::{fq2::Fq2, fr, fr::Fr, Fq};
+use ark_bls12_381::{fq2::Fq2, fr::Fr, Fq};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
@@ -306,10 +304,10 @@ mod test {
     pub struct Host {}
 
     impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Vec<u8> {
+        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
         }
-        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Vec<u8> {
+        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
         }
         fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {

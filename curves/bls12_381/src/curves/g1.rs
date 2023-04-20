@@ -1,6 +1,5 @@
 use ark_ff::{Field, MontFp, PrimeField, Zero};
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, SerializationError};
-use ark_std::{marker::PhantomData, ops::Neg, vec::Vec, One};
+use ark_std::{marker::PhantomData, ops::Neg, One};
 use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12,
@@ -8,13 +7,12 @@ use sp_ark_models::{
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     AffineRepr, CurveConfig, Group,
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
 
 use crate::util::{
     read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
 };
 use crate::{ArkScale, HostFunctions};
-use ark_bls12_381::{fr, fr::Fr, Fq};
+use ark_bls12_381::{fr::Fr, Fq};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
