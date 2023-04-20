@@ -73,7 +73,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_msm_g2(bases.encode(), scalars.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.map_err(|_| 0).map(|res| res.0)
     }
 
@@ -83,7 +83,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_mul_projective_g2(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 
@@ -93,7 +93,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_377_mul_affine_g2(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 }

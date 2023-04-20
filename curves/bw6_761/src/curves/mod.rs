@@ -90,7 +90,7 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         let result = H::bw6_761_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
         let result = <ArkScale<<BW6<Self> as Pairing>::TargetField> as Decode>::decode(
-            &mut result.clone().as_slice(),
+            &mut result.as_slice(),
         )
         .unwrap()
         .0;

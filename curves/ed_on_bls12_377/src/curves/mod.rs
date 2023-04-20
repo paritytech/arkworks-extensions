@@ -67,9 +67,8 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let result = H::ed_on_bls12_377_msm(bases.encode(), scalars.encode()).unwrap();
 
-        let result = <ArkScale<Projective<EdwardsConfig<H>>> as Decode>::decode(
-            &mut result.clone().as_slice(),
-        );
+        let result =
+            <ArkScale<Projective<EdwardsConfig<H>>> as Decode>::decode(&mut result.as_slice());
         result.map_err(|_| 0).map(|res| res.0)
     }
 
@@ -79,7 +78,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let result = H::ed_on_bls12_377_mul_projective(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 
@@ -89,7 +88,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
 
         let result = H::ed_on_bls12_377_mul_affine(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.clone().as_slice());
+        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 }

@@ -65,7 +65,7 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         let result = H::bls12_377_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
         let result = <ArkScale<<Bls12<Self> as Pairing>::TargetField> as Decode>::decode(
-            &mut result.clone().as_slice(),
+            &mut result.as_slice(),
         )
         .unwrap()
         .0;
@@ -79,9 +79,8 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_377_final_exponentiation(target.encode()).unwrap();
 
-        let result = <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(
-            &mut result.clone().as_slice(),
-        );
+        let result =
+            <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&mut result.as_slice());
         result.ok().map(|res| res.0)
     }
 }
