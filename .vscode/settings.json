@@ -8,6 +8,8 @@
         "./curves/bls12_381/Cargo.toml",
         "./curves/bls12_381/Cargo.toml",
         "./curves/bls12_381/Cargo.toml",
+        "./curves/bls12_381/Cargo.toml",
+        "./curves/bls12_381/Cargo.toml",
         "./curves/bls12_381/Cargo.toml"
     ]
 }

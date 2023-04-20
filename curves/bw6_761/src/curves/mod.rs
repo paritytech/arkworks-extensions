@@ -77,17 +77,16 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<BW6<Self>> {
-        let a: ArkScale<Vec<<BW6<Self> as Pairing>::G1Prepared>> = a
-            .into_iter()
-            .map(<BW6<Self> as Pairing>::G1Prepared::from)
-            .collect::<Vec<_>>()
-            .into();
-        let b: ArkScale<Vec<<BW6<Self> as Pairing>::G2Prepared>> = b
-            .into_iter()
-            .map(<BW6<Self> as Pairing>::G2Prepared::from)
-            .collect::<Vec<_>>()
-            .into();
-
+        let a = a.into_iter().map(|el| {
+            let el: <BW6<Self> as Pairing>::G1Prepared = el.into();
+            el
+        });
+        let a: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(a, HOST_CALL).unwrap();
+        let b = b.into_iter().map(|el| {
+            let el: <BW6<Self> as Pairing>::G2Prepared = el.into();
+            el
+        });
+        let b: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(b, HOST_CALL).unwrap();
         let result = H::bw6_761_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
         let result = <ArkScale<<BW6<Self> as Pairing>::TargetField> as Decode>::decode(

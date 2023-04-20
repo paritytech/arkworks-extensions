@@ -54,16 +54,16 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>> {
-        let a: ArkScale<Vec<<Bls12<Self> as Pairing>::G1Prepared>> = a
-            .into_iter()
-            .map(<Bls12<Self> as Pairing>::G1Prepared::from)
-            .collect::<Vec<_>>()
-            .into();
-        let b: ArkScale<Vec<<Bls12<Self> as Pairing>::G2Prepared>> = b
-            .into_iter()
-            .map(<Bls12<Self> as Pairing>::G2Prepared::from)
-            .collect::<Vec<_>>()
-            .into();
+        let a = a.into_iter().map(|el| {
+            let el: <Bls12<Self> as Pairing>::G1Prepared = el.into();
+            el
+        });
+        let a: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(a, HOST_CALL).unwrap();
+        let b = b.into_iter().map(|el| {
+            let el: <Bls12<Self> as Pairing>::G2Prepared = el.into();
+            el
+        });
+        let b: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(b, HOST_CALL).unwrap();
 
         let result = H::bls12_381_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
