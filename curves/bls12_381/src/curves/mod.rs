@@ -58,12 +58,20 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
             let el: <Bls12<Self> as Pairing>::G1Prepared = el.into();
             el
         });
-        let a: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(a, HOST_CALL).unwrap();
+        let a: Vec<u8> =
+            ark_scale::iter_ark_to_ark_bytes::<<Bls12<Self> as Pairing>::G1Prepared, _, _>(
+                a, HOST_CALL,
+            )
+            .unwrap();
         let b = b.into_iter().map(|el| {
             let el: <Bls12<Self> as Pairing>::G2Prepared = el.into();
             el
         });
-        let b: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(b, HOST_CALL).unwrap();
+        let b: Vec<u8> =
+            ark_scale::iter_ark_to_ark_bytes::<<Bls12<Self> as Pairing>::G2Prepared, _, _>(
+                b, HOST_CALL,
+            )
+            .unwrap();
 
         let result = H::bls12_381_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
