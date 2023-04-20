@@ -2172,7 +2172,6 @@ dependencies = [
  "ark-std",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-ark-utils",
  "sp-arkworks",
  "sp-io",
 ]
@@ -2191,7 +2190,6 @@ dependencies = [
  "hex",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-ark-utils",
  "sp-arkworks",
  "sp-io",
 ]
@@ -2209,7 +2207,6 @@ dependencies = [
  "ark-std",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-ark-utils",
  "sp-arkworks",
  "sp-io",
 ]
@@ -2230,7 +2227,6 @@ dependencies = [
  "ark-std",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-ark-utils",
  "sp-io",
 ]
 
@@ -2250,7 +2246,6 @@ dependencies = [
  "ark-std",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-ark-utils",
  "sp-io",
 ]
 
@@ -2268,14 +2263,6 @@ dependencies = [
  "num-traits",
  "rayon",
  "zeroize",
-]
-
-[[package]]
-name = "sp-ark-utils"
-version = "0.4.0"
-dependencies = [
- "ark-serialize",
- "ark-std",
 ]
 
 [[package]]
