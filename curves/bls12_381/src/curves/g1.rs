@@ -202,8 +202,7 @@ pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>
 mod test {
 
     use super::*;
-    use crate::HostFunctions;
-    use sp_ark_bls12_381::{fq, g1};
+    use crate::{fq, g1, HostFunctions};
     use ark_std::rand::Rng;
 
     pub struct Host {}

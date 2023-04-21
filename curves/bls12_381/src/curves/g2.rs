@@ -298,8 +298,8 @@ fn double_p_power_endomorphism<H: HostFunctions>(
 mod test {
 
     use super::*;
+    use crate::g2;
     use crate::HostFunctions;
-    use ark_bls12_381::g2;
 
     pub struct Host {}
 
