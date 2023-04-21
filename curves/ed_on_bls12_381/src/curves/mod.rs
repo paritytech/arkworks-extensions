@@ -1,5 +1,6 @@
 use crate::{Fq, Fr};
 use ark_ff::MontFp;
+use ark_scale::hazmat::ArkScaleProjective;
 use ark_std::{marker::PhantomData, vec::Vec};
 use codec::{Decode, Encode};
 use sp_ark_models::{
@@ -110,18 +111,20 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_te_msm(bases.encode(), scalars.encode()).unwrap();
 
-        let result =
-            <ArkScale<Projective<JubjubConfig<H>>> as Decode>::decode(&mut result.as_slice());
+        let result = <ArkScaleProjective<Projective<JubjubConfig<H>>> as Decode>::decode(
+            &mut result.as_slice(),
+        );
         result.map_err(|_| 0).map(|res| res.0)
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScale<Projective<Self>> = (*base).into();
+        let base: ArkScaleProjective<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
         let result = H::ed_on_bls12_381_te_mul_projective(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 
@@ -131,7 +134,8 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_te_mul_affine(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 }
