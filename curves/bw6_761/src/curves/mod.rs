@@ -81,20 +81,12 @@ impl<H: HostFunctions> BW6Config for Config<H> {
             let el: <BW6<Self> as Pairing>::G1Prepared = el.into();
             el
         });
-        let a: Vec<u8> =
-            ark_scale::iter_ark_to_ark_bytes::<<BW6<Self> as Pairing>::G1Prepared, _, _>(
-                a, HOST_CALL,
-            )
-            .unwrap();
+        let a: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(a, HOST_CALL).unwrap();
         let b = b.into_iter().map(|el| {
             let el: <BW6<Self> as Pairing>::G2Prepared = el.into();
             el
         });
-        let b: Vec<u8> =
-            ark_scale::iter_ark_to_ark_bytes::<<BW6<Self> as Pairing>::G2Prepared, _, _>(
-                b, HOST_CALL,
-            )
-            .unwrap();
+        let b: Vec<u8> = ark_scale::iter_ark_to_ark_bytes(b, HOST_CALL).unwrap();
         let result = H::bw6_761_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
         let result = <ArkScale<<BW6<Self> as Pairing>::TargetField> as Decode>::decode(
