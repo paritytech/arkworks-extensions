@@ -1,13 +1,16 @@
+use crate::{Fq, Fr};
 use ark_ff::MontFp;
+use ark_scale::hazmat::ArkScaleProjective;
 use ark_std::{marker::PhantomData, vec::Vec};
+use codec::{Decode, Encode};
 use sp_ark_models::{
     short_weierstrass::{self, SWCurveConfig},
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
 
-use crate::{Fq, Fr};
+const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
+type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;
@@ -59,12 +62,12 @@ pub type EdwardsConfig<H> = JubjubConfig<H>;
 pub type SWConfig<H> = JubjubConfig<H>;
 
 pub trait HostFunctions: 'static {
-    fn ed_on_bls12_381_te_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
-    fn ed_on_bls12_381_sw_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
-    fn ed_on_bls12_381_sw_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_381_te_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_381_te_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn ed_on_bls12_381_sw_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
+    fn ed_on_bls12_381_te_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_381_sw_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_381_sw_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_381_te_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_381_te_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_381_sw_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
 impl<H: HostFunctions> CurveConfig for JubjubConfig<H> {
@@ -103,34 +106,37 @@ impl<H: HostFunctions> TECurveConfig for JubjubConfig<H> {
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: ArkScale<&[Affine<Self>]> = bases.into();
+        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
 
-        let result = H::ed_on_bls12_381_te_msm(bases, scalars);
+        let result = H::ed_on_bls12_381_te_msm(bases.encode(), scalars.encode()).unwrap();
 
-        let result = deserialize_result::<Affine<JubjubConfig<H>>>(&result);
-        Ok(result.into())
+        let result = <ArkScaleProjective<Projective<JubjubConfig<H>>> as Decode>::decode(
+            &mut result.as_slice(),
+        );
+        result.map_err(|_| 0).map(|res| res.0)
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScaleProjective<Projective<Self>> = (*base).into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::ed_on_bls12_381_te_mul_projective(serialized_base, serialized_scalar);
+        let result = H::ed_on_bls12_381_te_mul_projective(base.encode(), scalar.encode()).unwrap();
 
-        deserialize_result::<Projective<Self>>(&result)
+        let result =
+            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
+        result.unwrap().0
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScale<Affine<Self>> = (*base).into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::ed_on_bls12_381_te_mul_affine(serialized_base, serialized_scalar);
+        let result = H::ed_on_bls12_381_te_mul_affine(base.encode(), scalar.encode()).unwrap();
 
-        deserialize_result::<Projective<Self>>(&result)
+        let result =
+            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
+        result.unwrap().0
     }
 }
 
@@ -166,36 +172,37 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
         bases: &[SWAffine<H>],
         scalars: &[<Self as CurveConfig>::ScalarField],
     ) -> Result<SWProjective<H>, usize> {
-        let bases: Vec<Vec<u8>> = bases.iter().map(|elem| serialize_argument(*elem)).collect();
-        let scalars: Vec<Vec<u8>> = scalars
-            .iter()
-            .map(|elem| serialize_argument(*elem))
-            .collect();
+        let bases: ArkScale<&[SWAffine<H>]> = bases.into();
+        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
 
-        let result = H::ed_on_bls12_381_sw_msm(bases, scalars);
+        let result = H::ed_on_bls12_381_sw_msm(bases.encode(), scalars.encode()).unwrap();
 
-        let result = deserialize_result::<
+        let result = <ArkScaleProjective<
             sp_ark_models::short_weierstrass::Projective<JubjubConfig<H>>,
-        >(&result);
-        Ok(result)
+        > as Decode>::decode(&mut result.as_slice());
+        result.map_err(|_| 0).map(|res| res.0)
     }
 
     fn mul_projective(base: &SWProjective<H>, scalar: &[u64]) -> SWProjective<H> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScaleProjective<SWProjective<H>> = (*base).into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::ed_on_bls12_381_sw_mul_projective(serialized_base, serialized_scalar);
+        let result = H::ed_on_bls12_381_sw_mul_projective(base.encode(), scalar.encode()).unwrap();
 
-        deserialize_result::<SWProjective<H>>(&result)
+        let result =
+            <ArkScaleProjective<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
+        result.unwrap().0
     }
 
     fn mul_affine(base: &SWAffine<H>, scalar: &[u64]) -> SWProjective<H> {
-        let serialized_base = serialize_argument(*base);
-        let serialized_scalar = serialize_argument(scalar);
+        let base: ArkScale<SWAffine<H>> = (*base).into();
+        let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::ed_on_bls12_381_sw_mul_affine(serialized_base, serialized_scalar);
+        let result = H::ed_on_bls12_381_sw_mul_affine(base.encode(), scalar.encode()).unwrap();
 
-        deserialize_result::<SWProjective<H>>(&result)
+        let result =
+            <ArkScaleProjective<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
+        result.unwrap().0
     }
 }
 

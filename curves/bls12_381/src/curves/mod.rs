@@ -1,18 +1,18 @@
-use crate::*;
-use ark_ff::Fp12;
-use ark_std::{io::Cursor, marker::PhantomData, vec, vec::Vec};
+use ark_std::{marker::PhantomData, vec::Vec};
+use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
 
 pub mod g1;
 pub mod g2;
 pub(crate) mod util;
 
-use crate::fq;
 use ark_bls12_381::{fq::Fq, fq12, fq2, fq6};
+
+const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
+pub type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;
@@ -25,14 +25,14 @@ pub use self::{
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Result<Vec<u8>, ()>;
+    fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bls12_381_msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
-    fn bls12_381_msm_g2(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8>;
-    fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
+    fn bls12_381_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bls12_381_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
 impl<H: HostFunctions> Bls12Config for Config<H> {
@@ -50,37 +50,42 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>> {
-        let a: Vec<Vec<u8>> = a
+        let a: ArkScale<Vec<<Bls12<Self> as Pairing>::G1Prepared>> = a
             .into_iter()
-            .map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G1Prepared = elem.into();
-                serialize_argument(elem)
+            .map(|el| {
+                let el: <Bls12<Self> as Pairing>::G1Prepared = el.into();
+                el
             })
-            .collect();
-        let b = b
+            .collect::<Vec<_>>()
+            .into();
+        let b: ArkScale<Vec<<Bls12<Self> as Pairing>::G2Prepared>> = b
             .into_iter()
-            .map(|elem| {
-                let elem: <Bls12<Self> as Pairing>::G2Prepared = elem.into();
-                serialize_argument(elem)
+            .map(|el| {
+                let el: <Bls12<Self> as Pairing>::G2Prepared = el.into();
+                el
             })
-            .collect();
+            .collect::<Vec<_>>()
+            .into();
 
-        let result = H::bls12_381_multi_miller_loop(a, b).unwrap();
+        let result = H::bls12_381_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
-        let result = deserialize_result::<Fp12<Self::Fp12Config>>(&result);
-        MillerLoopOutput(result)
+        let result = <ArkScale<<Bls12<Self> as Pairing>::TargetField> as Decode>::decode(
+            &mut result.as_slice(),
+        );
+        MillerLoopOutput(result.unwrap().0)
     }
 
     fn final_exponentiation(
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
-        let target = serialize_argument(f.0);
+        let target: ArkScale<<Bls12<Self> as Pairing>::TargetField> = f.0.into();
 
-        let result = H::bls12_381_final_exponentiation(target);
+        let result = H::bls12_381_final_exponentiation(target.encode()).unwrap();
 
-        result
-            .ok()
-            .map(|res| deserialize_result::<PairingOutput<Bls12<Self>>>(&res))
+        let result =
+            <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&mut result.as_slice());
+
+        result.ok().map(|res| res.0)
     }
 }
 

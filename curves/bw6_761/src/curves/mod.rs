@@ -1,14 +1,17 @@
 use crate::{Fq, Fq3Config, Fq6Config};
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
 use ark_std::{marker::PhantomData, vec::Vec};
+use codec::{Decode, Encode};
 use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
-use sp_ark_utils::{deserialize_result, serialize_argument};
 
 pub mod g1;
 pub mod g2;
+
+const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
+pub type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;
@@ -22,14 +25,14 @@ pub use self::{
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {
-    fn bw6_761_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Result<Vec<u8>, ()>;
+    fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_msm_g1(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
-    fn bw6_761_msm_g2(bases: Vec<Vec<u8>>, bigints: Vec<Vec<u8>>) -> Vec<u8>;
-    fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bw6_761_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
-    fn bw6_761_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8>;
+    fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bw6_761_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn bw6_761_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
 impl<H: HostFunctions> BW6Config for Config<H> {
@@ -74,35 +77,42 @@ impl<H: HostFunctions> BW6Config for Config<H> {
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<BW6<Self>> {
-        let a: Vec<Vec<u8>> = a
+        let a: ArkScale<Vec<<BW6<Self> as Pairing>::G1Prepared>> = a
             .into_iter()
-            .map(|elem| {
-                let elem: <BW6<Self> as Pairing>::G1Prepared = elem.into();
-                serialize_argument(elem)
+            .map(|el| {
+                let el: <BW6<Self> as Pairing>::G1Prepared = el.into();
+                el
             })
-            .collect();
-        let b = b
+            .collect::<Vec<_>>()
+            .into();
+        let b: ArkScale<Vec<<BW6<Self> as Pairing>::G2Prepared>> = b
             .into_iter()
-            .map(|elem| {
-                let elem: <BW6<Self> as Pairing>::G2Prepared = elem.into();
-                serialize_argument(elem)
+            .map(|el| {
+                let el: <BW6<Self> as Pairing>::G2Prepared = el.into();
+                el
             })
-            .collect();
+            .collect::<Vec<_>>()
+            .into();
+        let result = H::bw6_761_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
-        let result = H::bw6_761_multi_miller_loop(a, b).unwrap();
-
-        let result = deserialize_result::<<BW6<Self> as Pairing>::TargetField>(&result);
+        let result = <ArkScale<<BW6<Self> as Pairing>::TargetField> as Decode>::decode(
+            &mut result.as_slice(),
+        )
+        .unwrap()
+        .0;
         MillerLoopOutput(result)
     }
 
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
-        let target = serialize_argument(f.0);
+        let target: ArkScale<<BW6<Self> as Pairing>::TargetField> = f.0.into();
 
-        let result = H::bw6_761_final_exponentiation(target);
+        let result = H::bw6_761_final_exponentiation(target.encode());
 
-        result
-            .ok()
-            .map(|res| deserialize_result::<PairingOutput<BW6<Self>>>(&res))
+        result.ok().map(|res| {
+            <ArkScale<PairingOutput<BW6<Self>>> as Decode>::decode(&mut res.as_slice())
+                .unwrap()
+                .0
+        })
     }
 }
 
