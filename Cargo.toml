@@ -3,7 +3,7 @@ lto = true
 
 [workspace]
 
-members = ["curves/bls12_381", "curves/bls12_377", "curves/bw6_761", "curves/ed_on_bls12_377", "curves/ed_on_bls12_381", "models" ]
+members = ["curves/bls12_381", "curves/bls12_377", "curves/bw6_761", "curves/ed_on_bls12_377", "curves/ed_on_bls12_381", "curves/ed_on_bls12_381_bandersnatch", "models" ]
 
 [patch.crates-io]
 sp-io =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }

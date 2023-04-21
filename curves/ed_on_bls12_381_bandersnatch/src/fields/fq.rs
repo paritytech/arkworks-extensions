@@ -1,1 +1,1 @@
-pub use ark_bls12_381::{Fr as Fq, FrConfig as FqConfig};
+pub use sp_ark_bls12_381::{fr::Fr as Fq, fr::FrConfig as FqConfig};
