@@ -182,12 +182,13 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
     }
 
     fn mul_projective(base: &SWProjective<H>, scalar: &[u64]) -> SWProjective<H> {
-        let base: ArkScale<SWProjective<H>> = (*base).into();
+        let base: ArkScaleProjective<SWProjective<H>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
         let result = H::ed_on_bls12_381_sw_mul_projective(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 
@@ -197,7 +198,8 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_sw_mul_affine(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 }
