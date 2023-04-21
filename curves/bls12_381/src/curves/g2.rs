@@ -1,4 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
+use ark_scale::hazmat::ArkScaleProjective;
 use ark_std::{marker::PhantomData, ops::Neg};
 use codec::{Decode, Encode};
 use sp_ark_models::{
@@ -188,17 +189,19 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_381_msm_g2(bases.encode(), scalars.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.map_err(|_| 0).map(|res| res.0)
     }
 
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScale<Projective<Self>> = (*base).into();
+        let base: ArkScaleProjective<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
         let result = H::bls12_381_mul_projective_g2(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 
@@ -208,7 +211,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
 
         let result = H::bls12_381_mul_affine_g2(base.encode(), scalar.encode()).unwrap();
 
-        let result = <ArkScale<Projective<Self>> as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
         result.unwrap().0
     }
 }
