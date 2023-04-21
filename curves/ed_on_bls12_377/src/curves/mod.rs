@@ -86,10 +86,11 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScale<Affine<Self>> = (*base).into();
+        let base: Projective<Self> = (*base).into();
+        let base: ArkScaleProjective<Projective<Self>> = base.into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::ed_on_bls12_377_mul_affine(base.encode(), scalar.encode()).unwrap();
+        let result = H::ed_on_bls12_377_mul_projective(base.encode(), scalar.encode()).unwrap();
 
         let result =
             <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
