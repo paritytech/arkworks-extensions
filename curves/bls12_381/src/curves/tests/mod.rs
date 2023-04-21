@@ -1,14 +1,13 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 use ark_algebra_test_templates::*;
-use ark_bls12_381::{g1, g2, Fq, Fq2};
+use ark_bls12_381::{Fq, Fq2};
 use ark_ff::{fields::Field, One, UniformRand, Zero};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{rand::Rng, test_rng, vec, vec::Vec};
-use ark_std::{rand::Rng, UniformRand};
+use ark_std::{rand::Rng, test_rng, vec, vec::Vec, UniformRand};
 use sp_ark_models::{pairing::PairingOutput, AffineRepr, CurveGroup, Group};
 
 use crate::{
-    fr::Fr, Fq, Fq2, G1Affine as G1Affine_Host, G1Projective as G1Projective_Host,
+    fq::Fq, fq2::Fq2, fr::Fr, G1Affine as G1Affine_Host, G1Projective as G1Projective_Host,
     G2Affine as G2Affine_Host, G2Projective as G2Projective_Host, HostFunctions,
 };
 
