@@ -31,8 +31,6 @@ pub trait HostFunctions: 'static {
     fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
 impl<H: HostFunctions> BW6Config for Config<H> {

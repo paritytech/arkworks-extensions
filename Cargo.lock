@@ -1860,13 +1860,13 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.8.0"
+version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac6cf59af1067a3fb53fbe5c88c053764e930f932be1d71d3ffe032cbe147f59"
+checksum = "af83e617f331cc6ae2da5443c602dfa5af81e517212d9d611a5b3ba1777b5370"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-syntax 0.7.0",
+ "regex-syntax 0.7.1",
 ]
 
 [[package]]
@@ -1886,9 +1886,9 @@ checksum = "f162c6dd7b008981e4d40210aca20b4bd0f9b60ca9271061b07f78537722f2e1"
 
 [[package]]
 name = "regex-syntax"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6868896879ba532248f33598de5181522d8b3d9d724dfd230911e1a7d4822f5"
+checksum = "a5996294f19bd3aae0453a862ad728f60e6600695733dd5df01da90c54363a3c"
 
 [[package]]
 name = "rustc-demangle"
@@ -2275,7 +2275,7 @@ dependencies = [
 [[package]]
 name = "sp-arkworks"
 version = "0.4.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
@@ -2294,7 +2294,7 @@ dependencies = [
 [[package]]
 name = "sp-core"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "array-bytes",
  "bitflags",
@@ -2337,7 +2337,7 @@ dependencies = [
 [[package]]
 name = "sp-core-hashing"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "blake2b_simd",
  "byteorder",
@@ -2351,7 +2351,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2361,7 +2361,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -2372,7 +2372,7 @@ dependencies = [
 [[package]]
 name = "sp-io"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "bytes",
  "ed25519",
@@ -2399,7 +2399,7 @@ dependencies = [
 [[package]]
 name = "sp-keystore"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "futures",
  "merlin",
@@ -2414,7 +2414,7 @@ dependencies = [
 [[package]]
 name = "sp-panic-handler"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "backtrace",
  "lazy_static",
@@ -2424,7 +2424,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -2442,7 +2442,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -2454,7 +2454,7 @@ dependencies = [
 [[package]]
 name = "sp-state-machine"
 version = "0.13.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "hash-db",
  "log",
@@ -2474,12 +2474,12 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "5.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 
 [[package]]
 name = "sp-storage"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -2492,7 +2492,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "6.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "parity-scale-codec",
  "sp-std",
@@ -2504,7 +2504,7 @@ dependencies = [
 [[package]]
 name = "sp-trie"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "ahash 0.8.3",
  "hash-db",
@@ -2527,7 +2527,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "7.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#2f8579e6a8b4ebdc5eaa7342b925f6ce8861579f"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration-remove-affine-hostcalls#5bf523a70dad29fec7ff1f9b5090aca5f49f7623"
 dependencies = [
  "anyhow",
  "impl-trait-for-tuples",

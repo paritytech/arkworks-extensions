@@ -206,10 +206,11 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScale<Affine<Self>> = (*base).into();
+        let base: Projective<Self> = (*base).into();
+        let base: ArkScaleProjective<Projective<Self>> = base.into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::bls12_381_mul_affine_g2(base.encode(), scalar.encode()).unwrap();
+        let result = H::bls12_381_mul_projective_g2(base.encode(), scalar.encode()).unwrap();
 
         let result =
             <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
@@ -321,17 +322,11 @@ mod test {
         fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
         }
-        fn bls12_381_mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_mul_affine_g1(base, scalar)
-        }
         fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
         }
         fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
             sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
-        }
-        fn bls12_381_mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_mul_affine_g2(base, scalar)
         }
     }
 
