@@ -177,7 +177,9 @@ impl<H: HostFunctions> SWCurveConfig for JubjubConfig<H> {
 
         let result = H::ed_on_bls12_381_sw_msm(bases.encode(), scalars.encode()).unwrap();
 
-        let result= <ArkScale<sp_ark_models::short_weierstrass::Projective<JubjubConfig<H>>> as Decode>::decode(&mut result.as_slice());
+        let result = <ArkScaleProjective<
+            sp_ark_models::short_weierstrass::Projective<JubjubConfig<H>>,
+        > as Decode>::decode(&mut result.as_slice());
         result.map_err(|_| 0).map(|res| res.0)
     }
 
