@@ -300,6 +300,7 @@ mod test {
     use super::*;
     use crate::g2;
     use crate::HostFunctions;
+    use ark_std::UniformRand;
 
     pub struct Host {}
 
