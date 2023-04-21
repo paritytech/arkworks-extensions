@@ -10,32 +10,32 @@ panic = 'unwind'
 lto = true
 
 [patch.crates-io]
-pallet-timestamp = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-core = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-std = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-io = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-frame-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-frame-support = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-frame-system = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-pallet-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-pallet-balances = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-pallet-grandpa = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-pallet-sudo = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-frame-try-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-frame-system-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-pallet-transaction-payment = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-frame-executive = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-frame-system-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-block-builder = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-consensus-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-session = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-transaction-pool = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-version = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-offchain = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
-sp-inherents = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-remove-affine-hostcalls" }
+pallet-timestamp = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-core = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-std = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-io = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-support = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-system = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-balances = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-grandpa = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-sudo = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-try-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-system-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-transaction-payment = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-executive = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-system-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-block-builder = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-consensus-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-session = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-transaction-pool = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-version = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-offchain = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-inherents = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
 sp-ark-bls12-381 = { git = "https://github.com/paritytech/ark-substrate" }
 sp-ark-bls12-377 = { git = "https://github.com/paritytech/ark-substrate" }
 sp-ark-bw6-761 = { git = "https://github.com/paritytech/ark-substrate" }
