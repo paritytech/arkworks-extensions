@@ -203,7 +203,7 @@ mod test {
 
     use super::*;
     use crate::{fq, g1, HostFunctions};
-    use ark_std::rand::Rng;
+    use ark_std::{rand::Rng, test_rng, UniformRand};
 
     pub struct Host {}
 
@@ -235,7 +235,7 @@ mod test {
     }
 
     fn sample_unchecked() -> Affine<g1::Config<Host>> {
-        let mut rng = ark_std::test_rng();
+        let mut rng = test_rng();
         loop {
             let x = fq::rand(&mut rng);
             let greatest = rng.gen();
