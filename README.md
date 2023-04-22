@@ -70,6 +70,8 @@ Curve instantiation:
 ```rust
 use sp_ark_bls12_377::{Bls12_377 as Bls12_377_Host}
 
+pub struct Host;
+
 impl HostFunctions for Host {
     fn bls12_377_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
         sp_io::elliptic_curves::bls12_377_multi_miller_loop(a, b)
@@ -95,7 +97,7 @@ Curve instantiation:
 ```rust
 use sp_ark_bls12_381::{Bls12_381 as Bls12_381_Host};
 
-pub struct Host {}
+pub struct Host;
 
 impl HostFunctions for Host {
     fn bls12_381_multi_miller_loop(a: Vec<Vec<u8>>, b: Vec<Vec<u8>>) -> Vec<u8> {
@@ -151,7 +153,7 @@ Curve instatiation:
 ```rust
 use sp_ark_ed_on_bls12_377::{EdwardsProjective as EdwardsProjective_Host}
 
-pub struct Host {}
+pub struct Host;
 
 impl HostFunctions for Host {
     fn ed_on_bls12_377_msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
@@ -169,7 +171,7 @@ Curve instantiation:
 ```rust
 us sp_ark_ed_on_bls12_381::{SWProjective as SWProjective_Host, EdwardsProjective as EdwardsProjective_Host}
 
-pub struct Host {}
+pub struct Host;
 
 impl HostFunctions for Host {
     fn ed_on_bls12_381_sw_mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
