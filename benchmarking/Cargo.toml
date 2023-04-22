@@ -10,32 +10,32 @@ panic = 'unwind'
 lto = true
 
 [patch.crates-io]
-pallet-timestamp = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-core = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-std = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-io = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-frame-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-frame-support = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-frame-system = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-pallet-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-pallet-balances = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-pallet-grandpa = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-pallet-sudo = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-frame-try-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-frame-system-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-pallet-transaction-payment = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-frame-executive = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-frame-system-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-block-builder = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-consensus-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-session = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-transaction-pool = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-version = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-offchain = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
-sp-inherents = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration-bandersnatch" }
+pallet-timestamp = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-core = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-std = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-io = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-support = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-system = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-balances = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-grandpa = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-sudo = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-try-runtime = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-system-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-transaction-payment = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-executive = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+frame-system-benchmarking = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-api = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-block-builder = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-consensus-aura = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-session = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-transaction-pool = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-version = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-offchain = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
+sp-inherents = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration" }
 sp-ark-bls12-381 = { git = "https://github.com/paritytech/ark-substrate" }
 sp-ark-bls12-377 = { git = "https://github.com/paritytech/ark-substrate" }
 sp-ark-bw6-761 = { git = "https://github.com/paritytech/ark-substrate" }
