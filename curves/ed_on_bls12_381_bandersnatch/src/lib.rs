@@ -31,7 +31,7 @@
 
 #[cfg(feature = "r1cs")]
 pub mod constraints;
-mod curves;
+pub mod curves;
 
 pub use ark_ed_on_bls12_381_bandersnatch::{fq, fq::*, fr, fr::*};
 pub use curves::*;

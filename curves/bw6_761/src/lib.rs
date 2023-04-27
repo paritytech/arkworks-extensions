@@ -29,7 +29,7 @@
 //! * A = 0
 //! * B = 4
 
-mod curves;
+pub mod curves;
 
 pub use ark_bw6_761::{fq, fq3, fq6, fr, Fq, Fq3Config, Fq6Config, Fr};
 pub use curves::*;

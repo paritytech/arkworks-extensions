@@ -25,7 +25,7 @@
 
 #[cfg(feature = "r1cs")]
 pub use ark_ed_on_bls12_377::constraints::*;
-mod curves;
+pub mod curves;
 
 pub use ark_ed_on_bls12_377::{fq, fr, Fq, FqConfig, Fr, FrConfig};
 pub use curves::*;
