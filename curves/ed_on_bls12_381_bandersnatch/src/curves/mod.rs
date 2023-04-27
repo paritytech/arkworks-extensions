@@ -17,11 +17,11 @@ type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 #[cfg(test)]
 mod tests;
 
-pub type EdwardsAffine<H> = Affine<BandersnatchConfig<H>>;
-pub type EdwardsProjective<H> = Projective<BandersnatchConfig<H>>;
+pub type EdwardsAffine = Affine<BandersnatchConfig<Host>>;
+pub type EdwardsProjective = Projective<BandersnatchConfig<Host>>;
 
-pub type SWAffine<H> = short_weierstrass::Affine<BandersnatchConfig<H>>;
-pub type SWProjective<H> = short_weierstrass::Projective<BandersnatchConfig<H>>;
+pub type SWAffine = short_weierstrass::Affine<BandersnatchConfig<Host>>;
+pub type SWProjective = short_weierstrass::Projective<BandersnatchConfig<Host>>;
 
 /// `bandersnatch` is an incomplete twisted Edwards curve. These curves have
 /// equations of the form: ax² + y² = 1 + dx²y².
@@ -58,8 +58,8 @@ pub type SWProjective<H> = short_weierstrass::Projective<BandersnatchConfig<H>>;
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct BandersnatchConfig<H: HostFunctions>(PhantomData<fn() -> H>);
 
-pub type EdwardsConfig<H> = BandersnatchConfig<H>;
-pub type SWConfig<H> = BandersnatchConfig<H>;
+pub type EdwardsConfig = BandersnatchConfig<Host>;
+pub type SWConfig = BandersnatchConfig<Host>;
 
 pub trait HostFunctions: 'static {
     fn ed_on_bls12_381_bandersnatch_te_msm(bases: Vec<u8>, scalars: Vec<u8>)
@@ -74,6 +74,35 @@ pub trait HostFunctions: 'static {
         base: Vec<u8>,
         scalar: Vec<u8>,
     ) -> Result<Vec<u8>, ()>;
+}
+
+pub struct Host {}
+
+impl HostFunctions for Host {
+    fn ed_on_bls12_381_bandersnatch_te_msm(
+        bases: Vec<u8>,
+        scalars: Vec<u8>,
+    ) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_te_msm(bases, scalars)
+    }
+    fn ed_on_bls12_381_bandersnatch_sw_msm(
+        bases: Vec<u8>,
+        scalars: Vec<u8>,
+    ) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_sw_msm(bases, scalars)
+    }
+    fn ed_on_bls12_381_bandersnatch_te_mul_projective(
+        base: Vec<u8>,
+        scalar: Vec<u8>,
+    ) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_te_mul_projective(base, scalar)
+    }
+    fn ed_on_bls12_381_bandersnatch_sw_mul_projective(
+        base: Vec<u8>,
+        scalar: Vec<u8>,
+    ) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_sw_mul_projective(base, scalar)
+    }
 }
 
 impl<H: HostFunctions> CurveConfig for BandersnatchConfig<H> {
@@ -99,8 +128,7 @@ impl<H: HostFunctions> TECurveConfig for BandersnatchConfig<H> {
         MontFp!("45022363124591815672509500913686876175488063829319466900776701791074614335719");
 
     /// AFFINE_GENERATOR_COEFFS = (GENERATOR_X, GENERATOR_Y)
-    const GENERATOR: EdwardsAffine<H> =
-        EdwardsAffine::new_unchecked(TE_GENERATOR_X, TE_GENERATOR_Y);
+    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(TE_GENERATOR_X, TE_GENERATOR_Y);
 
     type MontCurveConfig = BandersnatchConfig<H>;
 
@@ -201,26 +229,31 @@ impl<H: HostFunctions> SWCurveConfig for BandersnatchConfig<H> {
         MontFp!("29569587568322301171008055308580903175558631321415017492731745847794083609535");
 
     /// generators
-    const GENERATOR: SWAffine<H> = SWAffine::<H>::new_unchecked(SW_GENERATOR_X, SW_GENERATOR_Y);
+    const GENERATOR: ark_ec::short_weierstrass::Affine<Self> =
+        ark_ec::short_weierstrass::Affine::<Self>::new_unchecked(SW_GENERATOR_X, SW_GENERATOR_Y);
 
     fn msm(
-        bases: &[SWAffine<H>],
+        bases: &[ark_ec::short_weierstrass::Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
-    ) -> Result<SWProjective<H>, usize> {
-        let bases: ArkScale<&[SWAffine<H>]> = bases.into();
+    ) -> Result<ark_ec::short_weierstrass::Projective<Self>, usize> {
+        let bases: ArkScale<&[ark_ec::short_weierstrass::Affine<Self>]> = bases.into();
         let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
 
         let result =
             H::ed_on_bls12_381_bandersnatch_sw_msm(bases.encode(), scalars.encode()).unwrap();
 
-        let result = <ArkScaleProjective<
-            sp_ark_models::short_weierstrass::Projective<BandersnatchConfig<H>>,
-        > as Decode>::decode(&mut result.as_slice());
+        let result =
+            <ArkScaleProjective<ark_ec::short_weierstrass::Projective<Self>> as Decode>::decode(
+                &mut result.as_slice(),
+            );
         result.map_err(|_| 0).map(|res| res.0)
     }
 
-    fn mul_projective(base: &SWProjective<H>, scalar: &[u64]) -> SWProjective<H> {
-        let base: ArkScaleProjective<SWProjective<H>> = (*base).into();
+    fn mul_projective(
+        base: &ark_ec::short_weierstrass::Projective<Self>,
+        scalar: &[u64],
+    ) -> ark_ec::short_weierstrass::Projective<Self> {
+        let base: ArkScaleProjective<ark_ec::short_weierstrass::Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
         let result =
@@ -228,13 +261,18 @@ impl<H: HostFunctions> SWCurveConfig for BandersnatchConfig<H> {
                 .unwrap();
 
         let result =
-            <ArkScaleProjective<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
+            <ArkScaleProjective<ark_ec::short_weierstrass::Projective<Self>> as Decode>::decode(
+                &mut result.as_slice(),
+            );
         result.unwrap().0
     }
 
-    fn mul_affine(base: &SWAffine<H>, scalar: &[u64]) -> SWProjective<H> {
-        let base: SWProjective<H> = (*base).into();
-        let base: ArkScaleProjective<SWProjective<H>> = base.into();
+    fn mul_affine(
+        base: &ark_ec::short_weierstrass::Affine<Self>,
+        scalar: &[u64],
+    ) -> ark_ec::short_weierstrass::Projective<Self> {
+        let base: ark_ec::short_weierstrass::Projective<Self> = (*base).into();
+        let base: ArkScaleProjective<ark_ec::short_weierstrass::Projective<Self>> = base.into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
         let result =
@@ -242,7 +280,9 @@ impl<H: HostFunctions> SWCurveConfig for BandersnatchConfig<H> {
                 .unwrap();
 
         let result =
-            <ArkScaleProjective<SWProjective<H>> as Decode>::decode(&mut result.as_slice());
+            <ArkScaleProjective<ark_ec::short_weierstrass::Projective<Self>> as Decode>::decode(
+                &mut result.as_slice(),
+            );
         result.unwrap().0
     }
 }

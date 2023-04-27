@@ -18,27 +18,32 @@ sp-ark-bls12-381 = { version = "0.4.0", path = "../bls12_381", default-features 
 sp-ark-models = { path = "../../models", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { git = "https://github.com/w3f/ark-scale", features = ["hazmat"], default-features = false }
-ark-ed-on-bls12-381-bandersnatch = { version = "0.4.0",default-features = false }
+ark-ed-on-bls12-381-bandersnatch = { version = "0.4.0", default-features = false }
+sp-io =  { version = "7.0.0",  default-features = false }
+ark-ec = { version = "0.4.0", default-features = false }
 
 [dev-dependencies]
 ark-relations = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.0", default-features = false }
 ark-algebra-test-templates = { version = "0.4.0", default-features = false }
 ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-features = false }
-sp-io =  { version = "7.0.0",  default-features = false }
-ark-ec = { version = "0.4.0", default-features = false }
 
 [features]
-default = []
+default = ["std"]
 std = [
-    "ark-std/std",
     "ark-ff/std",
+    "ark-std/std",
+    "ark-r1cs-std/std",
     "sp-ark-bls12-381/std",
     "sp-ark-models/std", 
     "codec/std",
     "ark-scale/std",
     "ark-ed-on-bls12-381-bandersnatch/std",
     "sp-io/std", 
+    "ark-relations/std",
+    "ark-serialize/std",
+    "ark-algebra-test-templates/std",
+    "ark-curve-constraint-tests/std",
     "ark-ec/std",
 ]
 r1cs = ["ark-r1cs-std"]

@@ -23,7 +23,7 @@ ark-scale = { git = "https://github.com/w3f/ark-scale", features = ["hazmat"], d
 sp-io =  { version = "7.0.0",  default-features = false }
 
 [dev-dependencies]
-ark-relations = { git = "https://github.com/arkworks-rs/snark", default-features = false }
+ark-relations = { version = "0.4.0", default-features = false }
 ark-algebra-test-templates = { version = "0.4.0", default-features = false }
 ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-features = false }
 ark-ec = { version = "0.4.0", default-features = false }
@@ -37,12 +37,12 @@ std = [
      "ark-serialize/std",
      "ark-r1cs-std/std",
      "sp-ark-models/std", 
-     "ark-relations/std",
      "codec/std",
      "ark-scale/std",
+     "sp-io/std",
+     "ark-relations/std",
      "ark-algebra-test-templates/std",
      "ark-curve-constraint-tests/std",
      "ark-ec/std", 
-     "sp-io/std",
 ]
 r1cs = [ "ark-r1cs-std" ]
