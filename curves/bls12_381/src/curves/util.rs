@@ -4,10 +4,7 @@ use ark_std::vec::Vec;
 use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
 use crate::HostFunctions;
-use crate::{
-    g1::{Config as G1Config, G1Affine},
-    g2::{Config as G2Config, G2Affine},
-};
+use crate::{g1::Config as G1Config, g2::Config as G2Config};
 use ark_bls12_381::{fq::Fq, fq2::Fq2};
 pub const G1_SERIALIZED_SIZE: usize = 48;
 pub const G2_SERIALIZED_SIZE: usize = 96;
@@ -110,13 +107,13 @@ pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     if flags.is_infinity {
-        return Ok(G1Affine::zero());
+        return Ok(Affine::<G1Config<H>>::zero());
     }
 
     // Attempt to obtain the x-coordinate
     let x = read_fq_with_offset(bytes.to_vec(), 0, true)?;
 
-    let p = G1Affine::get_point_from_x_unchecked(x, flags.is_lexographically_largest)
+    let p = Affine::<G1Config<H>>::get_point_from_x_unchecked(x, flags.is_lexographically_largest)
         .ok_or(SerializationError::InvalidData)?;
 
     Ok(p)
@@ -139,7 +136,7 @@ pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     if flags.is_infinity {
-        return Ok(G1Affine::zero());
+        return Ok(Affine::<G1Config<H>>::zero());
     }
 
     // Attempt to obtain the x-coordinate
@@ -147,7 +144,7 @@ pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     // Attempt to obtain the y-coordinate
     let y = read_fq_with_offset(bytes.to_vec(), 1, false)?;
 
-    let p = G1Affine::new_unchecked(x, y);
+    let p = Affine::<G1Config<H>>::new_unchecked(x, y);
 
     Ok(p)
 }
@@ -169,7 +166,7 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     if flags.is_infinity {
-        return Ok(G2Affine::zero());
+        return Ok(Affine::<G2Config<H>>::zero());
     }
 
     // Attempt to obtain the x-coordinate
@@ -178,7 +175,7 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
 
     let x = Fq2::new(xc0, xc1);
 
-    let p = G2Affine::get_point_from_x_unchecked(x, flags.is_lexographically_largest)
+    let p = Affine::<G2Config<H>>::get_point_from_x_unchecked(x, flags.is_lexographically_largest)
         .ok_or(SerializationError::InvalidData)?;
 
     Ok(p)
@@ -201,7 +198,7 @@ pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     }
 
     if flags.is_infinity {
-        return Ok(G2Affine::zero());
+        return Ok(Affine::<G2Config<H>>::zero());
     }
 
     // Attempt to obtain the x-coordinate
@@ -214,7 +211,7 @@ pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     let yc0 = read_fq_with_offset(bytes.to_vec(), 3, false)?;
     let y = Fq2::new(yc0, yc1);
 
-    let p = G2Affine::new_unchecked(x, y);
+    let p = Affine::<G2Config<H>>::new_unchecked(x, y);
 
     Ok(p)
 }

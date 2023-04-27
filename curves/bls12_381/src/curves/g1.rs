@@ -15,8 +15,8 @@ use crate::util::{
 use crate::{ArkScale, HostFunctions};
 use ark_bls12_381::{fr::Fr, Fq};
 
-pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
-pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
+pub type G1Affine = bls12::G1Affine<crate::Config<crate::curves::Host>>;
+pub type G1Projective = bls12::G1Projective<crate::Config<crate::curves::Host>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
@@ -43,7 +43,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     const COEFF_B: Fq = MontFp!("4");
 
     /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
-    const GENERATOR: G1Affine<H> = G1Affine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
+    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
     #[inline(always)]
     fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
@@ -51,7 +51,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     #[inline]
-    fn is_in_correct_subgroup_assuming_on_curve(p: &G1Affine<H>) -> bool {
+    fn is_in_correct_subgroup_assuming_on_curve(p: &Affine<Self>) -> bool {
         // Algorithm from Section 6 of https://eprint.iacr.org/2021/1130.
         //
         // Check that endomorphism_p(P) == -[X^2]P
@@ -70,7 +70,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     #[inline]
-    fn clear_cofactor(p: &G1Affine<H>) -> G1Affine<H> {
+    fn clear_cofactor(p: &Affine<Self>) -> Affine<Self> {
         // Using the effective cofactor, as explained in
         // Section 5 of https://eprint.iacr.org/2019/403.pdf.
         //
@@ -110,7 +110,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         };
         let mut p = *item;
         if encoding.is_infinity {
-            p = G1Affine::zero();
+            p = Affine::<Self>::zero();
         }
         // need to access the field struct `x` directly, otherwise we get None from xy()
         // method
@@ -207,33 +207,10 @@ pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>
 mod test {
 
     use super::*;
-    use crate::{fq::Fq, g1, HostFunctions};
+    use crate::fq::Fq;
     use ark_std::{rand::Rng, test_rng, UniformRand};
 
-    pub struct Host {}
-
-    impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
-        }
-        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
-        }
-        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
-        }
-        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
-        }
-    }
-
-    fn sample_unchecked() -> Affine<g1::Config<Host>> {
+    fn sample_unchecked() -> G1Affine {
         let mut rng = test_rng();
         loop {
             let x = Fq::rand(&mut rng);
@@ -249,7 +226,7 @@ mod test {
     fn test_cofactor_clearing() {
         const SAMPLES: usize = 100;
         for _ in 0..SAMPLES {
-            let p: Affine<g1::Config<Host>> = sample_unchecked();
+            let p: G1Affine = sample_unchecked();
             let p = p.clear_cofactor();
             assert!(p.is_on_curve());
             assert!(p.is_in_correct_subgroup_assuming_on_curve());

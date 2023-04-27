@@ -55,14 +55,14 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     const COEFF_B: Fq2 = Fq2::new(g1::Config::<H>::COEFF_B, g1::Config::<H>::COEFF_B);
 
     /// AFFINE_GENERATOR_COEFFS = (G2_GENERATOR_X, G2_GENERATOR_Y)
-    const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
+    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
 
     #[inline(always)]
     fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
         Self::BaseField::zero()
     }
 
-    fn is_in_correct_subgroup_assuming_on_curve(point: &G2Affine<H>) -> bool {
+    fn is_in_correct_subgroup_assuming_on_curve(point: &Affine<Self>) -> bool {
         // Algorithm From Section 4 of https://eprint.iacr.org/2021/1130.
         //
         // Checks that [p]P = [X]P
@@ -78,7 +78,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     }
 
     #[inline]
-    fn clear_cofactor(p: &G2Affine<H>) -> G2Affine<H> {
+    fn clear_cofactor(p: &Affine<Self>) -> Affine<Self> {
         // Based on Section 4.1 of https://eprint.iacr.org/2017/419.pdf
         // [h(ψ)]P = [x^2 − x − 1]P + [x − 1]ψ(P) + (ψ^2)(2P)
 
@@ -141,7 +141,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         };
         let mut p = *item;
         if encoding.is_infinity {
-            p = G2Affine::zero();
+            p = Affine::<Self>::zero();
         }
 
         let mut x_bytes = [0u8; G2_SERIALIZED_SIZE];
@@ -301,34 +301,9 @@ fn double_p_power_endomorphism<H: HostFunctions>(
 
 #[cfg(test)]
 mod test {
-
     use super::*;
     use crate::g2;
-    use crate::HostFunctions;
     use ark_std::UniformRand;
-
-    pub struct Host {}
-
-    impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
-        }
-        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
-        }
-        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
-        }
-        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
-        }
-    }
 
     #[test]
     fn test_cofactor_clearing() {
@@ -350,9 +325,9 @@ mod test {
         let mut rng = ark_std::test_rng();
         const SAMPLES: usize = 10;
         for _ in 0..SAMPLES {
-            let p = Affine::<g2::Config<Host>>::rand(&mut rng);
+            let p = G2Affine::rand(&mut rng);
             let optimised = p.clear_cofactor().into_group();
-            let naive = g2::Config::<Host>::mul_affine(&p, h_eff);
+            let naive = g2::Config::<crate::Host>::mul_affine(&p, h_eff);
             assert_eq!(optimised, naive);
         }
     }
