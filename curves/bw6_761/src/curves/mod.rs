@@ -33,6 +33,30 @@ pub trait HostFunctions: 'static {
     fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
+#[derive(PartialEq, Eq)]
+pub struct Host;
+
+impl HostFunctions for Host {
+    fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::bw6_761_multi_miller_loop(a, b)
+    }
+    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::bw6_761_final_exponentiation(f12)
+    }
+    fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::bw6_761_msm_g1(bases, bigints)
+    }
+    fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::bw6_761_msm_g2(bases, bigints)
+    }
+    fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::bw6_761_mul_projective_g1(base, scalar)
+    }
+    fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
+        sp_io::elliptic_curves::bw6_761_mul_projective_g2(base, scalar)
+    }
+}
+
 impl<H: HostFunctions> BW6Config for Config<H> {
     const X: BigInteger = BigInt::new([
         0x8508c00000000001,
@@ -114,4 +138,4 @@ impl<H: HostFunctions> BW6Config for Config<H> {
     }
 }
 
-pub type BW6_761<H> = BW6<Config<H>>;
+pub type BW6_761 = BW6<Config<Host>>;

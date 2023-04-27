@@ -10,8 +10,8 @@ use sp_ark_models::{
 
 use crate::{ArkScale, Fq, Fr, HostFunctions};
 
-pub type G2Affine<H> = bw6::G2Affine<crate::Config<H>>;
-pub type G2Projective<H> = bw6::G2Projective<crate::Config<H>>;
+pub type G2Affine = bw6::G2Affine<crate::Config<crate::curves::Host>>;
+pub type G2Projective = bw6::G2Projective<crate::Config<crate::curves::Host>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
@@ -46,7 +46,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     const COEFF_B: Fq = MontFp!("4");
 
     /// AFFINE_GENERATOR_COEFFS = (G2_GENERATOR_X, G2_GENERATOR_Y)
-    const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
+    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
 
     #[inline(always)]
     fn mul_by_a(_elem: Self::BaseField) -> Self::BaseField {
