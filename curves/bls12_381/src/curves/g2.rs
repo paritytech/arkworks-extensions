@@ -15,8 +15,8 @@ use super::util::{
 use crate::{g1, ArkScale, HostFunctions};
 use ark_bls12_381::{fq2::Fq2, fr::Fr, Fq};
 
-pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
-pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
+pub type G2Affine = bls12::G2Affine<crate::Config<crate::Host>>;
+pub type G2Projective = bls12::G2Projective<crate::Config<crate::Host>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 

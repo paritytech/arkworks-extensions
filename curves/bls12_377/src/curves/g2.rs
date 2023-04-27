@@ -9,8 +9,8 @@ use sp_ark_models::{
     CurveConfig,
 };
 
-pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
-pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
+pub type G2Affine = bls12::G2Affine<crate::curves::Config<crate::curves::Host>>;
+pub type G2Projective = bls12::G2Projective<crate::curves::Config<crate::curves::Host>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
@@ -55,7 +55,7 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
     );
 
     /// AFFINE_GENERATOR_COEFFS = (G2_GENERATOR_X, G2_GENERATOR_Y)
-    const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
+    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
 
     #[inline(always)]
     fn mul_by_a(_: Self::BaseField) -> Self::BaseField {

@@ -12,8 +12,8 @@ use sp_ark_models::{
     CurveConfig,
 };
 
-pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
-pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
+pub type G1Affine = bls12::G1Affine<crate::curves::Config<crate::curves::Host>>;
+pub type G1Projective = bls12::G1Projective<crate::curves::Config<crate::curves::Host>>;
 
 use crate::{ArkScale, Fq, Fr, HostFunctions};
 

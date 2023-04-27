@@ -20,10 +20,10 @@ sp-arkworks = { version = "0.4.0", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { git = "https://github.com/w3f/ark-scale", default-features = false }
 ark-serialize = { version = "0.4.0", default-features = false }
+sp-io =  { version = "7.0.0", default-features = false }
 
 [dev-dependencies] 
 ark-algebra-test-templates = { version = "0.4.0", default-features = false }
-sp-io =  { version = "7.0.0", default-features = false }
 hex = { version = "^0.4.0", default-features = false }
 ark-ec = { version = "0.4.0", default-features = false }
 
