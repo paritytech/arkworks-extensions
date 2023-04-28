@@ -38,6 +38,5 @@ std = [
     "ark-scale/std",
     "sp-io/std",
     "ark-ec/std",
-    "ark-algebra-test-templates/std", 
     "ark-serialize/std", 
 ]
