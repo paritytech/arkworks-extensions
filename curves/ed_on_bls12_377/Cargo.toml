@@ -1,6 +1,6 @@
 [package]
 name = "sp-ark-ed-on-bls12-377"
-version = "0.4.0"
+version = "0.4.0-alpha"
 authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
 repository = "https://github.com/paritytech/ark-substrate"
 description = "A Twisted Edwards curve defined over the scalar field of the BLS12-377 curve, optimized for Substrate"
@@ -17,7 +17,7 @@ ark-std = { version = "0.4.0", default-features = false }
 ark-ed-on-bls12-377 = { version = "0.4.0",default-features = false }
 ark-serialize = { version = "0.4.0", default-features = false }
 ark-r1cs-std = { version = "0.4.0", default-features = false, optional = true }
-sp-ark-models = { path = "../../models", default-features = false }
+sp-ark-models = { path = "../../models", version = "0.4.0-alpha", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { git = "https://github.com/w3f/ark-scale", version = "0.0.2", features = ["hazmat"], default-features = false }
 sp-io =  { version = "7.0.0",  default-features = false }
