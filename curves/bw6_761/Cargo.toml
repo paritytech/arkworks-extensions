@@ -16,10 +16,10 @@ ark-ff = { version="0.4.0-alpha", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-bw6-761 = { version = "0.4.0",default-features = false }
 sp-ark-models = { path = "../../models", version = "0.4.0-alpha", default-features = false }
-sp-arkworks = { version = "0.4.0", default-features = false }
+sp-arkworks = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "0.4.0", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { git = "https://github.com/w3f/ark-scale", version = "0.0.2", default-features = false }
-sp-io =  { version = "7.0.0",  default-features = false }
+sp-io =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "7.0.0",  default-features = false }
 
 [dev-dependencies]
 ark-ec = { version = "0.4.0", default-features = false }
