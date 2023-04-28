@@ -42,7 +42,6 @@ std = [
     "ark-scale/std",
     "sp-io/std",
     "ark-relations/std",  
-    "ark-ec/std",
     "ark-curve-constraint-tests/std",
     "ark-serialize/std",
 ]

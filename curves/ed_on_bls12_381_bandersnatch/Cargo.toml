@@ -43,6 +43,5 @@ std = [
     "ark-relations/std",
     "ark-serialize/std",
     "ark-curve-constraint-tests/std",
-    "ark-ec/std",
 ]
 r1cs = ["ark-r1cs-std"]

@@ -30,7 +30,6 @@ itertools = { version = "0.10", default-features = false }
 default = [ "std" ]
 std = [ 
     "ark-ff/std",
-    "ark-ec/std",
     "ark-std/std", 
     "ark-serialize/std",
     "num-traits/std",

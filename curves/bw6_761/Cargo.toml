@@ -37,6 +37,5 @@ std = [
     "codec/std",
     "ark-scale/std",
     "sp-io/std",
-    "ark-ec/std",
     "ark-serialize/std", 
 ]
