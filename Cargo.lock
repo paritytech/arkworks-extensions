@@ -2168,7 +2168,6 @@ dependencies = [
  "ark-std",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-arkworks",
  "sp-io",
 ]
 
@@ -2186,7 +2185,6 @@ dependencies = [
  "hex",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-arkworks",
  "sp-io",
 ]
 
@@ -2203,7 +2201,6 @@ dependencies = [
  "ark-std",
  "parity-scale-codec",
  "sp-ark-models",
- "sp-arkworks",
  "sp-io",
 ]
 

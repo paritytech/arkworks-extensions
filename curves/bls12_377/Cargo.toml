@@ -17,7 +17,6 @@ ark-r1cs-std = { version="0.4.0-alpha", optional = true, default-features = fals
 ark-std = { version = "0.4.0", default-features = false }
 ark-bls12-377 = { version = "0.4.0", features = ["curve"], default-features = false }
 sp-ark-models = { path = "../../models", version = "0.4.0-alpha", default-features = false }
-sp-arkworks = { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "0.4.0", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { git = "https://github.com/w3f/ark-scale", version = "0.0.2", features = ["hazmat"], default-features = false }
 sp-io =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "7.0.0", default-features = false }
@@ -37,7 +36,6 @@ std = [
     "ark-std/std", 
     "ark-bls12-377/std",
     "sp-ark-models/std",
-    "sp-arkworks/std",
     "codec/std",
     "ark-scale/std",
     "sp-io/std",
