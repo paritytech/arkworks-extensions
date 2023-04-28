@@ -19,7 +19,7 @@ ark-serialize = { version = "0.4.0", default-features = false }
 ark-r1cs-std = { version = "0.4.0", default-features = false, optional = true }
 sp-ark-models = { path = "../../models", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
-ark-scale = { git = "https://github.com/w3f/ark-scale", features = ["hazmat"], default-features = false }
+ark-scale = { git = "https://github.com/w3f/ark-scale", version = "0.0.2", features = ["hazmat"], default-features = false }
 sp-io =  { version = "7.0.0",  default-features = false }
 
 [dev-dependencies]
