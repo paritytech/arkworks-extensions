@@ -41,6 +41,5 @@ std = [
     "ark-ed-on-bls12-381-bandersnatch/std",
     "sp-io/std", 
     "ark-serialize/std",
-    "ark-curve-constraint-tests/std",
 ]
 r1cs = ["ark-r1cs-std"]
