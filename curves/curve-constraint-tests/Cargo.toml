@@ -26,7 +26,6 @@ std = [
     "ark-std/std",
     "ark-serialize/std",  
     "ark-ff/std", 
-    "ark-relations/std", 
     "ark-r1cs-std/std",
     "sp-ark-models/std"
 ]

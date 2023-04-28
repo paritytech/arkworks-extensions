@@ -40,7 +40,6 @@ std = [
     "ark-scale/std",
     "ark-ed-on-bls12-381-bandersnatch/std",
     "sp-io/std", 
-    "ark-relations/std",
     "ark-serialize/std",
     "ark-curve-constraint-tests/std",
 ]

@@ -40,7 +40,6 @@ std = [
      "codec/std",
      "ark-scale/std",
      "sp-io/std",
-     "ark-relations/std",
      "ark-curve-constraint-tests/std", 
 ]
 r1cs = [ "ark-r1cs-std" ]
