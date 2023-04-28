@@ -39,7 +39,6 @@ std = [
     "codec/std",
     "ark-scale/std",
     "sp-io/std",
-    "ark-serialize/std",
 ]
 
 curve = [ "scalar_field", "base_field" ]
