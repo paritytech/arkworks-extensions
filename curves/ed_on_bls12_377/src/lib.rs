@@ -27,5 +27,5 @@
 pub use ark_ed_on_bls12_377::constraints::*;
 pub mod curves;
 
-pub use ark_ed_on_bls12_377::{fq, fr, Fq, FqConfig, Fr, FrConfig};
+pub use ark_ed_on_bls12_377::{fq, fq::*, fr, fr::*};
 pub use curves::*;
