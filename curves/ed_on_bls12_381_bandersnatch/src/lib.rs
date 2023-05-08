@@ -30,7 +30,7 @@
 //!    * d = 45022363124591815672509500913686876175488063829319466900776701791074614335719
 
 #[cfg(feature = "r1cs")]
-pub mod constraints;
+pub use ark_ed_on_bls12_381_bandersnatch::constraints;
 pub mod curves;
 
 pub use ark_ed_on_bls12_381_bandersnatch::{fq, fq::*, fr, fr::*};

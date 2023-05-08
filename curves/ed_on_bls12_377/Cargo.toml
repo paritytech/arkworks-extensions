@@ -41,4 +41,4 @@ std = [
      "ark-scale/std",
      "sp-io/std",
 ]
-r1cs = [ "ark-r1cs-std" ]
+r1cs = [ "ark-r1cs-std", "ark-ed-on-bls12-377/r1cs" ]

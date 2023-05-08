@@ -44,5 +44,5 @@ std = [
 curve = [ "scalar_field", "base_field" ]
 scalar_field = []
 base_field = []
-r1cs = [ "base_field", "ark-r1cs-std" ]
+r1cs = [ "base_field", "ark-r1cs-std", "ark-bls12-377/r1cs" ]
 
