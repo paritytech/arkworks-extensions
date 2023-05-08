@@ -10,8 +10,8 @@ use sp_ark_models::{
 
 use crate::{ArkScale, Fq, Fr, HostFunctions};
 
-pub type G1Affine = bw6::G1Affine<crate::Config<crate::curves::Host>>;
-pub type G1Projective = bw6::G1Projective<crate::Config<crate::curves::Host>>;
+pub type G1Affine<H> = bw6::G1Affine<crate::Config<H>>;
+pub type G1Projective<H> = bw6::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 

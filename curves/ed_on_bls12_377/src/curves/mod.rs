@@ -15,26 +15,14 @@ type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 #[cfg(test)]
 mod tests;
 
-pub type EdwardsAffine = Affine<EdwardsConfig<Host>>;
-pub type EdwardsProjective = Projective<EdwardsConfig<Host>>;
+pub type EdwardsAffine<H> = Affine<EdwardsConfig<H>>;
+pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct EdwardsConfig<H: HostFunctions>(PhantomData<fn() -> H>);
-
 pub trait HostFunctions: 'static {
     fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
-}
-
-pub struct Host {}
-
-impl HostFunctions for Host {
-    fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_377_msm(bases, scalars)
-    }
-    fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_377_mul_projective(base, scalar)
-    }
 }
 
 impl<H: HostFunctions> CurveConfig for EdwardsConfig<H> {

@@ -15,8 +15,8 @@ use super::util::{
 use crate::{g1, ArkScale, HostFunctions};
 use ark_bls12_381::{fq2::Fq2, fr::Fr, Fq};
 
-pub type G2Affine = bls12::G2Affine<crate::Config<crate::Host>>;
-pub type G2Projective = bls12::G2Projective<crate::Config<crate::Host>>;
+pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
+pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
@@ -305,6 +305,30 @@ mod test {
     use crate::g2;
     use ark_std::UniformRand;
 
+    #[derive(PartialEq, Eq)]
+    struct Host;
+
+    impl HostFunctions for Host {
+        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
+        }
+        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
+        }
+        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
+        }
+        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
+        }
+        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
+        }
+        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
+        }
+    }
+
     #[test]
     fn test_cofactor_clearing() {
         // multiplying by h_eff and clearing the cofactor by the efficient
@@ -325,9 +349,9 @@ mod test {
         let mut rng = ark_std::test_rng();
         const SAMPLES: usize = 10;
         for _ in 0..SAMPLES {
-            let p = G2Affine::rand(&mut rng);
+            let p = G2Affine::<Host>::rand(&mut rng);
             let optimised = p.clear_cofactor().into_group();
-            let naive = g2::Config::<crate::Host>::mul_affine(&p, h_eff);
+            let naive = g2::Config::<Host>::mul_affine(&p, h_eff);
             assert_eq!(optimised, naive);
         }
     }

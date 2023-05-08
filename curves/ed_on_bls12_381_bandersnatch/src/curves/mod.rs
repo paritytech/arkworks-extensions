@@ -17,11 +17,11 @@ type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 #[cfg(test)]
 mod tests;
 
-pub type EdwardsAffine = Affine<BandersnatchConfig<Host>>;
-pub type EdwardsProjective = Projective<BandersnatchConfig<Host>>;
+pub type EdwardsAffine<H> = Affine<BandersnatchConfig<H>>;
+pub type EdwardsProjective<H> = Projective<BandersnatchConfig<H>>;
 
-pub type SWAffine = short_weierstrass::Affine<BandersnatchConfig<Host>>;
-pub type SWProjective = short_weierstrass::Projective<BandersnatchConfig<Host>>;
+pub type SWAffine<H> = short_weierstrass::Affine<BandersnatchConfig<H>>;
+pub type SWProjective<H> = short_weierstrass::Projective<BandersnatchConfig<H>>;
 
 /// `bandersnatch` is an incomplete twisted Edwards curve. These curves have
 /// equations of the form: ax² + y² = 1 + dx²y².
@@ -58,8 +58,8 @@ pub type SWProjective = short_weierstrass::Projective<BandersnatchConfig<Host>>;
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct BandersnatchConfig<H: HostFunctions>(PhantomData<fn() -> H>);
 
-pub type EdwardsConfig = BandersnatchConfig<Host>;
-pub type SWConfig = BandersnatchConfig<Host>;
+pub type EdwardsConfig<H> = BandersnatchConfig<H>;
+pub type SWConfig<H> = BandersnatchConfig<H>;
 
 pub trait HostFunctions: 'static {
     fn ed_on_bls12_381_bandersnatch_te_msm(bases: Vec<u8>, scalars: Vec<u8>)
@@ -74,35 +74,6 @@ pub trait HostFunctions: 'static {
         base: Vec<u8>,
         scalar: Vec<u8>,
     ) -> Result<Vec<u8>, ()>;
-}
-
-pub struct Host {}
-
-impl HostFunctions for Host {
-    fn ed_on_bls12_381_bandersnatch_te_msm(
-        bases: Vec<u8>,
-        scalars: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_te_msm(bases, scalars)
-    }
-    fn ed_on_bls12_381_bandersnatch_sw_msm(
-        bases: Vec<u8>,
-        scalars: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_sw_msm(bases, scalars)
-    }
-    fn ed_on_bls12_381_bandersnatch_te_mul_projective(
-        base: Vec<u8>,
-        scalar: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_te_mul_projective(base, scalar)
-    }
-    fn ed_on_bls12_381_bandersnatch_sw_mul_projective(
-        base: Vec<u8>,
-        scalar: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_sw_mul_projective(base, scalar)
-    }
 }
 
 impl<H: HostFunctions> CurveConfig for BandersnatchConfig<H> {

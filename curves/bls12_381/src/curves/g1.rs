@@ -15,8 +15,8 @@ use crate::util::{
 use crate::{ArkScale, HostFunctions};
 use ark_bls12_381::{fr::Fr, Fq};
 
-pub type G1Affine = bls12::G1Affine<crate::Config<crate::curves::Host>>;
-pub type G1Projective = bls12::G1Projective<crate::Config<crate::curves::Host>>;
+pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
+pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
@@ -205,18 +205,41 @@ pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>
 
 #[cfg(test)]
 mod test {
-
-    use super::*;
-    use crate::fq::Fq;
+    use crate::{fq::Fq, G1Affine, HostFunctions};
     use ark_std::{rand::Rng, test_rng, UniformRand};
+    use sp_ark_models::AffineRepr;
 
-    fn sample_unchecked() -> G1Affine {
+    #[derive(PartialEq, Eq)]
+    struct Host;
+
+    impl HostFunctions for Host {
+        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
+        }
+        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
+        }
+        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
+        }
+        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
+        }
+        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
+        }
+        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
+            sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
+        }
+    }
+
+    fn sample_unchecked() -> G1Affine<Host> {
         let mut rng = test_rng();
         loop {
             let x = Fq::rand(&mut rng);
             let greatest = rng.gen();
 
-            if let Some(p) = Affine::get_point_from_x_unchecked(x, greatest) {
+            if let Some(p) = super::Affine::get_point_from_x_unchecked(x, greatest) {
                 return p;
             }
         }
@@ -226,7 +249,7 @@ mod test {
     fn test_cofactor_clearing() {
         const SAMPLES: usize = 100;
         for _ in 0..SAMPLES {
-            let p: G1Affine = sample_unchecked();
+            let p: G1Affine<Host> = sample_unchecked();
             let p = p.clear_cofactor();
             assert!(p.is_on_curve());
             assert!(p.is_in_correct_subgroup_assuming_on_curve());

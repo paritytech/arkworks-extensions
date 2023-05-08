@@ -9,8 +9,8 @@ use sp_ark_models::{
     CurveConfig,
 };
 
-pub type G2Affine = bls12::G2Affine<crate::curves::Config<crate::curves::Host>>;
-pub type G2Projective = bls12::G2Projective<crate::curves::Config<crate::curves::Host>>;
+pub type G2Affine<H> = bls12::G2Affine<crate::curves::Config<H>>;
+pub type G2Projective<H> = bls12::G2Projective<crate::curves::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
