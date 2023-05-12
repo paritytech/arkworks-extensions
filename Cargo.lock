@@ -290,8 +290,8 @@ dependencies = [
 
 [[package]]
 name = "ark-scale"
-version = "0.0.2"
-source = "git+https://github.com/w3f/ark-scale#2da0a330df465a7e1691a9ef86f7511469f5312a"
+version = "0.4.0-beta"
+source = "git+https://github.com/w3f/ark-scale#b45db6711963b268e0566c8317c9b51e290c4516"
 dependencies = [
  "ark-ec",
  "ark-serialize",
@@ -2803,7 +2803,7 @@ checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
  "digest 0.10.6",
- "rand 0.8.5",
+ "rand 0.7.3",
  "static_assertions",
 ]
 
