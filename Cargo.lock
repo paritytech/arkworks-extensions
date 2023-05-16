@@ -290,9 +290,9 @@ dependencies = [
 
 [[package]]
 name = "ark-scale"
-version = "0.0.2"
+version = "0.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4daeb7e99c43cfc49e61335d184284b5837113f1d0ec8c32902b482f2be850c"
+checksum = "4d028cd1025d002fa88c10cd644d29028a7b40806579b608c6ba843b937bbb23"
 dependencies = [
  "ark-ec",
  "ark-serialize",
@@ -2108,7 +2108,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale 0.0.2",
+ "ark-scale 0.0.3",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -2124,7 +2124,7 @@ dependencies = [
  "ark-bls12-381",
  "ark-ec",
  "ark-ff",
- "ark-scale 0.0.2",
+ "ark-scale 0.0.3",
  "ark-serialize",
  "ark-std",
  "hex",
@@ -2141,7 +2141,7 @@ dependencies = [
  "ark-bw6-761",
  "ark-ec",
  "ark-ff",
- "ark-scale 0.0.2",
+ "ark-scale 0.0.3",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -2160,7 +2160,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale 0.0.2",
+ "ark-scale 0.0.3",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -2179,7 +2179,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale 0.0.2",
+ "ark-scale 0.0.3",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
