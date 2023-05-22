@@ -21,7 +21,7 @@ ark-scale = { version = "0.0.3", features = ["hazmat"], default-features = false
 ark-serialize = { version = "0.4.2", default-features = false }
 
 [dev-dependencies] 
-sp-io =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "7.0.0", default-features = false }
+sp-crypto-ec-utils =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "0.4.0", default-features = false, features = ["ec-utils-experimental"] }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
 hex = { version = "^0.4.0", default-features = false }
 ark-ec = { version = "0.4.2", default-features = false }
@@ -36,7 +36,7 @@ std = [
     "codec/std",
     "ark-scale/std",
     "ark-serialize/std",
-    "sp-io/std",
+    "sp-crypto-ec-utils/std",
 ]
 
 curve = [ "scalar_field" ]

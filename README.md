@@ -75,22 +75,22 @@ pub struct Host {}
 
 impl HostFunctions for Host {
     fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_377_multi_miller_loop(a, b)
+        sp_crypto_ec_utils::elliptic_curves::bls12_377_multi_miller_loop(a, b)
     }
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_377_final_exponentiation(f12)
+        sp_crypto_ec_utils::elliptic_curves::bls12_377_final_exponentiation(f12)
     }
     fn bls12_377_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_377_msm_g1(bases, bigints)
+        sp_crypto_ec_utils::elliptic_curves::bls12_377_msm_g1(bases, bigints)
     }
     fn bls12_377_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_377_msm_g2(bases, bigints)
+        sp_crypto_ec_utils::elliptic_curves::bls12_377_msm_g2(bases, bigints)
     }
     fn bls12_377_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_377_mul_projective_g1(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::bls12_377_mul_projective_g1(base, scalar)
     }
     fn bls12_377_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_377_mul_projective_g2(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::bls12_377_mul_projective_g2(base, scalar)
     }
 }
 
@@ -110,22 +110,22 @@ pub struct Host {}
 
 impl HostFunctions for Host {
     fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_381_multi_miller_loop(a, b)
+        sp_crypto_ec_utils::elliptic_curves::bls12_381_multi_miller_loop(a, b)
     }
     fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_381_final_exponentiation(f12)
+        sp_crypto_ec_utils::elliptic_curves::bls12_381_final_exponentiation(f12)
     }
     fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_381_msm_g1(bases, bigints)
+        sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g1(bases, bigints)
     }
     fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_381_msm_g2(bases, bigints)
+        sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g2(bases, bigints)
     }
     fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
     }
     fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
     }
 }
 
@@ -145,22 +145,22 @@ pub struct Host;
 
 impl HostFunctions for Host {
     fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bw6_761_multi_miller_loop(a, b)
+        sp_crypto_ec_utils::elliptic_curves::bw6_761_multi_miller_loop(a, b)
     }
     fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bw6_761_final_exponentiation(f12)
+        sp_crypto_ec_utils::elliptic_curves::bw6_761_final_exponentiation(f12)
     }
     fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bw6_761_msm_g1(bases, bigints)
+        sp_crypto_ec_utils::elliptic_curves::bw6_761_msm_g1(bases, bigints)
     }
     fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bw6_761_msm_g2(bases, bigints)
+        sp_crypto_ec_utils::elliptic_curves::bw6_761_msm_g2(bases, bigints)
     }
     fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bw6_761_mul_projective_g1(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::bw6_761_mul_projective_g1(base, scalar)
     }
     fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::bw6_761_mul_projective_g2(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::bw6_761_mul_projective_g2(base, scalar)
     }
 }
 
@@ -178,10 +178,10 @@ pub struct Host;
 
 impl HostFunctions for Host {
     fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_377_msm(bases, scalars)
+        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_377_msm(bases, scalars)
     }
     fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_377_mul_projective(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_377_mul_projective(base, scalar)
     }
 }
 
@@ -202,25 +202,25 @@ impl HostFunctions for Host {
         bases: Vec<u8>,
         scalars: Vec<u8>,
     ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_te_msm(bases, scalars)
+        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_te_msm(bases, scalars)
     }
     fn ed_on_bls12_381_bandersnatch_bandersnatch_sw_msm(
         bases: Vec<u8>,
         scalars: Vec<u8>,
     ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_sw_msm(bases, scalars)
+        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_sw_msm(bases, scalars)
     }
     fn ed_on_bls12_381_bandersnatch_bandersnatch_te_mul_projective(
         base: Vec<u8>,
         scalar: Vec<u8>,
     ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_te_mul_projective(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_te_mul_projective(base, scalar)
     }
     fn ed_on_bls12_381_bandersnatch_bandersnatch_sw_mul_projective(
         base: Vec<u8>,
         scalar: Vec<u8>,
     ) -> Result<Vec<u8>, ()> {
-        sp_io::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_sw_mul_projective(base, scalar)
+        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_sw_mul_projective(base, scalar)
     }
 }
 

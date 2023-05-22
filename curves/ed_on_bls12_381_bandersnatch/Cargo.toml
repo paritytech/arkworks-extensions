@@ -22,7 +22,7 @@ ark-ed-on-bls12-381-bandersnatch = { version = "0.4.0", default-features = false
 ark-ec = { version = "0.4.2", default-features = false }
 
 [dev-dependencies]
-sp-io =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "7.0.0",  default-features = false }
+sp-crypto-ec-utils =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "0.4.0",  default-features = false, features = ["ec-utils-experimental"] }
 ark-relations = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.2", default-features = false }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
@@ -39,6 +39,6 @@ std = [
     "codec/std",
     "ark-scale/std",
     "ark-ed-on-bls12-381-bandersnatch/std",
-    "sp-io/std", 
+    "sp-crypto-ec-utils/std", 
 ]
 r1cs = ["ark-r1cs-std", "ark-ed-on-bls12-381-bandersnatch/r1cs"]
