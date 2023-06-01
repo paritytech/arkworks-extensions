@@ -6,6 +6,8 @@ Library to integrate [arkworks-rs/algebra](https://github.com/arkworks-rs/algebr
 
 We also provide forks of the models `BW6` and `BLS12`. The reason for this is that we want to avoid the point preparation in the Substrate runtime. Therefore we re-define the elliptic curve sub-groups `G2` for both models as thin wrappers around the affine points and move the point preparation procedure to the host function site.
 
+The "ready to go" end-user implementations of the Arkworks equivalent elliptic curves are in [substrate-curves](https://github.com/paritytech/substrate-curves).
+
 ## Benchmark results
 
 | extrinsic                               |  arkworkrs(µs)[^1]  |ark-substrate(µs)[^2]|   speedup[^3]   |  dummy(µs)[^4]  |  native(µs)[^5] |
@@ -59,7 +61,7 @@ We also provide forks of the models `BW6` and `BLS12`. The reason for this is th
 
 ## Usage
 
-For end user implementation/usage of arkworks curves, we provide an extra library: [sp-curves](https://github.com/paritytech/sp-curves), which is build on top of this library. 
+For end user implementation/usage of arkworks curves, we provide an extra library: [sp-curves](https://github.com/paritytech/sp-curves), which is build on top of this library. If you plan to use Arkworks elliptic curves in a Substrate pallet, then check out this repo, we also provide an explanation there for this choice of architecture. 
 
 The purpose of this lirary is that it is decoupled from Substrate itself, so that Substrate can consume it, e.g. for Sassafrass consensus. To implement the elliptic curves in Substrate you need to pass the host function calls from the Substrate [sp-io](https://github.com/paritytech/substrate) crate to the instantiated elliptic curves.
 
