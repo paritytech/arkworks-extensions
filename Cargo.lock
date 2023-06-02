@@ -1348,7 +1348,7 @@ dependencies = [
 [[package]]
 name = "sp-crypto-ec-utils"
 version = "0.4.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
@@ -1368,7 +1368,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "8.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1378,7 +1378,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.19.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -1389,7 +1389,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "17.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -1407,7 +1407,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "11.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "Inflector",
  "proc-macro-crate",
@@ -1419,12 +1419,12 @@ dependencies = [
 [[package]]
 name = "sp-std"
 version = "8.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 
 [[package]]
 name = "sp-storage"
 version = "13.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -1437,7 +1437,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "10.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "parity-scale-codec",
  "sp-std",
@@ -1449,7 +1449,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "14.0.0"
-source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#f906c5edda5e1dccab2cb1c810f9dec9102c3fc0"
+source = "git+https://github.com/paritytech/substrate.git?branch=achimcc/arkworks-integration#99dd1d24c73bc9ee2f2e2a7527c60f638e0ee68e"
 dependencies = [
  "anyhow",
  "impl-trait-for-tuples",
