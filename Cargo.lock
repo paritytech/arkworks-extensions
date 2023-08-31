@@ -129,7 +129,7 @@ dependencies = [
 
 [[package]]
 name = "ark-curve-constraint-tests"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 dependencies = [
  "ark-ff",
  "ark-r1cs-std",
@@ -274,6 +274,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4d028cd1025d002fa88c10cd644d29028a7b40806579b608c6ba843b937bbb23"
 dependencies = [
  "ark-ec",
+ "ark-serialize",
+ "ark-std",
+ "parity-scale-codec",
+]
+
+[[package]]
+name = "ark-scale"
+version = "0.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49b08346a3e38e2be792ef53ee168623c9244d968ff00cd70fb9932f6fe36393"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1240,7 +1253,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "sp-ark-bls12-377"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-377",
@@ -1249,7 +1262,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale",
+ "ark-scale 0.0.10",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1259,13 +1272,13 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-bls12-381"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-381",
  "ark-ec",
  "ark-ff",
- "ark-scale",
+ "ark-scale 0.0.10",
  "ark-serialize",
  "ark-std",
  "hex",
@@ -1276,13 +1289,13 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-bw6-761"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bw6-761",
  "ark-ec",
  "ark-ff",
- "ark-scale",
+ "ark-scale 0.0.10",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1292,7 +1305,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-ed-on-bls12-377"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-curve-constraint-tests",
@@ -1301,7 +1314,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale",
+ "ark-scale 0.0.10",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1311,7 +1324,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-ed-on-bls12-381-bandersnatch"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-curve-constraint-tests",
@@ -1320,7 +1333,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale",
+ "ark-scale 0.0.10",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1331,7 +1344,7 @@ dependencies = [
 
 [[package]]
 name = "sp-ark-models"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -1357,7 +1370,7 @@ dependencies = [
  "ark-ed-on-bls12-377",
  "ark-ed-on-bls12-381-bandersnatch",
  "ark-ff",
- "ark-scale",
+ "ark-scale 0.0.3",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",

@@ -1,6 +1,6 @@
 [package]
 name = "sp-ark-bw6-761"
-version = "0.4.0-beta"
+version = "0.4.1-beta"
 authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
 repository = "https://github.com/paritytech/ark-substrate"
 description = "The BW6-761 pairing-friendly elliptic curve, optimized for Substrate"
@@ -15,9 +15,9 @@ publish = true
 ark-ff = { version  ="0.4.2", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-bw6-761 = { version = "0.4.0",default-features = false }
-sp-ark-models = { path = "../../models", version = "0.4.0-beta", default-features = false }
+sp-ark-models = { path = "../../models", version = "0.4.1-beta", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
-ark-scale = { version = "0.0.3", features = ["hazmat"], default-features = false }
+ark-scale = { version = "0.0.10", features = ["hazmat"], default-features = false }
 
 [dev-dependencies]
 sp-crypto-ec-utils =  { git = "https://github.com/paritytech/polkadot-sdk", version = "0.4.0",  default-features = false }
