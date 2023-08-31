@@ -21,7 +21,7 @@ ark-scale = { version = "0.0.10", features = ["hazmat"], default-features = fals
 ark-serialize = { version = "0.4.2", default-features = false }
 
 [dev-dependencies] 
-sp-crypto-ec-utils =  { git = "https://github.com/paritytech/substrate.git", "branch" = "achimcc/arkworks-integration", version = "0.4.0", default-features = false }
+sp-crypto-ec-utils =  { git = "https://github.com/paritytech/polkadot-sdk", version = "0.4.0", default-features = false }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
 hex = { version = "^0.4.0", default-features = false }
 ark-ec = { version = "0.4.2", default-features = false }
