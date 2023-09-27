@@ -281,15 +281,16 @@ dependencies = [
 
 [[package]]
 name = "ark-scale"
-version = "0.0.10"
+version = "0.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49b08346a3e38e2be792ef53ee168623c9244d968ff00cd70fb9932f6fe36393"
+checksum = "51bd73bb6ddb72630987d37fa963e99196896c0d0ea81b7c894567e74a2f83af"
 dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
+ "scale-info",
 ]
 
 [[package]]
@@ -528,6 +529,17 @@ name = "derivative"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fcc3dd5e9e9c0b295d6e1e4d811fb6f157d5ffd784b8d202fc62eac8035a770b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "derive_more"
+version = "0.99.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4fb810d30a7c1953f91334de7244731fc3f3c10d7fe163338a35b9f640960321"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1183,6 +1195,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f91339c0467de62360649f8d3e185ca8de4224ff281f66000de5eb2a77a79041"
 
 [[package]]
+name = "scale-info"
+version = "2.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "35c0a159d0c45c12b20c5a844feb1fe4bea86e28f17b92a5f0c42193634d3782"
+dependencies = [
+ "bitvec",
+ "cfg-if",
+ "derive_more",
+ "parity-scale-codec",
+]
+
+[[package]]
 name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1262,7 +1286,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale 0.0.10",
+ "ark-scale 0.0.11",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1278,7 +1302,7 @@ dependencies = [
  "ark-bls12-381",
  "ark-ec",
  "ark-ff",
- "ark-scale 0.0.10",
+ "ark-scale 0.0.11",
  "ark-serialize",
  "ark-std",
  "hex",
@@ -1295,7 +1319,7 @@ dependencies = [
  "ark-bw6-761",
  "ark-ec",
  "ark-ff",
- "ark-scale 0.0.10",
+ "ark-scale 0.0.11",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1314,7 +1338,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale 0.0.10",
+ "ark-scale 0.0.11",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
@@ -1333,7 +1357,7 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-relations",
- "ark-scale 0.0.10",
+ "ark-scale 0.0.11",
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
