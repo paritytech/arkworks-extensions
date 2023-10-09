@@ -1,5 +1,5 @@
 use ark_ff::{Field, MontFp, Zero};
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{hazmat::ArkScaleProjective, ArkScale};
 use ark_std::marker::PhantomData;
 use codec::{Decode, Encode};
 use core::ops::Neg;
@@ -15,7 +15,7 @@ use sp_ark_models::{
 pub type G1Affine<H> = bls12::G1Affine<crate::curves::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::curves::Config<H>>;
 
-use crate::{ArkScale, Fq, Fr, HostFunctions};
+use crate::{Fq, Fr, HostFunctions};
 
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);

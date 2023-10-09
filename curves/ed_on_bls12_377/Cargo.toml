@@ -22,23 +22,22 @@ codec = { package = "parity-scale-codec", version = "3.2.2", default-features = 
 ark-scale = { version = "0.0.11", features = ["hazmat"], default-features = false }
 
 [dev-dependencies]
-sp-crypto-ec-utils =  { git = "https://github.com/paritytech/polkadot-sdk", version = "0.4.0",  default-features = false }
 ark-relations = { version = "0.4.0", default-features = false }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
-ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-features = false }
 ark-ec = { version = "0.4.2", default-features = false }
+test-utils = { path = "../../test-utils", default-features = false }
 
 [features]
 default = [ "std" ]
 std = [
-     "ark-ff/std",
-     "ark-std/std", 
-     "ark-ed-on-bls12-377/std", 
-     "ark-serialize/std",
-     "ark-r1cs-std/std",
-     "sp-ark-models/std", 
-     "codec/std",
-     "ark-scale/std",
-     "sp-crypto-ec-utils/std",
+  "ark-ff/std",
+  "ark-std/std", 
+  "ark-ed-on-bls12-377/std", 
+  "ark-serialize/std",
+  "ark-r1cs-std/std",
+  "sp-ark-models/std", 
+  "codec/std",
+  "ark-scale/std",
+  "test-utils/std",
 ]
 r1cs = [ "ark-r1cs-std", "ark-ed-on-bls12-377/r1cs" ]

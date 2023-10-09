@@ -14,7 +14,7 @@ edition = "2021"
 ark-ff = { version = "0.4.2", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-r1cs-std = { version = "0.4.0", default-features = false, optional = true }
-sp-ark-bls12-381 = { version = "0.4.1-beta", path = "../bls12_381", default-features = false, features = [ "scalar_field" ] }
+sp-ark-bls12-381 = { path = "../bls12_381", default-features = false, features = [ "scalar_field" ] }
 sp-ark-models = { path = "../../models", version = "0.4.1-beta", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { version = "0.0.11", features = ["hazmat"], default-features = false }
@@ -22,11 +22,10 @@ ark-ed-on-bls12-381-bandersnatch = { version = "0.4.0", default-features = false
 ark-ec = { version = "0.4.2", default-features = false }
 
 [dev-dependencies]
-sp-crypto-ec-utils =  { git = "https://github.com/paritytech/polkadot-sdk", version = "0.4.0",  default-features = false }
 ark-relations = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.2", default-features = false }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
-ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-features = false }
+test-utils =  { path = "../../test-utils",  default-features = false }
 
 [features]
 default = ["std"]
@@ -39,6 +38,6 @@ std = [
     "codec/std",
     "ark-scale/std",
     "ark-ed-on-bls12-381-bandersnatch/std",
-    "sp-crypto-ec-utils/std", 
+    "test-utils/std", 
 ]
 r1cs = ["ark-r1cs-std", "ark-ed-on-bls12-381-bandersnatch/r1cs"]

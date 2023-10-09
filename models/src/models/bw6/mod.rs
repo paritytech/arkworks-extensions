@@ -11,9 +11,6 @@ use derivative::Derivative;
 
 use ark_std::marker::PhantomData;
 
-#[cfg(feature = "parallel")]
-use rayon::prelude::*;
-
 pub enum TwistType {
     M,
     D,

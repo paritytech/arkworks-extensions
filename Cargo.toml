@@ -10,5 +10,6 @@ members = [
   "curves/bw6_761",
   "curves/ed_on_bls12_377",
   "curves/ed_on_bls12_381_bandersnatch",
-  "models"
+  "models",
+  "test-utils",
 ]

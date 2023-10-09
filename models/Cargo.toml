@@ -22,7 +22,6 @@ ark-serialize = { version = "0.4.2", default-features = false }
 derivative = { version = "2", features = ["use_core"], default-features = false }
 num-traits = { version = "0.2", default-features = false }
 getrandom = { version = "0.2", features = ["js"], default-features = false }
-rayon = { version = "1", default-features = false, optional = true }
 zeroize = { version = "1", features = ["zeroize_derive"], default-features = false }
 itertools = { version = "0.10", default-features = false }
 
@@ -38,6 +37,5 @@ std = [
 ]
 parallel = [
   "std",
-  "rayon",
   "ark-std/parallel"
 ]

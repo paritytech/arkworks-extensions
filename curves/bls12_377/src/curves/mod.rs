@@ -1,4 +1,5 @@
 use crate::*;
+use ark_scale::ArkScale;
 use ark_std::{marker::PhantomData, vec::Vec};
 use codec::{Decode, Encode};
 use sp_ark_models::{
@@ -17,9 +18,8 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
-pub type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+
 pub trait HostFunctions: 'static {
     fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;

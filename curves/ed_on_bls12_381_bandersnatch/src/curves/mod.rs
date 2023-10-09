@@ -1,5 +1,5 @@
 use ark_ff::{Field, MontFp};
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{hazmat::ArkScaleProjective, ArkScale};
 use ark_std::marker::PhantomData;
 use ark_std::vec::Vec;
 use codec::{Decode, Encode};
@@ -10,9 +10,6 @@ use sp_ark_models::{
 };
 
 use crate::{Fq, Fr};
-
-const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
-type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;

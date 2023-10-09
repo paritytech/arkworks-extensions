@@ -1,6 +1,6 @@
-use crate::{g1, ArkScale, Fq, Fq2, Fr, HostFunctions};
+use crate::{g1, Fq, Fq2, Fr, HostFunctions};
 use ark_ff::{Field, MontFp, Zero};
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{hazmat::ArkScaleProjective, ArkScale};
 use ark_std::marker::PhantomData;
 use codec::{Decode, Encode};
 use sp_ark_models::{

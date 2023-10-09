@@ -1,3 +1,4 @@
+use ark_scale::ArkScale;
 use ark_std::{marker::PhantomData, vec::Vec};
 use codec::{Decode, Encode};
 use sp_ark_models::{
@@ -10,9 +11,6 @@ pub mod g2;
 pub(crate) mod util;
 
 use ark_bls12_381::{fq::Fq, fq12, fq2, fq6};
-
-const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
-pub type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;

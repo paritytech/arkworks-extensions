@@ -1,5 +1,5 @@
 use ark_ff::{Field, MontFp, PrimeField, Zero};
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{hazmat::ArkScaleProjective, ArkScale};
 use ark_std::{marker::PhantomData, ops::Neg, One};
 use codec::{Decode, Encode};
 use sp_ark_models::{
@@ -9,10 +9,12 @@ use sp_ark_models::{
     AffineRepr, CurveConfig, Group,
 };
 
-use crate::util::{
-    read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
+use crate::{
+    util::{
+        read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
+    },
+    HostFunctions,
 };
-use crate::{ArkScale, HostFunctions};
 use ark_bls12_381::{fr::Fr, Fq};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
@@ -201,58 +203,4 @@ pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>
     let mut res = *p;
     res.x *= BETA;
     res
-}
-
-#[cfg(test)]
-mod test {
-    use crate::{fq::Fq, G1Affine, HostFunctions};
-    use ark_std::{rand::Rng, test_rng, UniformRand};
-    use sp_ark_models::AffineRepr;
-
-    #[derive(PartialEq, Eq)]
-    struct Host;
-
-    impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_multi_miller_loop(a, b)
-        }
-        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_final_exponentiation(f12)
-        }
-        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g1(bases, bigints)
-        }
-        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g2(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
-        }
-        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
-        }
-    }
-
-    fn sample_unchecked() -> G1Affine<Host> {
-        let mut rng = test_rng();
-        loop {
-            let x = Fq::rand(&mut rng);
-            let greatest = rng.gen();
-
-            if let Some(p) = super::Affine::get_point_from_x_unchecked(x, greatest) {
-                return p;
-            }
-        }
-    }
-
-    #[test]
-    fn test_cofactor_clearing() {
-        const SAMPLES: usize = 100;
-        for _ in 0..SAMPLES {
-            let p: G1Affine<Host> = sample_unchecked();
-            let p = p.clear_cofactor();
-            assert!(p.is_on_curve());
-            assert!(p.is_in_correct_subgroup_assuming_on_curve());
-        }
-    }
 }

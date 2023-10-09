@@ -16,9 +16,6 @@ use derivative::Derivative;
 
 use crate::models::short_weierstrass::SWCurveConfig;
 
-#[cfg(feature = "parallel")]
-use rayon::prelude::*;
-
 /// A particular BLS12 group can have G2 being either a multiplicative or a
 /// divisive twist.
 pub enum TwistType {
