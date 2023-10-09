@@ -31,18 +31,24 @@ ark-serialize = { version = "0.4.2", default-features = false }
 [features]
 default = [ "std" ]
 std = [ 
-    "ark-ff/std",
-    "ark-r1cs-std/std", 
-    "ark-std/std", 
-    "ark-bls12-377/std",
-    "sp-ark-models/std",
-    "codec/std",
-    "ark-scale/std",
-    "sp-crypto-ec-utils/std",
+  "ark-ff/std",
+  "ark-r1cs-std/std", 
+  "ark-std/std", 
+  "ark-bls12-377/std",
+  "sp-ark-models/std",
+  "codec/std",
+  "ark-scale/std",
+  "sp-crypto-ec-utils/std",
 ]
-
-curve = [ "scalar_field", "base_field" ]
+curve = [
+  "scalar_field",
+  "base_field"
+]
 scalar_field = []
 base_field = []
-r1cs = [ "base_field", "ark-r1cs-std", "ark-bls12-377/r1cs" ]
+r1cs = [
+  "base_field",
+  "ark-r1cs-std",
+  "ark-bls12-377/r1cs"
+]
 

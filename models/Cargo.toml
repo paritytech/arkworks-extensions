@@ -1,7 +1,7 @@
 [package]
 name = "sp-ark-models"
 version = "0.4.1-beta"
-authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Arkworks contributors" ]
 description = "A substrate replacement model for bls12 of ark-ec"
 homepage = "https://arkworks.rs"
 repository = "https://github.com/paritytech/ark-substrate"
@@ -29,11 +29,15 @@ itertools = { version = "0.10", default-features = false }
 [features]
 default = [ "std" ]
 std = [ 
-    "ark-ff/std",
-    "ark-std/std", 
-    "ark-serialize/std",
-    "num-traits/std",
-    "getrandom/std",
-    "zeroize/std",
+  "ark-ff/std",
+  "ark-std/std", 
+  "ark-serialize/std",
+  "num-traits/std",
+  "getrandom/std",
+  "zeroize/std",
 ]
-parallel = [ "std", "rayon", "ark-std/parallel" ]
+parallel = [
+  "std",
+  "rayon",
+  "ark-std/parallel"
+]
