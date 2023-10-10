@@ -1,9 +1,9 @@
 [package]
 name = "sp-ark-ed-on-bls12-381-bandersnatch"
 version = "0.4.1-beta"
-authors = [ "zhenfei zhang", "arkworks contributors" ]
-description = "Bandersnatch: a curve defined over the scalar field of the BLS12-381 curve"
-repository = "https://github.com/zhenfeizhang/bandersnatch-rust"
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Davide Galassi <davxy@datawok.net>" ]
+description = "Extensions for Bandersnatch: a curve defined over the scalar field of the BLS12-381 curve"
+repository = "https://github.com/paritytech/arkworks-ext"
 keywords = ["cryptography", "finite-fields", "elliptic-curves" ]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]

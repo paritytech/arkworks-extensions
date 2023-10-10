@@ -1,10 +1,10 @@
 [package]
 name = "sp-ark-bls12-381"
 version = "0.4.1-beta"
-authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
-description = "The BLS12-381 pairing-friendly elliptic curve, optimized for Substrate"
-repository = "https://github.com/paritytech/ark-substrate"
-keywords = ["cryptography", "finite-fields", "elliptic-curves", "substrate" ]
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Davide Galassi <davxy@datawok.net>" ]
+description = "Extensions for the BLS12-381 pairing-friendly elliptic curve"
+repository = "https://github.com/paritytech/substrate-ext"
+keywords = ["cryptography", "finite-fields", "elliptic-curves"]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
