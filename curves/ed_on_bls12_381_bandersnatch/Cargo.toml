@@ -14,7 +14,6 @@ edition = "2021"
 ark-ff = { version = "0.4.2", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-r1cs-std = { version = "0.4.0", default-features = false, optional = true }
-sp-ark-bls12-381 = { path = "../bls12_381", default-features = false, features = [ "scalar_field" ] }
 sp-ark-models = { path = "../../models", version = "0.4.1-beta", default-features = false }
 codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { version = "0.0.11", features = ["hazmat"], default-features = false }
@@ -33,7 +32,6 @@ std = [
     "ark-ff/std",
     "ark-std/std",
     "ark-r1cs-std/std",
-    "sp-ark-bls12-381/std",
     "sp-ark-models/std", 
     "codec/std",
     "ark-scale/std",

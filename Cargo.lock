@@ -862,7 +862,6 @@ dependencies = [
  "ark-serialize",
  "ark-std",
  "parity-scale-codec",
- "sp-ark-bls12-381",
  "sp-ark-models",
  "test-utils",
 ]
