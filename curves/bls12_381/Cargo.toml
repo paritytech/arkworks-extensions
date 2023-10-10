@@ -1,43 +1,50 @@
 [package]
 name = "sp-ark-bls12-381"
 version = "0.4.1-beta"
-authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
-description = "The BLS12-381 pairing-friendly elliptic curve, optimized for Substrate"
-repository = "https://github.com/paritytech/ark-substrate"
-keywords = ["cryptography", "finite-fields", "elliptic-curves", "substrate" ]
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Davide Galassi <davxy@datawok.net>" ]
+description = "Extensions for the BLS12-381 pairing-friendly elliptic curve"
+repository = "https://github.com/paritytech/substrate-ext"
+keywords = ["cryptography", "finite-fields", "elliptic-curves"]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
 edition = "2021"
-publish = true
 
 [dependencies]
 ark-ff = { version = "0.4.2", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-bls12-381 = { version = "0.4.0",features = [ "curve" ], default-features = false }
 sp-ark-models = { path = "../../models", version = "0.4.1-beta", default-features = false }
-codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { version = "0.0.11", features = ["hazmat"], default-features = false }
-ark-serialize = { version = "0.4.2", default-features = false }
 
 [dev-dependencies] 
-sp-crypto-ec-utils =  { git = "https://github.com/paritytech/polkadot-sdk", version = "0.4.0", default-features = false }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
-hex = { version = "^0.4.0", default-features = false }
 ark-ec = { version = "0.4.2", default-features = false }
+ark-serialize = { version = "0.4.2", default-features = false }
+test-utils =  { path = "../../test-utils", default-features = false }
 
 [features]
 default = [ "std" ]
 std = [  
-    "ark-ff/std", 
-    "ark-std/std", 
-    "ark-bls12-381/std",
-    "sp-ark-models/std",
-    "codec/std",
-    "ark-scale/std",
-    "ark-serialize/std",
-    "sp-crypto-ec-utils/std",
+  "ark-ff/std", 
+  "ark-std/std", 
+  "ark-bls12-381/std",
+  "sp-ark-models/std",
+  "ark-scale/std",
+  "ark-serialize/std",
+  "test-utils/std",
 ]
-
 curve = [ "scalar_field" ]
 scalar_field = []
+# SCALE encoding related features for most of the arkworks types.
+# Defaults to "compressed" and "validated".
+scale-fast = [
+  "scale-no-compress",
+  "scale-no-validate",
+]
+scale-no-compress = [
+  "test-utils/scale-no-compress",
+]
+scale-no-validate = [  
+  "test-utils/scale-no-validate",
+]

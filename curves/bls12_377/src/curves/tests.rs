@@ -1,39 +1,35 @@
-#![cfg_attr(not(feature = "std"), no_std)]
-use crate::{
-    Bls12_377 as Bls12_377Host, G1Projective as G1ProjectiveHost, G2Projective as G2ProjectiveHost,
-    HostFunctions,
-};
+use crate::HostFunctions;
+
 use ark_algebra_test_templates::*;
+use ark_bls12_377::{
+    g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bls12_377 as ArkBls12_377,
+};
+use ark_ec::pairing::PairingOutput;
 
-#[derive(PartialEq, Eq)]
-struct Host;
+struct Mock;
 
-impl HostFunctions for Host {
+impl HostFunctions for Mock {
     fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_multi_miller_loop(a, b)
+        test_utils::multi_miller_loop_generic::<ArkBls12_377>(a, b)
     }
-    fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_final_exponentiation(f12)
+    fn bls12_377_final_exponentiation(f: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::final_exponentiation_generic::<ArkBls12_377>(f)
     }
-    fn bls12_377_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_msm_g1(bases, bigints)
+    fn bls12_377_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::msm_sw_generic::<ArkG1Config>(bases, scalars)
     }
-    fn bls12_377_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_msm_g2(bases, bigints)
+    fn bls12_377_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::msm_sw_generic::<ArkG2Config>(bases, scalars)
     }
     fn bls12_377_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_mul_projective_g1(base, scalar)
+        test_utils::mul_projective_generic::<ArkG1Config>(base, scalar)
     }
     fn bls12_377_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_mul_projective_g2(base, scalar)
+        test_utils::mul_projective_generic::<ArkG2Config>(base, scalar)
     }
 }
 
-type Bls12_377 = Bls12_377Host<Host>;
-type G1Projective = G1ProjectiveHost<Host>;
-type G2Projective = G2ProjectiveHost<Host>;
-
-test_group!(g1; G1Projective; sw);
-test_group!(g2; G2Projective; sw);
-test_group!(pairing_output; ark_ec::pairing::PairingOutput<Bls12_377>; msm);
-test_pairing!(pairing; super::Bls12_377);
+test_group!(g1; crate::G1Projective<Mock>; sw);
+test_group!(g2; crate::G2Projective<Mock>; sw);
+test_group!(pairing_output; PairingOutput<ArkBls12_377>; msm);
+test_pairing!(pairing; crate::Bls12_377<super::Mock>);

@@ -1,7 +1,12 @@
-[profile.bench]
-lto = true
-
 [workspace]
 resolver = "2"
 
-members = ["curves/bls12_381", "curves/bls12_377", "curves/bw6_761", "curves/ed_on_bls12_377", "curves/ed_on_bls12_381_bandersnatch", "models" ]
+members = [
+  "curves/bls12_381",
+  "curves/bls12_377",
+  "curves/bw6_761",
+  "curves/ed_on_bls12_377",
+  "curves/ed_on_bls12_381_bandersnatch",
+  "models",
+  "test-utils",
+]

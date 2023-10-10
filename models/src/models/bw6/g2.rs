@@ -15,9 +15,9 @@ pub type G2Projective<P> = Projective<<P as BW6Config>::G2Config>;
 #[derivative(
     Copy(bound = "P: BW6Config"),
     Clone(bound = "P: BW6Config"),
-    Debug(bound = "P: BW6Config"),
     PartialEq(bound = "P: BW6Config"),
-    Eq(bound = "P: BW6Config")
+    Eq(bound = "P: BW6Config"),
+    Debug(bound = "P: BW6Config")
 )]
 pub struct G2Prepared<P: BW6Config>(pub G2Affine<P>);
 

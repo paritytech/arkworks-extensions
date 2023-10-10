@@ -1,18 +1,16 @@
+use crate::{ArkScale, Fq, Fr};
 use ark_ff::{Field, MontFp};
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
 use ark_std::marker::PhantomData;
 use ark_std::vec::Vec;
-use codec::{Decode, Encode};
 use sp_ark_models::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
 };
-
-use crate::{Fq, Fr};
-
-const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
-type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;

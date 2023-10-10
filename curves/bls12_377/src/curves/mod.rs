@@ -1,6 +1,6 @@
 use crate::*;
+use ark_scale::scale::{Decode, Encode};
 use ark_std::{marker::PhantomData, vec::Vec};
-use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -17,9 +17,8 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
-pub type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+
 pub trait HostFunctions: 'static {
     fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
@@ -64,11 +63,10 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_377_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
-        let result = <ArkScale<<Bls12<Self> as Pairing>::TargetField> as Decode>::decode(
-            &mut result.as_slice(),
-        )
-        .unwrap()
-        .0;
+        let result =
+            ArkScale::<<Bls12<Self> as Pairing>::TargetField>::decode(&mut result.as_slice())
+                .unwrap()
+                .0;
         MillerLoopOutput(result)
     }
 

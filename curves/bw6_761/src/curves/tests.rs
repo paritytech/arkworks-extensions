@@ -1,39 +1,32 @@
-#![cfg_attr(not(feature = "std"), no_std)]
-use crate::{
-    G1Projective as G1ProjectiveHost, G2Projective as G2ProjectiveHost, HostFunctions,
-    BW6_761 as BW6_761Host,
-};
+use crate::HostFunctions;
+
 use ark_algebra_test_templates::*;
+use ark_bw6_761::{g1::Config as ArkG1Config, g2::Config as ArkG2Config, BW6_761 as ArkBW6_761};
 
-#[derive(PartialEq, Eq)]
-struct Host;
+struct Mock;
 
-impl HostFunctions for Host {
+impl HostFunctions for Mock {
     fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_multi_miller_loop(a, b)
+        test_utils::multi_miller_loop_generic::<ArkBW6_761>(a, b)
     }
-    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_final_exponentiation(f12)
+    fn bw6_761_final_exponentiation(f: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::final_exponentiation_generic::<ArkBW6_761>(f)
     }
-    fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_msm_g1(bases, bigints)
+    fn bw6_761_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::msm_sw_generic::<ArkG1Config>(bases, scalars)
     }
-    fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_msm_g2(bases, bigints)
+    fn bw6_761_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::msm_sw_generic::<ArkG2Config>(bases, scalars)
     }
     fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_mul_projective_g1(base, scalar)
+        test_utils::mul_projective_generic::<ArkG1Config>(base, scalar)
     }
     fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_mul_projective_g2(base, scalar)
+        test_utils::mul_projective_generic::<ArkG2Config>(base, scalar)
     }
 }
 
-type BW6_761 = BW6_761Host<Host>;
-type G1Projective = G1ProjectiveHost<Host>;
-type G2Projective = G2ProjectiveHost<Host>;
-
-test_group!(g1; G1Projective; sw);
-test_group!(g2; G2Projective; sw);
-test_group!(pairing_output; sp_ark_models::pairing::PairingOutput<BW6_761>; msm);
-test_pairing!(pairing; super::BW6_761);
+test_group!(g1; crate::G1Projective<Mock>; sw);
+test_group!(g2; crate::G2Projective<Mock>; sw);
+test_group!(pairing_output; sp_ark_models::pairing::PairingOutput<ArkBW6_761>; msm);
+test_pairing!(pairing; crate::BW6_761<super::Mock>);

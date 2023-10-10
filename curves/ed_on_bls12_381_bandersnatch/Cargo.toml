@@ -1,9 +1,9 @@
 [package]
 name = "sp-ark-ed-on-bls12-381-bandersnatch"
 version = "0.4.1-beta"
-authors = [ "zhenfei zhang", "arkworks contributors" ]
-description = "Bandersnatch: a curve defined over the scalar field of the BLS12-381 curve"
-repository = "https://github.com/zhenfeizhang/bandersnatch-rust"
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Davide Galassi <davxy@datawok.net>" ]
+description = "Extensions for Bandersnatch: a curve defined over the scalar field of the BLS12-381 curve"
+repository = "https://github.com/paritytech/arkworks-ext"
 keywords = ["cryptography", "finite-fields", "elliptic-curves" ]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
@@ -14,31 +14,41 @@ edition = "2021"
 ark-ff = { version = "0.4.2", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-r1cs-std = { version = "0.4.0", default-features = false, optional = true }
-sp-ark-bls12-381 = { version = "0.4.1-beta", path = "../bls12_381", default-features = false, features = [ "scalar_field" ] }
-sp-ark-models = { path = "../../models", version = "0.4.1-beta", default-features = false }
-codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
+sp-ark-models = { path = "../../models", default-features = false }
 ark-scale = { version = "0.0.11", features = ["hazmat"], default-features = false }
 ark-ed-on-bls12-381-bandersnatch = { version = "0.4.0", default-features = false }
 ark-ec = { version = "0.4.2", default-features = false }
 
 [dev-dependencies]
-sp-crypto-ec-utils =  { git = "https://github.com/paritytech/polkadot-sdk", version = "0.4.0",  default-features = false }
-ark-relations = { version = "0.4.0", default-features = false }
+# ark-relations = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.2", default-features = false }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
-ark-curve-constraint-tests = { path = "../curve-constraint-tests", default-features = false }
+test-utils =  { path = "../../test-utils",  default-features = false }
 
 [features]
 default = ["std"]
 std = [
-    "ark-ff/std",
-    "ark-std/std",
-    "ark-r1cs-std/std",
-    "sp-ark-bls12-381/std",
-    "sp-ark-models/std", 
-    "codec/std",
-    "ark-scale/std",
-    "ark-ed-on-bls12-381-bandersnatch/std",
-    "sp-crypto-ec-utils/std", 
+  "ark-ff/std",
+  "ark-std/std",
+  "ark-r1cs-std/std",
+  "sp-ark-models/std", 
+  "ark-scale/std",
+  "ark-ed-on-bls12-381-bandersnatch/std",
+  "test-utils/std", 
 ]
-r1cs = ["ark-r1cs-std", "ark-ed-on-bls12-381-bandersnatch/r1cs"]
+r1cs = [
+  "ark-r1cs-std",
+  "ark-ed-on-bls12-381-bandersnatch/r1cs"
+]
+# SCALE encoding related features for most of the arkworks types.
+# Defaults to "compressed" and "validated".
+scale-fast = [
+  "scale-no-compress",
+  "scale-no-validate",
+]
+scale-no-compress = [
+  "test-utils/scale-no-compress",
+]
+scale-no-validate = [  
+  "test-utils/scale-no-validate",
+]

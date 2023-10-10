@@ -1,14 +1,15 @@
+use crate::{ArkScale, Fq, Fr, HostFunctions};
 use ark_ff::{Field, MontFp};
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
 use ark_std::marker::PhantomData;
-use codec::{Decode, Encode};
 use sp_ark_models::{
     bw6,
     short_weierstrass::{Affine, Projective},
     {short_weierstrass::SWCurveConfig, CurveConfig},
 };
-
-use crate::{ArkScale, Fq, Fr, HostFunctions};
 
 pub type G1Affine<H> = bw6::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bw6::G1Projective<crate::Config<H>>;

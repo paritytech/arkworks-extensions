@@ -1,50 +1,49 @@
-#![cfg_attr(not(feature = "std"), no_std)]
+use crate::{fq::Fq, fq2::Fq2, fr::Fr, HostFunctions};
+
 use ark_algebra_test_templates::*;
+use ark_bls12_381::{
+    g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bls12_381 as ArkBls12_381,
+};
+use ark_ec::{
+    pairing::PairingOutput, short_weierstrass::SWCurveConfig, AffineRepr, CurveGroup, Group,
+};
 use ark_ff::{fields::Field, One, Zero};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, UniformRand};
-use sp_ark_models::{pairing::PairingOutput, AffineRepr, CurveGroup, Group};
 
-use crate::{
-    fq::Fq, fq2::Fq2, fr::Fr, Bls12_381 as Bls12_381Host, G1Affine as G1AffineHost,
-    G1Projective as G1ProjectiveHost, G2Affine as G2AffineHost, G2Projective as G2ProjectiveHost,
-    HostFunctions,
-};
+struct Mock;
 
-#[derive(PartialEq, Eq)]
-struct Host;
-
-impl HostFunctions for Host {
+impl HostFunctions for Mock {
     fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_multi_miller_loop(a, b)
+        test_utils::multi_miller_loop_generic::<ArkBls12_381>(a, b)
     }
-    fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_final_exponentiation(f12)
+    fn bls12_381_final_exponentiation(f: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::final_exponentiation_generic::<ArkBls12_381>(f)
     }
-    fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g1(bases, bigints)
+    fn bls12_381_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::msm_sw_generic::<ArkG1Config>(bases, scalars)
     }
-    fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g2(bases, bigints)
+    fn bls12_381_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
+        test_utils::msm_sw_generic::<ArkG2Config>(bases, scalars)
     }
     fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
+        test_utils::mul_projective_generic::<ArkG1Config>(base, scalar)
     }
     fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
+        test_utils::mul_projective_generic::<ArkG2Config>(base, scalar)
     }
 }
 
-type Bls12_381 = Bls12_381Host<Host>;
-type G1Projective = G1ProjectiveHost<Host>;
-type G2Projective = G2ProjectiveHost<Host>;
-type G1Affine = G1AffineHost<Host>;
-type G2Affine = G2AffineHost<Host>;
+type Bls12_381 = crate::Bls12_381<Mock>;
+type G1Projective = crate::G1Projective<Mock>;
+type G2Projective = crate::G2Projective<Mock>;
+type G1Affine = crate::G1Affine<Mock>;
+type G2Affine = crate::G2Affine<Mock>;
 
-test_group!(g1; G1Projective; sw);
-test_group!(g2; G2Projective; sw);
+test_group!(g1; crate::G1Projective<Mock>; sw);
+test_group!(g2; crate::G2Projective<Mock>; sw);
 test_group!(pairing_output; PairingOutput<Bls12_381>; msm);
-test_pairing!(ark_pairing; super::Bls12_381);
+test_pairing!(ark_pairing; crate::Bls12_381<super::Mock>);
 
 #[test]
 fn test_g1_endomorphism_beta() {
@@ -151,4 +150,54 @@ fn g2_compressed_valid_test_vectors() {
 fn g2_uncompressed_valid_test_vectors() {
     let bytes: &'static [u8] = include_bytes!("g2_uncompressed_valid_test_vectors.dat");
     test_vectors!(G2Projective, G2Affine, Compress::No, bytes);
+}
+
+#[test]
+fn test_cofactor_clearing_g1() {
+    let sample_unchecked = || {
+        let mut rng = test_rng();
+        loop {
+            let x = Fq::rand(&mut rng);
+            let greatest = rng.gen();
+
+            if let Some(p) =
+                ark_ec::short_weierstrass::Affine::get_point_from_x_unchecked(x, greatest)
+            {
+                return p;
+            }
+        }
+    };
+    const SAMPLES: usize = 100;
+    for _ in 0..SAMPLES {
+        let p: G1Affine = sample_unchecked();
+        let p = p.clear_cofactor();
+        assert!(p.is_on_curve());
+        assert!(p.is_in_correct_subgroup_assuming_on_curve());
+    }
+}
+
+#[test]
+fn test_cofactor_clearing_g2() {
+    // Multiplying by h_eff and clearing the cofactor by the efficient
+    // endomorphism-based method should yield the same result.
+    let h_eff: &'static [u64] = &[
+        0xe8020005aaa95551,
+        0x59894c0adebbf6b4,
+        0xe954cbc06689f6a3,
+        0x2ec0ec69d7477c1a,
+        0x6d82bf015d1212b0,
+        0x329c2f178731db95,
+        0x9986ff031508ffe1,
+        0x88e2a8e9145ad768,
+        0x584c6a0ea91b3528,
+        0xbc69f08f2ee75b3,
+    ];
+    let mut rng = ark_std::test_rng();
+    const SAMPLES: usize = 10;
+    for _ in 0..SAMPLES {
+        let p = G2Affine::rand(&mut rng);
+        let optimised = p.clear_cofactor().into_group();
+        let naive = crate::g2::Config::<Mock>::mul_affine(&p, h_eff);
+        assert_eq!(optimised, naive);
+    }
 }

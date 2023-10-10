@@ -1,7 +1,15 @@
+use ark_bls12_381::{fq2::Fq2, fr::Fr, Fq};
 use ark_ff::{Field, MontFp, Zero};
-use ark_scale::hazmat::ArkScaleProjective;
-use ark_std::{marker::PhantomData, ops::Neg};
-use codec::{Decode, Encode};
+use ark_scale::{
+    ark_serialize::{Compress, SerializationError, Validate},
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
+use ark_std::{
+    io::{Read, Write},
+    marker::PhantomData,
+    ops::Neg,
+};
 use sp_ark_models::{
     bls12,
     bls12::Bls12Config,
@@ -9,17 +17,18 @@ use sp_ark_models::{
     AffineRepr, CurveConfig, CurveGroup, Group,
 };
 
-use super::util::{
-    read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
+use crate::{
+    g1,
+    util::{
+        read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
+    },
+    ArkScale, HostFunctions,
 };
-use crate::{g1, ArkScale, HostFunctions};
-use ark_bls12_381::{fq2::Fq2, fr::Fr, Fq};
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
@@ -111,31 +120,30 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         (psi2_p2 - p_projective).into_affine()
     }
 
-    fn deserialize_with_mode<R: ark_serialize::Read>(
+    fn deserialize_with_mode<R: Read>(
         mut reader: R,
-        compress: ark_serialize::Compress,
-        validate: ark_serialize::Validate,
-    ) -> Result<Affine<Self>, ark_serialize::SerializationError> {
-        let p = if compress == ark_serialize::Compress::Yes {
+        compress: Compress,
+        validate: Validate,
+    ) -> Result<Affine<Self>, SerializationError> {
+        let p = if compress == Compress::Yes {
             read_g2_compressed(&mut reader)?
         } else {
             read_g2_uncompressed(&mut reader)?
         };
 
-        if validate == ark_serialize::Validate::Yes && !p.is_in_correct_subgroup_assuming_on_curve()
-        {
-            return Err(ark_serialize::SerializationError::InvalidData);
+        if validate == Validate::Yes && !p.is_in_correct_subgroup_assuming_on_curve() {
+            return Err(SerializationError::InvalidData);
         }
         Ok(p)
     }
 
-    fn serialize_with_mode<W: ark_serialize::Write>(
+    fn serialize_with_mode<W: Write>(
         item: &Affine<Self>,
         mut writer: W,
-        compress: ark_serialize::Compress,
-    ) -> Result<(), ark_serialize::SerializationError> {
+        compress: Compress,
+    ) -> Result<(), SerializationError> {
         let encoding = EncodingFlags {
-            is_compressed: compress == ark_serialize::Compress::Yes,
+            is_compressed: compress == Compress::Yes,
             is_infinity: item.is_zero(),
             is_lexographically_largest: item.y > -item.y,
         };
@@ -172,8 +180,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         Ok(())
     }
 
-    fn serialized_size(compress: ark_serialize::Compress) -> usize {
-        if compress == ark_serialize::Compress::Yes {
+    fn serialized_size(compress: Compress) -> usize {
+        if compress == Compress::Yes {
             G2_SERIALIZED_SIZE
         } else {
             2 * G2_SERIALIZED_SIZE
@@ -297,62 +305,4 @@ fn double_p_power_endomorphism<H: HostFunctions>(
     res.y = res.y.neg();
 
     res
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::g2;
-    use ark_std::UniformRand;
-
-    #[derive(PartialEq, Eq)]
-    struct Host;
-
-    impl HostFunctions for Host {
-        fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_multi_miller_loop(a, b)
-        }
-        fn bls12_381_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_final_exponentiation(f12)
-        }
-        fn bls12_381_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g1(bases, bigints)
-        }
-        fn bls12_381_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g2(bases, bigints)
-        }
-        fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
-        }
-        fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-            sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
-        }
-    }
-
-    #[test]
-    fn test_cofactor_clearing() {
-        // multiplying by h_eff and clearing the cofactor by the efficient
-        // endomorphism-based method should yield the same result.
-        let h_eff: &'static [u64] = &[
-            0xe8020005aaa95551,
-            0x59894c0adebbf6b4,
-            0xe954cbc06689f6a3,
-            0x2ec0ec69d7477c1a,
-            0x6d82bf015d1212b0,
-            0x329c2f178731db95,
-            0x9986ff031508ffe1,
-            0x88e2a8e9145ad768,
-            0x584c6a0ea91b3528,
-            0xbc69f08f2ee75b3,
-        ];
-
-        let mut rng = ark_std::test_rng();
-        const SAMPLES: usize = 10;
-        for _ in 0..SAMPLES {
-            let p = G2Affine::<Host>::rand(&mut rng);
-            let optimised = p.clear_cofactor().into_group();
-            let naive = g2::Config::<Host>::mul_affine(&p, h_eff);
-            assert_eq!(optimised, naive);
-        }
-    }
 }

@@ -1,16 +1,15 @@
 [package]
 name = "ark-curve-constraint-tests"
 version = "0.4.1-beta"
-authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Davide Galassi <davxy@datawok.net>" ]
 description = "A library for testing constraints for finite fields, elliptic curves, and pairings"
-homepage = "https://arkworks.rs"
-repository = "https://github.com/paritytech/ark-substrate"
-documentation = "https://docs.rs/ark-curve-constraint-tests/"
-keywords = ["cryptography", "finite-fields", "elliptic-curves", "r1cs", "substrate" ]
+repository = "https://github.com/paritytech/substrate-ext"
+keywords = ["cryptography", "finite-fields", "elliptic-curves"]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
 edition = "2021"
+publish = false
 
 [dependencies]
 ark-std = { version = "0.4.0", default-features = false }

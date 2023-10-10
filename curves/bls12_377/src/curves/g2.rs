@@ -1,8 +1,10 @@
 use crate::{g1, ArkScale, Fq, Fq2, Fr, HostFunctions};
 use ark_ff::{Field, MontFp, Zero};
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
 use ark_std::marker::PhantomData;
-use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12,
     short_weierstrass::{Affine, Projective, SWCurveConfig},

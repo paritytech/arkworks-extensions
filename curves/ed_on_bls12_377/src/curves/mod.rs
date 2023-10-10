@@ -1,16 +1,14 @@
+use crate::{fq::Fq, fr::Fr, ArkScale};
 use ark_ff::MontFp;
-use ark_scale::hazmat::ArkScaleProjective;
+use ark_scale::{
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
 use ark_std::{marker::PhantomData, vec::Vec};
-use codec::{Decode, Encode};
 use sp_ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-
-use crate::{fq::Fq, fr::Fr};
-
-const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
-type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;
@@ -20,6 +18,7 @@ pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct EdwardsConfig<H: HostFunctions>(PhantomData<fn() -> H>);
+
 pub trait HostFunctions: 'static {
     fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;

@@ -1,5 +1,6 @@
+use crate::*;
+use ark_scale::scale::{Decode, Encode};
 use ark_std::{marker::PhantomData, vec::Vec};
-use codec::{Decode, Encode};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -8,11 +9,6 @@ use sp_ark_models::{
 pub mod g1;
 pub mod g2;
 pub(crate) mod util;
-
-use ark_bls12_381::{fq::Fq, fq12, fq2, fq6};
-
-const HOST_CALL: ark_scale::Usage = ark_scale::HOST_CALL;
-pub type ArkScale<T> = ark_scale::ArkScale<T, HOST_CALL>;
 
 #[cfg(test)]
 mod tests;
@@ -38,11 +34,11 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
     const X_IS_NEGATIVE: bool = true;
     const TWIST_TYPE: TwistType = TwistType::M;
     type Fp = Fq;
-    type Fp2Config = fq2::Fq2Config;
-    type Fp6Config = fq6::Fq6Config;
-    type Fp12Config = fq12::Fq12Config;
-    type G1Config = self::g1::Config<H>;
-    type G2Config = self::g2::Config<H>;
+    type Fp2Config = Fq2Config;
+    type Fp6Config = Fq6Config;
+    type Fp12Config = Fq12Config;
+    type G1Config = g1::Config<H>;
+    type G2Config = g2::Config<H>;
 
     fn multi_miller_loop(
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,

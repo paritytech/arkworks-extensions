@@ -1,39 +1,33 @@
 [package]
 name = "sp-ark-models"
 version = "0.4.1-beta"
-authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "arkworks contributors" ]
-description = "A substrate replacement model for bls12 of ark-ec"
+authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Davide Galassi <davxy@datawok.net>"]
+description = "A replacement model for bls12 of ark-ec"
 homepage = "https://arkworks.rs"
-repository = "https://github.com/paritytech/ark-substrate"
-documentation = "https://docs.rs/ark-ec/"
-keywords = ["cryptography", "elliptic-curves", "pairing", "substrate"]
+repository = "https://github.com/paritytech/arkworks-ext"
+keywords = ["cryptography", "elliptic-curves", "pairing"]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
 edition = "2021"
-rust-version = "1.57"
-publish = true
 
 [dependencies]
 ark-ff = { version = "0.4.2", default-features = false }
 ark-ec = { version = "0.4.2", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-serialize = { version = "0.4.2", default-features = false }
-derivative = { version = "2", features = ["use_core"], default-features = false }
+derivative = { version = "2.2", default-features = false, features = ["use_core"] }
 num-traits = { version = "0.2", default-features = false }
-getrandom = { version = "0.2", features = ["js"], default-features = false }
-rayon = { version = "1", default-features = false, optional = true }
-zeroize = { version = "1", features = ["zeroize_derive"], default-features = false }
-itertools = { version = "0.10", default-features = false }
 
 [features]
 default = [ "std" ]
 std = [ 
-    "ark-ff/std",
-    "ark-std/std", 
-    "ark-serialize/std",
-    "num-traits/std",
-    "getrandom/std",
-    "zeroize/std",
+  "ark-ff/std",
+  "ark-std/std", 
+  "ark-serialize/std",
+  "num-traits/std",
 ]
-parallel = [ "std", "rayon", "ark-std/parallel" ]
+parallel = [
+  "std",
+  "ark-std/parallel"
+]
