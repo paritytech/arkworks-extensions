@@ -1,14 +1,3 @@
-#![cfg_attr(not(feature = "std"), no_std)]
-#![deny(
-    warnings,
-    unused,
-    future_incompatible,
-    nonstandard_style,
-    rust_2018_idioms
-)]
-#![allow(clippy::result_unit_err)]
-#![forbid(unsafe_code)]
-
 //! This library implements the BLS12_377 curve generated in [\[BCGMMW20, “Zexe”\]](https://eprint.iacr.org/2018/962).
 //! The name denotes that it is a Barreto--Lynn--Scott curve of embedding degree
 //! 12, defined over a 377-bit (prime) field. The main feature of this curve is
@@ -26,6 +15,17 @@
 //! * G2 curve equation: y^2 = x^3 + B, where
 //!    * B = Fq2(0, 155198655607781456406391640216936120121836107652948796323930557600032281009004493664981332883744016074664192874906)
 
+#![cfg_attr(not(feature = "std"), no_std)]
+#![deny(
+    warnings,
+    unused,
+    future_incompatible,
+    nonstandard_style,
+    rust_2018_idioms
+)]
+// #![allow(clippy::result_unit_err)]
+#![forbid(unsafe_code)]
+
 pub mod curves;
 
 #[cfg(feature = "r1cs")]
@@ -33,3 +33,24 @@ pub use ark_bls12_377::constraints::*;
 
 pub use ark_bls12_377::{fq12, fq2, fr, Fq, Fq12Config, Fq2, Fq2Config, Fq6Config, Fr, FrConfig};
 pub use curves::*;
+
+use ark_scale::ark_serialize::{Compress, Validate};
+pub(crate) use ark_scale::scale::{Decode, Encode};
+
+#[cfg(feature = "scale-no-compress")]
+const SCALE_COMPRESS: Compress = Compress::No;
+#[cfg(not(feature = "scale-no-compress"))]
+const SCALE_COMPRESS: Compress = Compress::Yes;
+
+#[cfg(feature = "scale-no-validate")]
+const SCALE_VALIDATE: Validate = Validate::No;
+#[cfg(not(feature = "scale-no-validate"))]
+const SCALE_VALIDATE: Validate = Validate::Yes;
+
+/// SCALE codec usage settings.
+///
+/// Determines whether compression and validation has been enabled for SCALE codec
+/// with respect to ARK related types.
+pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
+
+type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;

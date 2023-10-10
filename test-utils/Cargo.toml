@@ -35,3 +35,11 @@ std = [
 	"ark-std/std",
 	"codec/std",
 ]
+# SCALE encoding related features for most of Arkworks types.
+# Defaults to "compressed" and "validated"
+scale-fast = [
+	"scale-no-compress",
+	"scale-no-validate",
+]
+scale-no-compress = []
+scale-no-validate = []

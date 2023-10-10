@@ -8,9 +8,30 @@ use ark_ec::{
     twisted_edwards::TECurveConfig,
     CurveConfig, VariableBaseMSM,
 };
-use ark_scale::{hazmat::ArkScaleProjective, ArkScale};
+use ark_scale::{
+    ark_serialize::{Compress, Validate},
+    hazmat::ArkScaleProjective,
+};
 use ark_std::vec::Vec;
 use codec::{Decode, Encode};
+
+#[cfg(feature = "scale-no-compress")]
+const SCALE_COMPRESS: Compress = Compress::No;
+#[cfg(not(feature = "scale-no-compress"))]
+const SCALE_COMPRESS: Compress = Compress::Yes;
+
+#[cfg(feature = "scale-no-validate")]
+const SCALE_VALIDATE: Validate = Validate::No;
+#[cfg(not(feature = "scale-no-validate"))]
+const SCALE_VALIDATE: Validate = Validate::Yes;
+
+/// SCALE codec usage settings.
+///
+/// Determines whether compression and validation has been enabled for SCALE codec
+/// with respect to ARK related types.
+pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
+
+type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
 
 pub fn multi_miller_loop_generic<Curve: Pairing>(g1: Vec<u8>, g2: Vec<u8>) -> Result<Vec<u8>, ()> {
     let g1 = <ArkScale<Vec<<Curve as Pairing>::G1Affine>> as Decode>::decode(&mut g1.as_slice())

@@ -759,7 +759,6 @@ dependencies = [
  "ark-scale",
  "ark-serialize",
  "ark-std",
- "parity-scale-codec",
  "sp-ark-models",
  "test-utils",
 ]
