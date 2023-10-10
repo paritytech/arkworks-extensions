@@ -1,4 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+#![allow(clippy::result_unit_err)]
 
 use ark_ec::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},

@@ -20,9 +20,10 @@
     unused,
     future_incompatible,
     nonstandard_style,
-    rust_2018_idioms
+    rust_2018_idioms,
+    unsafe_code
 )]
-#![forbid(unsafe_code)]
+#![allow(clippy::result_unit_err)]
 
 pub mod curves;
 
