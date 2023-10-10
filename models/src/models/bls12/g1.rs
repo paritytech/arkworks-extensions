@@ -12,10 +12,11 @@ pub type G1Projective<P> = Projective<<P as Bls12Config>::G1Config>;
 
 #[derive(Derivative, CanonicalSerialize, CanonicalDeserialize)]
 #[derivative(
+    Copy(bound = "P: Bls12Config"),
     Clone(bound = "P: Bls12Config"),
-    Debug(bound = "P: Bls12Config"),
     PartialEq(bound = "P: Bls12Config"),
-    Eq(bound = "P: Bls12Config")
+    Eq(bound = "P: Bls12Config"),
+    Debug(bound = "P: Bls12Config")
 )]
 pub struct G1Prepared<P: Bls12Config>(pub G1Affine<P>);
 
