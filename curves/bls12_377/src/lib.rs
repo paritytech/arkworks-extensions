@@ -23,18 +23,20 @@
     nonstandard_style,
     rust_2018_idioms
 )]
-// #![allow(clippy::result_unit_err)]
 #![forbid(unsafe_code)]
 
 pub mod curves;
 
-#[cfg(feature = "r1cs")]
-pub use ark_bls12_377::constraints::*;
-
 pub use ark_bls12_377::{fq12, fq2, fr, Fq, Fq12Config, Fq2, Fq2Config, Fq6Config, Fr, FrConfig};
 pub use curves::*;
 
-pub(crate) use ark_scale::ark_serialize::{Compress, Validate};
+#[cfg(feature = "r1cs")]
+pub use ark_bls12_377::constraints::*;
+
+use ark_scale::{
+    ark_serialize::{Compress, Validate},
+    Usage,
+};
 
 #[cfg(feature = "scale-no-compress")]
 const SCALE_COMPRESS: Compress = Compress::No;
@@ -50,6 +52,6 @@ const SCALE_VALIDATE: Validate = Validate::Yes;
 ///
 /// Determines whether compression and validation has been enabled for SCALE codec
 /// with respect to ARK related types.
-pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
+pub const SCALE_USAGE: Usage = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
 
 type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;

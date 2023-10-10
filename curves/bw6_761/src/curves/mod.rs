@@ -1,8 +1,7 @@
-use crate::{Fq, Fq3Config, Fq6Config};
+use crate::{ArkScale, Fq, Fq3Config, Fq6Config};
 use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
-use ark_scale::ArkScale;
+use ark_scale::scale::{Decode, Encode};
 use ark_std::{marker::PhantomData, vec::Vec};
-use codec::{Decode, Encode};
 use sp_ark_models::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -19,7 +18,6 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-#[derive(PartialEq, Eq)]
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 pub trait HostFunctions: 'static {

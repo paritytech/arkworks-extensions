@@ -22,7 +22,6 @@
     nonstandard_style,
     rust_2018_idioms
 )]
-#![allow(clippy::result_unit_err)]
 #![forbid(unsafe_code)]
 
 pub mod curves;

@@ -1,13 +1,14 @@
+use crate::{fq::Fq, fr::Fr, ArkScale};
 use ark_ff::MontFp;
-use ark_scale::{hazmat::ArkScaleProjective, ArkScale};
+use ark_scale::{
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
 use ark_std::{marker::PhantomData, vec::Vec};
-use codec::{Decode, Encode};
 use sp_ark_models::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-
-use crate::{fq::Fq, fr::Fr};
 
 #[cfg(test)]
 mod tests;

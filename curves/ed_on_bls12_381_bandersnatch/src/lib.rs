@@ -1,14 +1,3 @@
-#![cfg_attr(not(feature = "std"), no_std)]
-#![deny(
-    warnings,
-    unused,
-    future_incompatible,
-    nonstandard_style,
-    rust_2018_idioms
-)]
-#![allow(clippy::result_unit_err)]
-#![forbid(unsafe_code)]
-
 //! This library implements the Bendersnatch curve, a twisted Edwards curve
 //! whose base field is the scalar field of the curve BLS12-381. This allows
 //! defining cryptographic primitives that use elliptic curves over the scalar
@@ -29,9 +18,41 @@
 //!    * a = -5
 //!    * d = 45022363124591815672509500913686876175488063829319466900776701791074614335719
 
-#[cfg(feature = "r1cs")]
-pub use ark_ed_on_bls12_381_bandersnatch::constraints;
+#![cfg_attr(not(feature = "std"), no_std)]
+#![deny(
+    warnings,
+    unused,
+    future_incompatible,
+    nonstandard_style,
+    rust_2018_idioms
+)]
+#![allow(clippy::result_unit_err)]
+#![forbid(unsafe_code)]
+
 pub mod curves;
 
 pub use ark_ed_on_bls12_381_bandersnatch::{fq, fq::*, fr, fr::*};
 pub use curves::*;
+
+#[cfg(feature = "r1cs")]
+pub use ark_ed_on_bls12_381_bandersnatch::constraints;
+
+use ark_scale::ark_serialize::{Compress, Validate};
+
+#[cfg(feature = "scale-no-compress")]
+const SCALE_COMPRESS: Compress = Compress::No;
+#[cfg(not(feature = "scale-no-compress"))]
+const SCALE_COMPRESS: Compress = Compress::Yes;
+
+#[cfg(feature = "scale-no-validate")]
+const SCALE_VALIDATE: Validate = Validate::No;
+#[cfg(not(feature = "scale-no-validate"))]
+const SCALE_VALIDATE: Validate = Validate::Yes;
+
+/// SCALE codec usage settings.
+///
+/// Determines whether compression and validation has been enabled for SCALE codec
+/// with respect to ARK related types.
+pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
+
+type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;

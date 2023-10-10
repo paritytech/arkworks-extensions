@@ -788,7 +788,6 @@ dependencies = [
  "ark-scale",
  "ark-serialize",
  "ark-std",
- "parity-scale-codec",
  "sp-ark-models",
  "test-utils",
 ]
@@ -802,11 +801,9 @@ dependencies = [
  "ark-ed-on-bls12-377",
  "ark-ff",
  "ark-r1cs-std",
- "ark-relations",
  "ark-scale",
  "ark-serialize",
  "ark-std",
- "parity-scale-codec",
  "sp-ark-models",
  "test-utils",
 ]
@@ -820,11 +817,9 @@ dependencies = [
  "ark-ed-on-bls12-381-bandersnatch",
  "ark-ff",
  "ark-r1cs-std",
- "ark-relations",
  "ark-scale",
  "ark-serialize",
  "ark-std",
- "parity-scale-codec",
  "sp-ark-models",
  "test-utils",
 ]

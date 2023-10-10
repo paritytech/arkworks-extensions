@@ -1,6 +1,3 @@
-[profile.bench]
-lto = true
-
 [workspace]
 resolver = "2"
 
