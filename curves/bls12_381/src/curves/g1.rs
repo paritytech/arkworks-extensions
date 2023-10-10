@@ -1,7 +1,16 @@
+use ark_bls12_381::{fr::Fr, Fq};
 use ark_ff::{Field, MontFp, PrimeField, Zero};
-use ark_scale::{hazmat::ArkScaleProjective, ArkScale};
-use ark_std::{marker::PhantomData, ops::Neg, One};
-use codec::{Decode, Encode};
+use ark_scale::{
+    ark_serialize::{Compress, SerializationError, Validate},
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
+use ark_std::{
+    io::{Read, Write},
+    marker::PhantomData,
+    ops::Neg,
+    One,
+};
 use sp_ark_models::{
     bls12,
     bls12::Bls12Config,
@@ -13,15 +22,13 @@ use crate::{
     util::{
         read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
     },
-    HostFunctions,
+    ArkScale, HostFunctions,
 };
-use ark_bls12_381::{fr::Fr, Fq};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-
 pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
 
 impl<H: HostFunctions> CurveConfig for Config<H> {
@@ -82,31 +89,30 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         Config::<H>::mul_affine(p, h_eff.as_ref()).into()
     }
 
-    fn deserialize_with_mode<R: ark_serialize::Read>(
+    fn deserialize_with_mode<R: Read>(
         mut reader: R,
-        compress: ark_serialize::Compress,
-        validate: ark_serialize::Validate,
-    ) -> Result<Affine<Self>, ark_serialize::SerializationError> {
-        let p = if compress == ark_serialize::Compress::Yes {
+        compress: Compress,
+        validate: Validate,
+    ) -> Result<Affine<Self>, SerializationError> {
+        let p = if compress == Compress::Yes {
             read_g1_compressed(&mut reader)?
         } else {
             read_g1_uncompressed(&mut reader)?
         };
 
-        if validate == ark_serialize::Validate::Yes && !p.is_in_correct_subgroup_assuming_on_curve()
-        {
-            return Err(ark_serialize::SerializationError::InvalidData);
+        if validate == Validate::Yes && !p.is_in_correct_subgroup_assuming_on_curve() {
+            return Err(SerializationError::InvalidData);
         }
         Ok(p)
     }
 
-    fn serialize_with_mode<W: ark_serialize::Write>(
+    fn serialize_with_mode<W: Write>(
         item: &Affine<Self>,
         mut writer: W,
-        compress: ark_serialize::Compress,
-    ) -> Result<(), ark_serialize::SerializationError> {
+        compress: Compress,
+    ) -> Result<(), SerializationError> {
         let encoding = EncodingFlags {
-            is_compressed: compress == ark_serialize::Compress::Yes,
+            is_compressed: compress == Compress::Yes,
             is_infinity: item.is_zero(),
             is_lexographically_largest: item.y > -item.y,
         };
@@ -134,8 +140,8 @@ impl<H: HostFunctions> SWCurveConfig for Config<H> {
         Ok(())
     }
 
-    fn serialized_size(compress: ark_serialize::Compress) -> usize {
-        if compress == ark_serialize::Compress::Yes {
+    fn serialized_size(compress: Compress) -> usize {
+        if compress == Compress::Yes {
             G1_SERIALIZED_SIZE
         } else {
             G1_SERIALIZED_SIZE * 2

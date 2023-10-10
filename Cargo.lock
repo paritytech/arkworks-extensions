@@ -755,7 +755,6 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-r1cs-std",
- "ark-relations",
  "ark-scale",
  "ark-serialize",
  "ark-std",
@@ -774,7 +773,6 @@ dependencies = [
  "ark-scale",
  "ark-serialize",
  "ark-std",
- "parity-scale-codec",
  "sp-ark-models",
  "test-utils",
 ]

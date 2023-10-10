@@ -1,6 +1,6 @@
 use ark_ff::{BigInteger384, PrimeField};
-use ark_serialize::SerializationError;
-use ark_std::vec::Vec;
+use ark_scale::ark_serialize::SerializationError;
+use ark_std::{io::Read, vec::Vec};
 use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
 use crate::HostFunctions;
@@ -77,7 +77,7 @@ pub(crate) fn read_fq_with_offset(
     bytes: Vec<u8>,
     offset: usize,
     mask: bool,
-) -> Result<Fq, ark_serialize::SerializationError> {
+) -> Result<Fq, SerializationError> {
     let mut tmp = [0; G1_SERIALIZED_SIZE];
     // read `G1_SERIALIZED_SIZE` bytes
     tmp.copy_from_slice(&bytes[offset * G1_SERIALIZED_SIZE..G1_SERIALIZED_SIZE * (offset + 1)]);
@@ -89,9 +89,9 @@ pub(crate) fn read_fq_with_offset(
     deserialize_fq(tmp).ok_or(SerializationError::InvalidData)
 }
 
-pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
+pub(crate) fn read_g1_compressed<R: Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G1Config<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G1Config<H>>, SerializationError> {
     let mut bytes = [0u8; G1_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)
@@ -119,9 +119,9 @@ pub(crate) fn read_g1_compressed<R: ark_serialize::Read, H: HostFunctions>(
     Ok(p)
 }
 
-pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
+pub(crate) fn read_g1_uncompressed<R: Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G1Config<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G1Config<H>>, SerializationError> {
     let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)
@@ -149,9 +149,9 @@ pub(crate) fn read_g1_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
     Ok(p)
 }
 
-pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
+pub(crate) fn read_g2_compressed<R: Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G2Config<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G2Config<H>>, SerializationError> {
     let mut bytes = [0u8; G2_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)
@@ -181,9 +181,9 @@ pub(crate) fn read_g2_compressed<R: ark_serialize::Read, H: HostFunctions>(
     Ok(p)
 }
 
-pub(crate) fn read_g2_uncompressed<R: ark_serialize::Read, H: HostFunctions>(
+pub(crate) fn read_g2_uncompressed<R: Read, H: HostFunctions>(
     mut reader: R,
-) -> Result<Affine<G2Config<H>>, ark_serialize::SerializationError> {
+) -> Result<Affine<G2Config<H>>, SerializationError> {
     let mut bytes = [0u8; 2 * G2_SERIALIZED_SIZE];
     reader
         .read_exact(&mut bytes)

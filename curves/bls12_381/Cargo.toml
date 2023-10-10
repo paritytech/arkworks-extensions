@@ -16,13 +16,12 @@ ark-ff = { version = "0.4.2", default-features = false }
 ark-std = { version = "0.4.0", default-features = false }
 ark-bls12-381 = { version = "0.4.0",features = [ "curve" ], default-features = false }
 sp-ark-models = { path = "../../models", version = "0.4.1-beta", default-features = false }
-codec = { package = "parity-scale-codec", version = "3.2.2", default-features = false }
 ark-scale = { version = "0.0.11", features = ["hazmat"], default-features = false }
-ark-serialize = { version = "0.4.2", default-features = false }
 
 [dev-dependencies] 
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
 ark-ec = { version = "0.4.2", default-features = false }
+ark-serialize = { version = "0.4.2", default-features = false }
 test-utils =  { path = "../../test-utils", default-features = false }
 
 [features]
@@ -32,10 +31,21 @@ std = [
   "ark-std/std", 
   "ark-bls12-381/std",
   "sp-ark-models/std",
-  "codec/std",
   "ark-scale/std",
   "ark-serialize/std",
   "test-utils/std",
 ]
 curve = [ "scalar_field" ]
 scalar_field = []
+# SCALE encoding related features for most of the arkworks types.
+# Defaults to "compressed" and "validated".
+scale-fast = [
+  "scale-no-compress",
+  "scale-no-validate",
+]
+scale-no-compress = [
+  "test-utils/scale-no-compress",
+]
+scale-no-validate = [  
+  "test-utils/scale-no-validate",
+]

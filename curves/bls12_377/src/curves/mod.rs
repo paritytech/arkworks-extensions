@@ -1,4 +1,5 @@
 use crate::*;
+use ark_scale::scale::{Decode, Encode};
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
@@ -62,11 +63,10 @@ impl<H: HostFunctions> Bls12Config for Config<H> {
 
         let result = H::bls12_377_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
-        let result = <ArkScale<<Bls12<Self> as Pairing>::TargetField> as Decode>::decode(
-            &mut result.as_slice(),
-        )
-        .unwrap()
-        .0;
+        let result =
+            ArkScale::<<Bls12<Self> as Pairing>::TargetField>::decode(&mut result.as_slice())
+                .unwrap()
+                .0;
         MillerLoopOutput(result)
     }
 

@@ -34,8 +34,7 @@ pub use ark_bls12_377::constraints::*;
 pub use ark_bls12_377::{fq12, fq2, fr, Fq, Fq12Config, Fq2, Fq2Config, Fq6Config, Fr, FrConfig};
 pub use curves::*;
 
-use ark_scale::ark_serialize::{Compress, Validate};
-pub(crate) use ark_scale::scale::{Decode, Encode};
+pub(crate) use ark_scale::ark_serialize::{Compress, Validate};
 
 #[cfg(feature = "scale-no-compress")]
 const SCALE_COMPRESS: Compress = Compress::No;
