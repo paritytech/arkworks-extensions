@@ -1,4 +1,4 @@
-use crate::{ArkScale, Fq, Fr, CurveHooks};
+use crate::{ArkScale, CurveHooks, Fq, Fr};
 use ark_ff::{Field, MontFp};
 use ark_scale::{
     hazmat::ArkScaleProjective,

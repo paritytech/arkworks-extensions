@@ -296,9 +296,7 @@ fn p_power_endomorphism<H: CurveHooks>(p: &Affine<Config<H>>) -> Affine<Config<H
 }
 
 /// For a p-power endomorphism psi(P), compute psi(psi(P))
-fn double_p_power_endomorphism<H: CurveHooks>(
-    p: &Projective<Config<H>>,
-) -> Projective<Config<H>> {
+fn double_p_power_endomorphism<H: CurveHooks>(p: &Projective<Config<H>>) -> Projective<Config<H>> {
     let mut res = *p;
 
     res.x *= DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0;
