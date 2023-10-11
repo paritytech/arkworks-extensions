@@ -32,7 +32,7 @@ pub use ark_bls12_377::{fq12, fq2, fr, Fq, Fq12Config, Fq2, Fq2Config, Fq6Config
 pub use curves::*;
 
 #[cfg(feature = "r1cs")]
-pub use ark_bls12_377::constraints::*;
+pub use ark_bls12_377::constraints;
 
 use ark_scale::{
     ark_serialize::{Compress, Validate},

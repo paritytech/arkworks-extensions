@@ -12,9 +12,9 @@ use ark_ec::{
 use ark_scale::{
     ark_serialize::{Compress, Validate},
     hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
 };
 use ark_std::vec::Vec;
-use codec::{Decode, Encode};
 
 #[cfg(feature = "scale-no-compress")]
 const SCALE_COMPRESS: Compress = Compress::No;

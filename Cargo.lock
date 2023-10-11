@@ -194,7 +194,6 @@ dependencies = [
  "ark-ff",
  "ark-std",
  "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]
@@ -754,7 +753,6 @@ dependencies = [
  "ark-bls12-377",
  "ark-ec",
  "ark-ff",
- "ark-r1cs-std",
  "ark-scale",
  "ark-serialize",
  "ark-std",
@@ -800,7 +798,6 @@ dependencies = [
  "ark-ec",
  "ark-ed-on-bls12-377",
  "ark-ff",
- "ark-r1cs-std",
  "ark-scale",
  "ark-serialize",
  "ark-std",
@@ -816,7 +813,6 @@ dependencies = [
  "ark-ec",
  "ark-ed-on-bls12-381-bandersnatch",
  "ark-ff",
- "ark-r1cs-std",
  "ark-scale",
  "ark-serialize",
  "ark-std",
@@ -866,19 +862,11 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
 name = "test-utils"
-version = "0.1.0"
+version = "0.4.1-beta"
 dependencies = [
- "ark-bls12-377",
- "ark-bls12-381",
- "ark-bw6-761",
  "ark-ec",
- "ark-ed-on-bls12-377",
- "ark-ed-on-bls12-381-bandersnatch",
- "ark-ff",
  "ark-scale",
- "ark-serialize",
  "ark-std",
- "parity-scale-codec",
 ]
 
 [[package]]
@@ -926,19 +914,6 @@ name = "tracing-core"
 version = "0.1.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0955b8137a1df6f1a2e9a37d8a6656291ff0297c1a97c24e0d8425fe2312f79a"
-dependencies = [
- "once_cell",
- "valuable",
-]
-
-[[package]]
-name = "tracing-subscriber"
-version = "0.2.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e0d2eaa99c3c2e41547cfa109e910a68ea03823cccad4a0525dcbc9b01e8c71"
-dependencies = [
- "tracing-core",
-]
 
 [[package]]
 name = "typenum"
@@ -951,12 +926,6 @@ name = "unicode-ident"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b15811caf2415fb889178633e7724bad2509101cde276048e013b9def5e51fa0"
-
-[[package]]
-name = "valuable"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "830b7e5d4d90034032940e4ace0d9a9a057e7a45cd94e6c007832e39edb82f6d"
 
 [[package]]
 name = "version_check"
