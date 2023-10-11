@@ -33,8 +33,6 @@ std = [
   "ark-scale/std",
   "test-utils/std",
 ]
-curve = [ "scalar_field" ]
-scalar_field = []
 # SCALE encoding related features for most of the arkworks types.
 # Defaults to "compressed" and "validated".
 scale-fast = [

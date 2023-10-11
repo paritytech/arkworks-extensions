@@ -16,7 +16,6 @@ ark-std.workspace = true
 ark-bls12-377.workspace = true
 ark-scale.workspace = true
 sp-ark-models.workspace = true
-ark-r1cs-std = { workspace = true, optional = true }
 
 [dev-dependencies]
 ark-ec.workspace = true
@@ -33,8 +32,8 @@ std = [
   "sp-ark-models/std",
   "ark-scale/std",
   "test-utils/std",
-  "ark-r1cs-std/std", 
 ]
+r1cs = ["ark-bls12-377/r1cs"]
 # SCALE encoding related features for most of the arkworks types.
 # Defaults to "compressed" and "validated".
 scale-fast = [
@@ -44,17 +43,6 @@ scale-fast = [
 scale-no-compress = [
   "test-utils/scale-no-compress",
 ]
-scale-no-validate = [  
+scale-no-validate = [
   "test-utils/scale-no-validate",
-]
-curve = [
-  "scalar_field",
-  "base_field"
-]
-scalar_field = []
-base_field = []
-r1cs = [
-  "base_field",
-  "ark-r1cs-std",
-  "ark-bls12-377/r1cs",
 ]

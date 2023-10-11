@@ -34,7 +34,6 @@ ark-bls12-381 = { version = "0.4.0", default-features = false, features = ["curv
 ark-bw6-761 = { version = "0.4.0", default-features = false }
 ark-ed-on-bls12-377 = { version = "0.4.0", default-features = false }
 ark-ed-on-bls12-381-bandersnatch = { version = "0.4.0", default-features = false }
-ark-r1cs-std = { version = "0.4.0", default-features = false }
 ark-scale = { version = "0.0.11", default-features = false, features = ["hazmat"] }
 ark-algebra-test-templates = { version = "0.4.2", default-features = false }
 
