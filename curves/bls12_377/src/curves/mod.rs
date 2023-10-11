@@ -1,4 +1,6 @@
 use crate::*;
+use ark_bls12_377::Config as ArkConfig;
+use ark_ec::bls12::Bls12Config as ArkBls12Config;
 use ark_scale::scale::{Decode, Encode};
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
@@ -19,24 +21,16 @@ pub use self::{
 
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-pub trait CurveHooks: 'static {
-    fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bls12_377_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bls12_377_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bls12_377_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bls12_377_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
-}
-
 impl<H: CurveHooks> Bls12Config for Config<H> {
-    const X: &'static [u64] = &[0x8508c00000000001];
-    /// `x` is positive.
-    const X_IS_NEGATIVE: bool = false;
-    const TWIST_TYPE: TwistType = TwistType::D;
-    type Fp = Fq;
-    type Fp2Config = Fq2Config;
-    type Fp6Config = Fq6Config;
-    type Fp12Config = Fq12Config;
+    const X: &'static [u64] = <ArkConfig as ArkBls12Config>::X;
+    const X_IS_NEGATIVE: bool = <ArkConfig as ArkBls12Config>::X_IS_NEGATIVE;
+    const TWIST_TYPE: TwistType = <ArkConfig as ArkBls12Config>::TWIST_TYPE;
+
+    type Fp = <ArkConfig as ArkBls12Config>::Fp;
+    type Fp2Config = <ArkConfig as ArkBls12Config>::Fp2Config;
+    type Fp6Config = <ArkConfig as ArkBls12Config>::Fp6Config;
+    type Fp12Config = <ArkConfig as ArkBls12Config>::Fp12Config;
+
     type G1Config = g1::Config<H>;
     type G2Config = g2::Config<H>;
 
@@ -77,8 +71,7 @@ impl<H: CurveHooks> Bls12Config for Config<H> {
 
         let result = H::bls12_377_final_exponentiation(target.encode()).unwrap();
 
-        let result =
-            <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&mut result.as_slice());
+        let result = ArkScale::<PairingOutput<Bls12<Self>>>::decode(&mut result.as_slice());
         result.ok().map(|res| res.0)
     }
 }

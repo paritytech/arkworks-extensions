@@ -1,3 +1,4 @@
+pub use ark_ec::models::bls12::TwistType;
 use ark_ec::{
     models::CurveConfig,
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
@@ -15,13 +16,6 @@ use ark_std::marker::PhantomData;
 use derivative::Derivative;
 
 use crate::models::short_weierstrass::SWCurveConfig;
-
-/// A particular BLS12 group can have G2 being either a multiplicative or a
-/// divisive twist.
-pub enum TwistType {
-    M,
-    D,
-}
 
 pub trait Bls12Config: 'static + Sized {
     /// Parameterizes the BLS12 family.

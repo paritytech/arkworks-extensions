@@ -11,6 +11,7 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
+ark-ec.workspace = true
 ark-ff.workspace = true
 ark-std.workspace = true
 ark-bls12-377.workspace = true
@@ -18,7 +19,6 @@ ark-scale.workspace = true
 sp-ark-models.workspace = true
 
 [dev-dependencies]
-ark-ec.workspace = true
 ark-serialize.workspace = true
 ark-algebra-test-templates.workspace = true
 test-utils.workspace = true
