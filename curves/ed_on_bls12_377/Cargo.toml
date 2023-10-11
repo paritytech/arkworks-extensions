@@ -1,28 +1,28 @@
 [package]
 name = "sp-ark-ed-on-bls12-377"
-version = "0.4.1-beta"
-authors = ["Parity Technologies <admin@parity.io>", "Achim Schneider <achim@parity.io>", "Davide Galassi <davxy@datawok.net>" ]
-repository = "https://github.com/paritytech/arkworks-ext"
 description = "Extensions for Twisted Edwards curve defined over the scalar field of the BLS12-377 curve"
-keywords = ["cryptography", "finite-fields", "elliptic-curves" ]
-categories = ["cryptography"]
-include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
-license = "MIT/Apache-2.0"
-edition = "2021"
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+include.workspace = true
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
-ark-ff = { version = "0.4.2", default-features = false }
-ark-std = { version = "0.4.0", default-features = false }
-ark-ed-on-bls12-377 = { version = "0.4.0",default-features = false }
-ark-r1cs-std = { version = "0.4.0", default-features = false, optional = true }
-sp-ark-models = { path = "../../models", default-features = false }
-ark-scale = { version = "0.0.11", features = ["hazmat"], default-features = false }
+ark-ff.workspace = true
+ark-std.workspace = true
+ark-ed-on-bls12-377.workspace = true
+ark-scale.workspace = true
+sp-ark-models.workspace = true
+ark-r1cs-std = { workspace = true, optional = true }
 
 [dev-dependencies]
-ark-algebra-test-templates = { version = "0.4.2", default-features = false }
-ark-ec = { version = "0.4.2", default-features = false }
-ark-serialize = { version = "0.4.2", default-features = false }
-test-utils = { path = "../../test-utils", default-features = false }
+ark-ec.workspace = true
+ark-serialize.workspace = true
+ark-algebra-test-templates.workspace = true
+test-utils.workspace = true
 
 [features]
 default = [ "std" ]
@@ -30,11 +30,10 @@ std = [
   "ark-ff/std",
   "ark-std/std", 
   "ark-ed-on-bls12-377/std", 
-  "ark-serialize/std",
-  "ark-r1cs-std/std",
   "sp-ark-models/std", 
   "ark-scale/std",
   "test-utils/std",
+  "ark-r1cs-std/std",
 ]
 # SCALE encoding related features for most of the arkworks types.
 # Defaults to "compressed" and "validated".
