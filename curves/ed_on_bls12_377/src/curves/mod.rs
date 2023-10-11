@@ -17,14 +17,14 @@ pub type EdwardsAffine<H> = Affine<EdwardsConfig<H>>;
 pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct EdwardsConfig<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct EdwardsConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
-pub trait HostFunctions: 'static {
+pub trait CurveHooks: 'static {
     fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
-impl<H: HostFunctions> CurveConfig for EdwardsConfig<H> {
+impl<H: CurveHooks> CurveConfig for EdwardsConfig<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -37,7 +37,7 @@ impl<H: HostFunctions> CurveConfig for EdwardsConfig<H> {
         MontFp!("527778859339273151515551558673846658209717731602102048798421311598680340096");
 }
 
-impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
+impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
     /// COEFF_A = -1
     const COEFF_A: Fq = MontFp!("-1");
 
@@ -95,7 +95,7 @@ impl<H: HostFunctions> TECurveConfig for EdwardsConfig<H> {
     }
 }
 
-impl<H: HostFunctions> MontCurveConfig for EdwardsConfig<H> {
+impl<H: CurveHooks> MontCurveConfig for EdwardsConfig<H> {
     /// COEFF_A = 0x8D26E3FADA9010A26949031ECE3971B93952AD84D4753DDEDB748DA37E8F552
     ///         = 3990301581132929505568273333084066329187552697088022219156688740916631500114
     const COEFF_A: Fq =

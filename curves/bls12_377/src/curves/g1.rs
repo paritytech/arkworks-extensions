@@ -1,4 +1,4 @@
-use crate::{ArkScale, Fq, Fr, HostFunctions};
+use crate::{ArkScale, Fq, Fr, CurveHooks};
 use ark_ff::{Field, MontFp, Zero};
 use ark_scale::{
     hazmat::ArkScaleProjective,
@@ -19,9 +19,9 @@ pub type G1Affine<H> = bls12::G1Affine<crate::curves::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::curves::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions> CurveConfig for Config<H> {
+impl<H: CurveHooks> CurveConfig for Config<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -33,7 +33,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
     const COFACTOR_INV: Fr = MontFp!("5285428838741532253824584287042945485047145357130994810877");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Config<H> {
+impl<H: CurveHooks> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
     const COEFF_A: Fq = Fq::ZERO;
 
@@ -137,7 +137,7 @@ pub type G1TEProjective<H> = TEProjective<Config<H>>;
 /// # b = -TE1d/TE1a
 /// TE2d = Fp(122268283598675559488486339158635529096981886914877139579534153582033676785385790730042363341236035746924960903179)
 /// ```
-impl<H: HostFunctions> TECurveConfig for Config<H> {
+impl<H: CurveHooks> TECurveConfig for Config<H> {
     /// COEFF_A = -1
     const COEFF_A: Fq = MontFp!("-1");
 
@@ -185,7 +185,7 @@ impl<H: HostFunctions> TECurveConfig for Config<H> {
 // # MB = s
 // MB=Fp(10189023633222963290707194929886294091415157242906428298294512798502806398782149227503530278436336312243746741931)
 // ```
-impl<H: HostFunctions> MontCurveConfig for Config<H> {
+impl<H: CurveHooks> MontCurveConfig for Config<H> {
     /// COEFF_A = 228097355113300204138531148905234651262148041026195375645000724271212049151994375092458297304264351187709081232384
     const COEFF_A: Fq = MontFp!("228097355113300204138531148905234651262148041026195375645000724271212049151994375092458297304264351187709081232384");
 

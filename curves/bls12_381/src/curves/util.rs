@@ -3,7 +3,7 @@ use ark_scale::ark_serialize::SerializationError;
 use ark_std::{io::Read, vec::Vec};
 use sp_ark_models::{short_weierstrass::Affine, AffineRepr};
 
-use crate::HostFunctions;
+use crate::CurveHooks;
 use crate::{g1::Config as G1Config, g2::Config as G2Config};
 use ark_bls12_381::{fq::Fq, fq2::Fq2};
 pub const G1_SERIALIZED_SIZE: usize = 48;
@@ -89,7 +89,7 @@ pub(crate) fn read_fq_with_offset(
     deserialize_fq(tmp).ok_or(SerializationError::InvalidData)
 }
 
-pub(crate) fn read_g1_compressed<R: Read, H: HostFunctions>(
+pub(crate) fn read_g1_compressed<R: Read, H: CurveHooks>(
     mut reader: R,
 ) -> Result<Affine<G1Config<H>>, SerializationError> {
     let mut bytes = [0u8; G1_SERIALIZED_SIZE];
@@ -119,7 +119,7 @@ pub(crate) fn read_g1_compressed<R: Read, H: HostFunctions>(
     Ok(p)
 }
 
-pub(crate) fn read_g1_uncompressed<R: Read, H: HostFunctions>(
+pub(crate) fn read_g1_uncompressed<R: Read, H: CurveHooks>(
     mut reader: R,
 ) -> Result<Affine<G1Config<H>>, SerializationError> {
     let mut bytes = [0u8; 2 * G1_SERIALIZED_SIZE];
@@ -149,7 +149,7 @@ pub(crate) fn read_g1_uncompressed<R: Read, H: HostFunctions>(
     Ok(p)
 }
 
-pub(crate) fn read_g2_compressed<R: Read, H: HostFunctions>(
+pub(crate) fn read_g2_compressed<R: Read, H: CurveHooks>(
     mut reader: R,
 ) -> Result<Affine<G2Config<H>>, SerializationError> {
     let mut bytes = [0u8; G2_SERIALIZED_SIZE];
@@ -181,7 +181,7 @@ pub(crate) fn read_g2_compressed<R: Read, H: HostFunctions>(
     Ok(p)
 }
 
-pub(crate) fn read_g2_uncompressed<R: Read, H: HostFunctions>(
+pub(crate) fn read_g2_uncompressed<R: Read, H: CurveHooks>(
     mut reader: R,
 ) -> Result<Affine<G2Config<H>>, SerializationError> {
     let mut bytes = [0u8; 2 * G2_SERIALIZED_SIZE];

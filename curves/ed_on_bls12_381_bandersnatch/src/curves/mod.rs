@@ -54,12 +54,12 @@ pub type SWProjective<H> = short_weierstrass::Projective<BandersnatchConfig<H>>;
 /// Script to transfer between different curves are available
 /// <https://github.com/zhenfeizhang/bandersnatch/blob/main/bandersnatch/script/bandersnatch.sage>
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct BandersnatchConfig<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct BandersnatchConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
 pub type EdwardsConfig<H> = BandersnatchConfig<H>;
 pub type SWConfig<H> = BandersnatchConfig<H>;
 
-pub trait HostFunctions: 'static {
+pub trait CurveHooks: 'static {
     fn ed_on_bls12_381_bandersnatch_te_msm(bases: Vec<u8>, scalars: Vec<u8>)
         -> Result<Vec<u8>, ()>;
     fn ed_on_bls12_381_bandersnatch_sw_msm(bases: Vec<u8>, scalars: Vec<u8>)
@@ -74,7 +74,7 @@ pub trait HostFunctions: 'static {
     ) -> Result<Vec<u8>, ()>;
 }
 
-impl<H: HostFunctions> CurveConfig for BandersnatchConfig<H> {
+impl<H: CurveHooks> CurveConfig for BandersnatchConfig<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -87,7 +87,7 @@ impl<H: HostFunctions> CurveConfig for BandersnatchConfig<H> {
         MontFp!("9831726595336160714896451345284868594481866920080427688839802480047265754601");
 }
 
-impl<H: HostFunctions> TECurveConfig for BandersnatchConfig<H> {
+impl<H: CurveHooks> TECurveConfig for BandersnatchConfig<H> {
     /// COEFF_A = -5
     const COEFF_A: Fq = MontFp!("-5");
 
@@ -151,7 +151,7 @@ impl<H: HostFunctions> TECurveConfig for BandersnatchConfig<H> {
     }
 }
 
-impl<H: HostFunctions> MontCurveConfig for BandersnatchConfig<H> {
+impl<H: CurveHooks> MontCurveConfig for BandersnatchConfig<H> {
     /// COEFF_A = 29978822694968839326280996386011761570173833766074948509196803838190355340952
     const COEFF_A: Fq =
         MontFp!("29978822694968839326280996386011761570173833766074948509196803838190355340952");
@@ -188,7 +188,7 @@ const SW_GENERATOR_X: Fq =
 const SW_GENERATOR_Y: Fq =
     MontFp!("12663882780877899054958035777720958383845500985908634476792678820121468453298");
 
-impl<H: HostFunctions> SWCurveConfig for BandersnatchConfig<H> {
+impl<H: CurveHooks> SWCurveConfig for BandersnatchConfig<H> {
     /// COEFF_A = 10773120815616481058602537765553212789256758185246796157495669123169359657269
     const COEFF_A: Self::BaseField =
         MontFp!("10773120815616481058602537765553212789256758185246796157495669123169359657269");

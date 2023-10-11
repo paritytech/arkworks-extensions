@@ -1,4 +1,4 @@
-use crate::{g1, ArkScale, Fq, Fq2, Fr, HostFunctions};
+use crate::{g1, ArkScale, Fq, Fq2, Fr, CurveHooks};
 use ark_ff::{Field, MontFp, Zero};
 use ark_scale::{
     hazmat::ArkScaleProjective,
@@ -15,9 +15,9 @@ pub type G2Affine<H> = bls12::G2Affine<crate::curves::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::curves::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions> CurveConfig for Config<H> {
+impl<H: CurveHooks> CurveConfig for Config<H> {
     type BaseField = Fq2;
     type ScalarField = Fr;
 
@@ -41,7 +41,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
         MontFp!("6764900296503390671038341982857278410319949526107311149686707033187604810669");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Config<H> {
+impl<H: CurveHooks> SWCurveConfig for Config<H> {
     /// COEFF_A = [0, 0]
     const COEFF_A: Fq2 = Fq2::new(g1::Config::<H>::COEFF_A, g1::Config::<H>::COEFF_A);
 

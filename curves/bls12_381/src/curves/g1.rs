@@ -22,16 +22,16 @@ use crate::{
     util::{
         read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
     },
-    ArkScale, HostFunctions,
+    ArkScale, CurveHooks,
 };
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions> CurveConfig for Config<H> {
+impl<H: CurveHooks> CurveConfig for Config<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -44,7 +44,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
         MontFp!("52435875175126190458656871551744051925719901746859129887267498875565241663483");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Config<H> {
+impl<H: CurveHooks> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
     const COEFF_A: Fq = Fq::ZERO;
 
@@ -202,7 +202,7 @@ pub const G1_GENERATOR_Y: Fq = MontFp!("1339506544944476473020471379941921221584
 /// BETA is a non-trivial cubic root of unity in fq.
 pub const BETA: Fq = MontFp!("793479390729215512621379701633421447060886740281060493010456487427281649075476305620758731620350");
 
-pub fn endomorphism<T: HostFunctions>(p: &Affine<Config<T>>) -> Affine<Config<T>> {
+pub fn endomorphism<T: CurveHooks>(p: &Affine<Config<T>>) -> Affine<Config<T>> {
     // Endomorphism of the points on the curve.
     // endomorphism_p(x,y) = (BETA * x, y)
     // where BETA is a non-trivial cubic root of unity in fq.

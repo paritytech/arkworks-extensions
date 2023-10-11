@@ -1,11 +1,11 @@
-use crate::HostFunctions;
+use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
 use ark_bw6_761::{g1::Config as ArkG1Config, g2::Config as ArkG2Config, BW6_761 as ArkBW6_761};
 
 struct Mock;
 
-impl HostFunctions for Mock {
+impl CurveHooks for Mock {
     fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
         test_utils::multi_miller_loop_generic::<ArkBW6_761>(a, b)
     }

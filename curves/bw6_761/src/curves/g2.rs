@@ -1,4 +1,4 @@
-use crate::{ArkScale, Fq, Fr, HostFunctions};
+use crate::{ArkScale, Fq, Fr, CurveHooks};
 use ark_ff::{Field, MontFp};
 use ark_scale::{
     hazmat::ArkScaleProjective,
@@ -16,9 +16,9 @@ pub type G2Projective<H> = bw6::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
 
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions> CurveConfig for Config<H> {
+impl<H: CurveHooks> CurveConfig for Config<H> {
     type BaseField = Fq;
     type ScalarField = Fr;
 
@@ -39,7 +39,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
     const COFACTOR_INV: Fr = MontFp!("214911522365886453591244899095480747723790054550866810551297776298664428889000553861210287833206024638187939842124");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Config<H> {
+impl<H: CurveHooks> SWCurveConfig for Config<H> {
     /// COEFF_A = 0
     const COEFF_A: Fq = Fq::ZERO;
 

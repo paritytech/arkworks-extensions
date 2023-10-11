@@ -22,16 +22,16 @@ use crate::{
     util::{
         read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
     },
-    ArkScale, HostFunctions,
+    ArkScale, CurveHooks,
 };
 
 pub type G2Affine<H> = bls12::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Default, PartialEq, Eq)]
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-impl<H: HostFunctions> CurveConfig for Config<H> {
+impl<H: CurveHooks> CurveConfig for Config<H> {
     type BaseField = Fq2;
     type ScalarField = Fr;
 
@@ -56,7 +56,7 @@ impl<H: HostFunctions> CurveConfig for Config<H> {
         MontFp!("26652489039290660355457965112010883481355318854675681319708643586776743290055");
 }
 
-impl<H: HostFunctions> SWCurveConfig for Config<H> {
+impl<H: CurveHooks> SWCurveConfig for Config<H> {
     /// COEFF_A = [0, 0]
     const COEFF_A: Fq2 = Fq2::new(g1::Config::<H>::COEFF_A, g1::Config::<H>::COEFF_A);
 
@@ -268,7 +268,7 @@ const DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0: Fq2 = Fq2::new(
 );
 
 /// psi(P) is the untwist-Frobenius-twist endomorhism on E'(Fq2)
-fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Config<H>> {
+fn p_power_endomorphism<H: CurveHooks>(p: &Affine<Config<H>>) -> Affine<Config<H>> {
     // The p-power endomorphism for G2 is defined as follows:
     // 1. Note that G2 is defined on curve E': y^2 = x^3 + 4(u+1).
     //    To map a point (x, y) in E' to (s, t) in E,
@@ -296,7 +296,7 @@ fn p_power_endomorphism<H: HostFunctions>(p: &Affine<Config<H>>) -> Affine<Confi
 }
 
 /// For a p-power endomorphism psi(P), compute psi(psi(P))
-fn double_p_power_endomorphism<H: HostFunctions>(
+fn double_p_power_endomorphism<H: CurveHooks>(
     p: &Projective<Config<H>>,
 ) -> Projective<Config<H>> {
     let mut res = *p;

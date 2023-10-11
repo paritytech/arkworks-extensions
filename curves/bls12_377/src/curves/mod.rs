@@ -17,9 +17,9 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-pub trait HostFunctions: 'static {
+pub trait CurveHooks: 'static {
     fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bls12_377_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bls12_377_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
@@ -28,7 +28,7 @@ pub trait HostFunctions: 'static {
     fn bls12_377_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
-impl<H: HostFunctions> Bls12Config for Config<H> {
+impl<H: CurveHooks> Bls12Config for Config<H> {
     const X: &'static [u64] = &[0x8508c00000000001];
     /// `x` is positive.
     const X_IS_NEGATIVE: bool = false;

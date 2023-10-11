@@ -1,4 +1,4 @@
-use crate::{fq::Fq, fq2::Fq2, fr::Fr, HostFunctions};
+use crate::{fq::Fq, fq2::Fq2, fr::Fr, CurveHooks};
 
 use ark_algebra_test_templates::*;
 use ark_bls12_381::{
@@ -13,7 +13,7 @@ use ark_std::{rand::Rng, test_rng, vec, UniformRand};
 
 struct Mock;
 
-impl HostFunctions for Mock {
+impl CurveHooks for Mock {
     fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
         test_utils::multi_miller_loop_generic::<ArkBls12_381>(a, b)
     }

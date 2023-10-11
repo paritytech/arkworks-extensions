@@ -1,11 +1,11 @@
-use crate::HostFunctions;
+use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
 use ark_ed_on_bls12_381_bandersnatch::BandersnatchConfig as ArkBandersnatchConfig;
 
 pub struct Mock;
 
-impl HostFunctions for Mock {
+impl CurveHooks for Mock {
     fn ed_on_bls12_381_bandersnatch_te_msm(
         bases: Vec<u8>,
         scalars: Vec<u8>,

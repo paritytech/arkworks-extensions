@@ -1,4 +1,4 @@
-use crate::HostFunctions;
+use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
 use ark_bls12_377::{
@@ -8,7 +8,7 @@ use ark_ec::pairing::PairingOutput;
 
 struct Mock;
 
-impl HostFunctions for Mock {
+impl CurveHooks for Mock {
     fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
         test_utils::multi_miller_loop_generic::<ArkBls12_377>(a, b)
     }
