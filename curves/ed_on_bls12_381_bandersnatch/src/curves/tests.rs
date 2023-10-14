@@ -2,6 +2,7 @@ use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
 use ark_ed_on_bls12_381_bandersnatch::BandersnatchConfig as ArkBandersnatchConfig;
+use ark_std::vec::Vec;
 
 pub struct Mock;
 

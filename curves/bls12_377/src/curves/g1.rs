@@ -54,12 +54,12 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         scalars: &[Self::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: ArkScale<&[SWAffine<Self>]> = bases.into();
-        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
+        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
 
         let res = H::bls12_377_msm_g1(bases.encode(), scalars.encode()).unwrap_or_default();
 
         let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
-        res.map_err(|_| 0).map(|res| res.0)
+        res.map(|res| res.0).map_err(|_| 0)
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective_g1` hook.

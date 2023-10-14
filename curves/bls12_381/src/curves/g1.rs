@@ -141,7 +141,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         scalars: &[Self::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: ArkScale<&[Affine<Self>]> = bases.into();
-        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
+        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
 
         let res = H::bls12_381_msm_g1(bases.encode(), scalars.encode()).unwrap();
 

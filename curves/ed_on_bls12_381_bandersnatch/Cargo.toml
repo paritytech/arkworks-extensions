@@ -11,6 +11,7 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
+ark-ec.workspace = true
 ark-ff.workspace = true
 ark-std.workspace = true
 ark-ed-on-bls12-381-bandersnatch.workspace = true
@@ -18,22 +19,24 @@ ark-scale.workspace = true
 sp-ark-models.workspace = true
 
 [dev-dependencies]
-ark-ec.workspace = true
 ark-serialize.workspace = true
 ark-algebra-test-templates.workspace = true
 test-utils.workspace = true
 
 [features]
-default = ["std"]
+default = [ "std" ]
 std = [
+  "ark-ec/std",
   "ark-ff/std",
   "ark-std/std",
   "ark-ed-on-bls12-381-bandersnatch/std",
-  "sp-ark-models/std", 
   "ark-scale/std",
+  "sp-ark-models/std", 
+  "ark-serialize/std",
+  "ark-algebra-test-templates/std",
   "test-utils/std", 
 ]
-r1cs = ["ark-ed-on-bls12-381-bandersnatch/r1cs"]
+r1cs = [ "ark-ed-on-bls12-381-bandersnatch/r1cs" ]
 # SCALE encoding related features for most of the arkworks types.
 # Defaults to "compressed" and "validated".
 scale-fast = [

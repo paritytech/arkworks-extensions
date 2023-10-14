@@ -45,10 +45,10 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     /// On any internal error returns `Err(0)`.
     fn msm(
         bases: &[Affine<Self>],
-        scalars: &[<Self as CurveConfig>::ScalarField],
+        scalars: &[Self::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: ArkScale<&[Affine<Self>]> = bases.into();
-        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
+        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
 
         let res = H::bw6_761_msm_g1(bases.encode(), scalars.encode()).unwrap_or_default();
 
