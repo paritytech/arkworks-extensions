@@ -25,9 +25,10 @@
 )]
 #![allow(clippy::result_unit_err)]
 
-pub mod curves;
+mod curves;
 
 pub use ark_bls12_381::{fq, fq::*, fq12, fq12::*, fq2, fq2::*, fq6, fq6::*, fr, fr::*};
+
 pub use curves::*;
 
 use ark_scale::ark_serialize::{Compress, Validate};
@@ -48,4 +49,4 @@ const SCALE_VALIDATE: Validate = Validate::Yes;
 /// with respect to ARK related types.
 pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
 
-type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
+pub type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;

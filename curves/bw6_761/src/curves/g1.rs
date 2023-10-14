@@ -1,5 +1,6 @@
-use crate::{ArkScale, CurveHooks, Fq, Fr};
-use ark_ff::{Field, MontFp};
+use crate::{ArkScale, CurveHooks};
+
+use ark_bw6_761::g1::Config as ArkConfig;
 use ark_scale::{
     hazmat::ArkScaleProjective,
     scale::{Decode, Encode},
@@ -11,6 +12,8 @@ use sp_ark_models::{
     {short_weierstrass::SWCurveConfig, CurveConfig},
 };
 
+pub use ark_bw6_761::g1::{G1_GENERATOR_X, G1_GENERATOR_Y};
+
 pub type G1Affine<H> = bw6::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bw6::G1Projective<crate::Config<H>>;
 
@@ -19,41 +22,27 @@ pub type G1Projective<H> = bw6::G1Projective<crate::Config<H>>;
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
-    type BaseField = Fq;
-    type ScalarField = Fr;
+    type BaseField = <ArkConfig as CurveConfig>::BaseField;
+    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 
-    /// COFACTOR =
-    /// 26642435879335816683987677701488073867751118270052650655942102502312977592501693353047140953112195348280268661194876
-    #[rustfmt::skip]
-    const COFACTOR: &'static [u64] = &[
-        0x3de580000000007c,
-        0x832ba4061000003b,
-        0xc61c554757551c0c,
-        0xc856a0853c9db94c,
-        0x2c77d5ac34cb12ef,
-        0xad1972339049ce76,
-    ];
-
-    /// COFACTOR^(-1) mod r =
-    /// 91141326767669940707819291241958318717982251277713150053234367522357946997763584490607453720072232540829942217804
-    const COFACTOR_INV: Fr = MontFp!("91141326767669940707819291241958318717982251277713150053234367522357946997763584490607453720072232540829942217804");
+    const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
+    const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
 }
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
-    /// COEFF_A = 0
-    const COEFF_A: Fq = Fq::ZERO;
+    const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
+    const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
-    /// COEFF_B = -1
-    const COEFF_B: Fq = MontFp!("-1");
-
-    /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
     const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
+
     #[inline(always)]
-    fn mul_by_a(_elem: Self::BaseField) -> Self::BaseField {
-        use ark_ff::Zero;
-        Self::BaseField::zero()
+    fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
+        <ArkConfig as SWCurveConfig>::mul_by_a(elem)
     }
 
+    /// Multi scalar multiplication jumping into the user-defined `msm_g1` hook.
+    ///
+    /// On any internal error returns `Err(0)`.
     fn msm(
         bases: &[Affine<Self>],
         scalars: &[<Self as CurveConfig>::ScalarField],
@@ -61,41 +50,29 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         let bases: ArkScale<&[Affine<Self>]> = bases.into();
         let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
 
-        let result = H::bw6_761_msm_g1(bases.encode(), scalars.encode()).unwrap();
+        let res = H::bw6_761_msm_g1(bases.encode(), scalars.encode()).unwrap_or_default();
 
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.map_err(|_| 0).map(|res| res.0)
+        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
+        res.map_err(|_| 0).map(|res| res.0)
     }
 
+    /// Projective multiplication jumping into the user-defined `mul_projective_g1` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
         let base: ArkScaleProjective<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::bw6_761_mul_projective_g1(base.encode(), scalar.encode()).unwrap();
+        let res = H::bw6_761_mul_projective_g1(base.encode(), scalar.encode()).unwrap_or_default();
 
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.unwrap().0
+        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
+        res.map(|v| v.0).unwrap_or_default()
     }
 
+    /// Affine multiplication jumping into the user-defined `mul_projective_g1` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: Projective<Self> = (*base).into();
-        let base: ArkScaleProjective<Projective<Self>> = base.into();
-        let scalar: ArkScale<&[u64]> = scalar.into();
-
-        let result = H::bw6_761_mul_projective_g1(base.encode(), scalar.encode()).unwrap();
-
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.unwrap().0
+        <Self as SWCurveConfig>::mul_projective(&(*base).into(), scalar)
     }
 }
-
-/// G1_GENERATOR_X =
-/// 6238772257594679368032145693622812838779005809760824733138787810501188623461307351759238099287535516224314149266511977132140828635950940021790489507611754366317801811090811367945064510304504157188661901055903167026722666149426237
-pub const G1_GENERATOR_X: Fq = MontFp!("6238772257594679368032145693622812838779005809760824733138787810501188623461307351759238099287535516224314149266511977132140828635950940021790489507611754366317801811090811367945064510304504157188661901055903167026722666149426237");
-
-/// G1_GENERATOR_Y =
-/// 2101735126520897423911504562215834951148127555913367997162789335052900271653517958562461315794228241561913734371411178226936527683203879553093934185950470971848972085321797958124416462268292467002957525517188485984766314758624099
-pub const G1_GENERATOR_Y: Fq = MontFp!("2101735126520897423911504562215834951148127555913367997162789335052900271653517958562461315794228241561913734371411178226936527683203879553093934185950470971848972085321797958124416462268292467002957525517188485984766314758624099");

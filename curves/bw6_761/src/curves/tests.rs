@@ -2,6 +2,7 @@ use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
 use ark_bw6_761::{g1::Config as ArkG1Config, g2::Config as ArkG2Config, BW6_761 as ArkBW6_761};
+use ark_std::vec::Vec;
 
 struct Mock;
 

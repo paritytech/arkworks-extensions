@@ -5,6 +5,7 @@ use ark_bls12_377::{
     g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bls12_377 as ArkBls12_377,
 };
 use ark_ec::pairing::PairingOutput;
+use ark_std::vec::Vec;
 
 struct Mock;
 

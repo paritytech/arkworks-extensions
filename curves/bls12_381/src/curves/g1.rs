@@ -1,5 +1,12 @@
-use ark_bls12_381::{fr::Fr, Fq};
-use ark_ff::{Field, MontFp, PrimeField, Zero};
+use crate::{
+    util::{
+        read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
+    },
+    ArkScale, CurveHooks,
+};
+
+use ark_bls12_381::g1::Config as ArkConfig;
+use ark_ff::PrimeField;
 use ark_scale::{
     ark_serialize::{Compress, SerializationError, Validate},
     hazmat::ArkScaleProjective,
@@ -18,56 +25,36 @@ use sp_ark_models::{
     AffineRepr, CurveConfig, Group,
 };
 
-use crate::{
-    util::{
-        read_g1_compressed, read_g1_uncompressed, serialize_fq, EncodingFlags, G1_SERIALIZED_SIZE,
-    },
-    ArkScale, CurveHooks,
-};
+pub use ark_bls12_381::g1::{BETA, G1_GENERATOR_X, G1_GENERATOR_Y};
 
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
-#[derive(Clone, Default, PartialEq, Eq)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
-    type BaseField = Fq;
-    type ScalarField = Fr;
+    type BaseField = <ArkConfig as CurveConfig>::BaseField;
+    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 
-    /// COFACTOR = (x - 1)^2 / 3  = 76329603384216526031706109802092473003
-    const COFACTOR: &'static [u64] = &[0x8c00aaab0000aaab, 0x396c8c005555e156];
-
-    /// COFACTOR_INV = COFACTOR^{-1} mod r
-    /// = 52435875175126190458656871551744051925719901746859129887267498875565241663483
-    const COFACTOR_INV: Fr =
-        MontFp!("52435875175126190458656871551744051925719901746859129887267498875565241663483");
+    const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
+    const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
 }
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
-    /// COEFF_A = 0
-    const COEFF_A: Fq = Fq::ZERO;
+    const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
+    const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
-    /// COEFF_B = 4
-    const COEFF_B: Fq = MontFp!("4");
-
-    /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
     const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
     #[inline(always)]
-    fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
-        Self::BaseField::zero()
+    fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
+        <ArkConfig as SWCurveConfig>::mul_by_a(elem)
     }
 
+    // Verbatim copy of upstream implementation.
+    // Can't call it directly because of different `Affine` config.
     #[inline]
     fn is_in_correct_subgroup_assuming_on_curve(p: &Affine<Self>) -> bool {
-        // Algorithm from Section 6 of https://eprint.iacr.org/2021/1130.
-        //
-        // Check that endomorphism_p(P) == -[X^2]P
-
-        // An early-out optimization described in Section 6.
-        // If uP == P but P != point of infinity, then the point is not in the right
-        // subgroup.
         let x_times_p = p.mul_bigint(crate::Config::<H>::X);
         if x_times_p.eq(p) && !p.infinity {
             return false;
@@ -78,17 +65,17 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         minus_x_squared_times_p.eq(&endomorphism_p)
     }
 
+    // Verbatim copy of upstream implementation.
+    // Can't call it directly because of different `Affine` config.
     #[inline]
     fn clear_cofactor(p: &Affine<Self>) -> Affine<Self> {
-        // Using the effective cofactor, as explained in
-        // Section 5 of https://eprint.iacr.org/2019/403.pdf.
-        //
-        // It is enough to multiply by (1 - x), instead of (x - 1)^2 / 3
         let h_eff =
             one_minus_x(crate::Config::<H>::X_IS_NEGATIVE, crate::Config::<H>::X).into_bigint();
-        Config::<H>::mul_affine(p, h_eff.as_ref()).into()
+        Self::mul_affine(p, h_eff.as_ref()).into()
     }
 
+    // Verbatim copy of upstream implementation.
+    // Can't call it directly because of different `Affine` config.
     fn deserialize_with_mode<R: Read>(
         mut reader: R,
         compress: Compress,
@@ -106,6 +93,8 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         Ok(p)
     }
 
+    // Verbatim copy of upstream implementation.
+    // Can't call it directly because of different `Affine` config.
     fn serialize_with_mode<W: Write>(
         item: &Affine<Self>,
         mut writer: W,
@@ -141,66 +130,54 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     fn serialized_size(compress: Compress) -> usize {
-        if compress == Compress::Yes {
-            G1_SERIALIZED_SIZE
-        } else {
-            G1_SERIALIZED_SIZE * 2
-        }
+        <ArkConfig as SWCurveConfig>::serialized_size(compress)
     }
 
+    /// Multi scalar multiplication jumping into the user-defined `msm_g1` hook.
+    ///
+    /// On any internal error returns `Err(0)`.
     fn msm(
         bases: &[Affine<Self>],
-        scalars: &[<Self as CurveConfig>::ScalarField],
+        scalars: &[Self::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: ArkScale<&[Affine<Self>]> = bases.into();
         let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
 
-        let result = H::bls12_381_msm_g1(bases.encode(), scalars.encode()).unwrap();
+        let res = H::bls12_381_msm_g1(bases.encode(), scalars.encode()).unwrap();
 
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.map_err(|_| 0).map(|res| res.0)
+        let res = <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut res.as_slice());
+        res.map_err(|_| 0).map(|res| res.0)
     }
 
+    /// Projective multiplication jumping into the user-defined `mul_projective` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
         let base: ArkScaleProjective<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::bls12_381_mul_projective_g1(base.encode(), scalar.encode()).unwrap();
+        let res =
+            H::bls12_381_mul_projective_g1(base.encode(), scalar.encode()).unwrap_or_default();
 
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.unwrap().0
+        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
+        res.map(|v| v.0).unwrap_or_default()
     }
 
+    /// Affine multiplication jumping into the user-defined `mul_projective` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: Projective<Self> = (*base).into();
-        let base: ArkScaleProjective<Projective<Self>> = base.into();
-        let scalar: ArkScale<&[u64]> = scalar.into();
-
-        let result = H::bls12_381_mul_projective_g1(base.encode(), scalar.encode()).unwrap();
-
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.unwrap().0
+        Self::mul_projective(&(*base).into(), scalar)
     }
 }
 
-fn one_minus_x(x_is_negative: bool, x_value: &'static [u64]) -> Fr {
-    let x: Fr = Fr::from_sign_and_limbs(!x_is_negative, x_value);
-    Fr::one() - x
+fn one_minus_x(
+    x_is_negative: bool,
+    x_value: &'static [u64],
+) -> <ArkConfig as CurveConfig>::ScalarField {
+    let x = <ArkConfig as CurveConfig>::ScalarField::from_sign_and_limbs(!x_is_negative, x_value);
+    <ArkConfig as CurveConfig>::ScalarField::one() - x
 }
-
-/// G1_GENERATOR_X =
-/// 3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507
-pub const G1_GENERATOR_X: Fq = MontFp!("3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507");
-
-/// G1_GENERATOR_Y =
-/// 1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569
-pub const G1_GENERATOR_Y: Fq = MontFp!("1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569");
-
-/// BETA is a non-trivial cubic root of unity in fq.
-pub const BETA: Fq = MontFp!("793479390729215512621379701633421447060886740281060493010456487427281649075476305620758731620350");
 
 pub fn endomorphism<T: CurveHooks>(p: &Affine<Config<T>>) -> Affine<Config<T>> {
     // Endomorphism of the points on the curve.

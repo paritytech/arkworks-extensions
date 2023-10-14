@@ -1,4 +1,7 @@
-use crate::*;
+use crate::ArkScale;
+
+use ark_bls12_381::Config as ArkConfig;
+use ark_ec::bls12::Bls12Config as ArkBls12Config;
 use ark_scale::scale::{Decode, Encode};
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
@@ -30,16 +33,21 @@ pub trait CurveHooks: 'static {
 }
 
 impl<H: CurveHooks> Bls12Config for Config<H> {
-    const X: &'static [u64] = &[0xd201000000010000];
-    const X_IS_NEGATIVE: bool = true;
-    const TWIST_TYPE: TwistType = TwistType::M;
-    type Fp = Fq;
-    type Fp2Config = Fq2Config;
-    type Fp6Config = Fq6Config;
-    type Fp12Config = Fq12Config;
+    const X: &'static [u64] = <ArkConfig as ArkBls12Config>::X;
+    const X_IS_NEGATIVE: bool = <ArkConfig as ArkBls12Config>::X_IS_NEGATIVE;
+    const TWIST_TYPE: TwistType = <ArkConfig as ArkBls12Config>::TWIST_TYPE;
+
+    type Fp = <ArkConfig as ArkBls12Config>::Fp;
+    type Fp2Config = <ArkConfig as ArkBls12Config>::Fp2Config;
+    type Fp6Config = <ArkConfig as ArkBls12Config>::Fp6Config;
+    type Fp12Config = <ArkConfig as ArkBls12Config>::Fp12Config;
+
     type G1Config = g1::Config<H>;
     type G2Config = g2::Config<H>;
 
+    /// Multi Miller loop jumping into the user-defined `multi_miller_loop` hook.
+    ///
+    /// For any internal error returns `TargetField::zero()`.
     fn multi_miller_loop(
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
@@ -61,25 +69,24 @@ impl<H: CurveHooks> Bls12Config for Config<H> {
             .collect::<Vec<_>>()
             .into();
 
-        let result = H::bls12_381_multi_miller_loop(a.encode(), b.encode()).unwrap();
+        let res = H::bls12_381_multi_miller_loop(a.encode(), b.encode()).unwrap_or_default();
 
-        let result = <ArkScale<<Bls12<Self> as Pairing>::TargetField> as Decode>::decode(
-            &mut result.as_slice(),
-        );
-        MillerLoopOutput(result.unwrap().0)
+        let res = ArkScale::<<Bls12<Self> as Pairing>::TargetField>::decode(&mut res.as_slice());
+        MillerLoopOutput(res.map(|v| v.0).unwrap_or_default())
     }
 
+    /// Final exponentiation jumping into the user-defined `final_exponentiation` hook.
+    ///
+    /// For any internal error returns `None`.
     fn final_exponentiation(
         f: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
         let target: ArkScale<<Bls12<Self> as Pairing>::TargetField> = f.0.into();
 
-        let result = H::bls12_381_final_exponentiation(target.encode()).unwrap();
+        let res = H::bls12_381_final_exponentiation(target.encode()).unwrap_or_default();
 
-        let result =
-            <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&mut result.as_slice());
-
-        result.ok().map(|res| res.0)
+        let res = <ArkScale<PairingOutput<Bls12<Self>>> as Decode>::decode(&mut res.as_slice());
+        res.map(|res| res.0).ok()
     }
 }
 

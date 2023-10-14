@@ -9,7 +9,7 @@ use ark_ec::{
 };
 use ark_ff::{fields::Field, One, Zero};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{rand::Rng, test_rng, vec, UniformRand};
+use ark_std::{rand::Rng, test_rng, vec, vec::Vec, UniformRand};
 
 struct Mock;
 
