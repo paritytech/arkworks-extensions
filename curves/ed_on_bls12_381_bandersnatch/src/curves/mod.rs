@@ -1,5 +1,7 @@
-use crate::{ArkScale, Fq, Fr};
-use ark_ff::{Field, MontFp};
+use crate::ArkScale;
+
+use ark_ed_on_bls12_381_bandersnatch::BandersnatchConfig as ArkConfig;
+use ark_ff::MontFp;
 use ark_scale::{
     hazmat::ArkScaleProjective,
     scale::{Decode, Encode},
@@ -15,51 +17,38 @@ use sp_ark_models::{
 #[cfg(test)]
 mod tests;
 
+// TODO: @davxy
+// Directly use upstream generator values as soon as version > 0.4.0 is released.
+// Ref: https://github.com/arkworks-rs/curves/pull/184
+
+/// x coordinate for TE curve generator
+pub const TE_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField =
+    MontFp!("18886178867200960497001835917649091219057080094937609519140440539760939937304");
+
+/// y coordinate for TE curve generator
+pub const TE_GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField =
+    MontFp!("19188667384257783945677642223292697773471335439753913231509108946878080696678");
+
+/// x coordinate for SW curve generator
+pub const SW_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField =
+    MontFp!("30900340493481298850216505686589334086208278925799850409469406976849338430199");
+
+/// y coordinate for SW curve generator
+pub const SW_GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField =
+    MontFp!("12663882780877899054958035777720958383845500985908634476792678820121468453298");
+
 pub type EdwardsAffine<H> = twisted_edwards::Affine<BandersnatchConfig<H>>;
 pub type EdwardsProjective<H> = twisted_edwards::Projective<BandersnatchConfig<H>>;
 
 pub type SWAffine<H> = short_weierstrass::Affine<BandersnatchConfig<H>>;
 pub type SWProjective<H> = short_weierstrass::Projective<BandersnatchConfig<H>>;
 
-/// `bandersnatch` is an incomplete twisted Edwards curve. These curves have
-/// equations of the form: ax² + y² = 1 + dx²y².
-/// over some base finite field Fq.
-///
-/// bandersnatch's curve equation: -5x² + y² = 1 + dx²y²
-///
-/// q = 52435875175126190479447740508185965837690552500527637822603658699938581184513.
-///
-/// a = -5.
-/// d = (138827208126141220649022263972958607803/
-///     171449701953573178309673572579671231137) mod q
-///   = 45022363124591815672509500913686876175488063829319466900776701791074614335719.
-///
-/// Sage script to calculate these:
-///
-/// ```text
-/// q = 52435875175126190479447740508185965837690552500527637822603658699938581184513
-/// Fq = GF(q)
-/// d = (Fq(138827208126141220649022263972958607803)/Fq(171449701953573178309673572579671231137))
-/// ```
-/// These parameters and the sage script obtained from:
-/// <https://github.com/asanso/Bandersnatch/>
-///
-/// bandersnatch also has a short Weierstrass curve form, following the
-/// form: y² = x³ + A * x + B
-/// where
-///
-/// A = 10773120815616481058602537765553212789256758185246796157495669123169359657269
-/// B = 29569587568322301171008055308580903175558631321415017492731745847794083609535
-///
-/// Script to transfer between different curves are available
-/// <https://github.com/zhenfeizhang/bandersnatch/blob/main/bandersnatch/script/bandersnatch.sage>
-#[derive(Clone, Default, PartialEq, Eq)]
-pub struct BandersnatchConfig<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct BandersnatchConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
 pub type EdwardsConfig<H> = BandersnatchConfig<H>;
 pub type SWConfig<H> = BandersnatchConfig<H>;
 
-pub trait HostFunctions: 'static {
+pub trait CurveHooks: 'static {
     fn ed_on_bls12_381_bandersnatch_te_msm(bases: Vec<u8>, scalars: Vec<u8>)
         -> Result<Vec<u8>, ()>;
     fn ed_on_bls12_381_bandersnatch_sw_msm(bases: Vec<u8>, scalars: Vec<u8>)
@@ -74,149 +63,102 @@ pub trait HostFunctions: 'static {
     ) -> Result<Vec<u8>, ()>;
 }
 
-impl<H: HostFunctions> CurveConfig for BandersnatchConfig<H> {
-    type BaseField = Fq;
-    type ScalarField = Fr;
+impl<H: CurveHooks> CurveConfig for BandersnatchConfig<H> {
+    const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
+    const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
 
-    /// COFACTOR = 4
-    const COFACTOR: &'static [u64] = &[4];
-
-    /// COFACTOR^(-1) mod r =
-    /// 9831726595336160714896451345284868594481866920080427688839802480047265754601
-    const COFACTOR_INV: Fr =
-        MontFp!("9831726595336160714896451345284868594481866920080427688839802480047265754601");
+    type BaseField = <ArkConfig as CurveConfig>::BaseField;
+    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 }
 
-impl<H: HostFunctions> TECurveConfig for BandersnatchConfig<H> {
-    /// COEFF_A = -5
-    const COEFF_A: Fq = MontFp!("-5");
+impl<H: CurveHooks> TECurveConfig for BandersnatchConfig<H> {
+    const COEFF_A: Self::BaseField = <ArkConfig as TECurveConfig>::COEFF_A;
+    const COEFF_D: Self::BaseField = <ArkConfig as TECurveConfig>::COEFF_D;
 
-    /// COEFF_D = (138827208126141220649022263972958607803/
-    /// 171449701953573178309673572579671231137) mod q
-    const COEFF_D: Fq =
-        MontFp!("45022363124591815672509500913686876175488063829319466900776701791074614335719");
-
-    /// AFFINE_GENERATOR_COEFFS = (GENERATOR_X, GENERATOR_Y)
     const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(TE_GENERATOR_X, TE_GENERATOR_Y);
 
     type MontCurveConfig = BandersnatchConfig<H>;
 
-    /// Multiplication by `a` is multiply by `-5`.
     #[inline(always)]
     fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
-        -(elem.double().double() + elem)
+        <ArkConfig as TECurveConfig>::mul_by_a(elem)
     }
 
+    /// Multi scalar multiplication jumping into the user-defined `te_msm` hook.
+    ///
+    /// On any internal error returns `Err(0)`.
     fn msm(
         bases: &[Affine<Self>],
-        scalars: &[<Self as CurveConfig>::ScalarField],
+        scalars: &[Self::ScalarField],
     ) -> Result<Projective<Self>, usize> {
         let bases: ArkScale<&[Affine<Self>]> = bases.into();
-        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
+        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
 
-        let result =
-            H::ed_on_bls12_381_bandersnatch_te_msm(bases.encode(), scalars.encode()).unwrap();
+        let res = H::ed_on_bls12_381_bandersnatch_te_msm(bases.encode(), scalars.encode())
+            .unwrap_or_default();
 
-        let result = <ArkScaleProjective<Projective<BandersnatchConfig<H>>> as Decode>::decode(
-            &mut result.as_slice(),
-        );
-        result.map_err(|_| 0).map(|res| res.0)
+        let res =
+            ArkScaleProjective::<Projective<BandersnatchConfig<H>>>::decode(&mut res.as_slice());
+        res.map(|res| res.0).map_err(|_| 0)
     }
 
+    /// Projective multiplication jumping into the user-defined `te_mul_projective` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
         let base: ArkScaleProjective<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result =
-            H::ed_on_bls12_381_bandersnatch_te_mul_projective(base.encode(), scalar.encode())
-                .unwrap();
+        let res = H::ed_on_bls12_381_bandersnatch_te_mul_projective(base.encode(), scalar.encode())
+            .unwrap_or_default();
 
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.unwrap().0
+        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
+        res.map(|v| v.0).unwrap_or_default()
     }
 
+    /// Affine multiplication jumping into the user-defined `te_mul_projective` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: Projective<Self> = (*base).into();
-        let base: ArkScaleProjective<Projective<Self>> = base.into();
-        let scalar: ArkScale<&[u64]> = scalar.into();
-
-        let result =
-            H::ed_on_bls12_381_bandersnatch_te_mul_projective(base.encode(), scalar.encode())
-                .unwrap();
-
-        let result =
-            <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
-        result.unwrap().0
+        <Self as TECurveConfig>::mul_projective(&(*base).into(), scalar)
     }
 }
 
-impl<H: HostFunctions> MontCurveConfig for BandersnatchConfig<H> {
-    /// COEFF_A = 29978822694968839326280996386011761570173833766074948509196803838190355340952
-    const COEFF_A: Fq =
-        MontFp!("29978822694968839326280996386011761570173833766074948509196803838190355340952");
-
-    /// COEFF_B = 25465760566081946422412445027709227188579564747101592991722834452325077642517
-    const COEFF_B: Fq =
-        MontFp!("25465760566081946422412445027709227188579564747101592991722834452325077642517");
+impl<H: CurveHooks> MontCurveConfig for BandersnatchConfig<H> {
+    const COEFF_A: Self::BaseField = <ArkConfig as MontCurveConfig>::COEFF_A;
+    const COEFF_B: Self::BaseField = <ArkConfig as MontCurveConfig>::COEFF_B;
 
     type TECurveConfig = BandersnatchConfig<H>;
 }
 
-// The TE form generator is generated following Zcash's fashion:
-//  "The generators of G1 and G2 are computed by finding the lexicographically
-//   smallest valid x-coordinate, and its lexicographically smallest
-//   y-coordinate and scaling it by the cofactor such that the result is not
-//   the point at infinity."
-// The SW form generator is the same TE generator converted into SW form,
-// obtained from the scripts:
-//   <https://github.com/zhenfeizhang/bandersnatch/blob/main/bandersnatch/script/bandersnatch.sage>
+impl<H: CurveHooks> SWCurveConfig for BandersnatchConfig<H> {
+    const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
+    const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
-/// x coordinate for TE curve generator
-const TE_GENERATOR_X: Fq =
-    MontFp!("18886178867200960497001835917649091219057080094937609519140440539760939937304");
-
-/// y coordinate for TE curve generator
-const TE_GENERATOR_Y: Fq =
-    MontFp!("19188667384257783945677642223292697773471335439753913231509108946878080696678");
-
-/// x coordinate for SW curve generator
-const SW_GENERATOR_X: Fq =
-    MontFp!("30900340493481298850216505686589334086208278925799850409469406976849338430199");
-
-/// y coordinate for SW curve generator
-const SW_GENERATOR_Y: Fq =
-    MontFp!("12663882780877899054958035777720958383845500985908634476792678820121468453298");
-
-impl<H: HostFunctions> SWCurveConfig for BandersnatchConfig<H> {
-    /// COEFF_A = 10773120815616481058602537765553212789256758185246796157495669123169359657269
-    const COEFF_A: Self::BaseField =
-        MontFp!("10773120815616481058602537765553212789256758185246796157495669123169359657269");
-
-    /// COEFF_B = 29569587568322301171008055308580903175558631321415017492731745847794083609535
-    const COEFF_B: Self::BaseField =
-        MontFp!("29569587568322301171008055308580903175558631321415017492731745847794083609535");
-
-    /// generators
     const GENERATOR: short_weierstrass::Affine<Self> =
         short_weierstrass::Affine::<Self>::new_unchecked(SW_GENERATOR_X, SW_GENERATOR_Y);
 
+    /// Multi scalar multiplication jumping into the user-defined `sw_msm` hook.
+    ///
+    /// On any internal error returns `Err(0)`.
     fn msm(
         bases: &[short_weierstrass::Affine<Self>],
-        scalars: &[<Self as CurveConfig>::ScalarField],
+        scalars: &[Self::ScalarField],
     ) -> Result<short_weierstrass::Projective<Self>, usize> {
         let bases: ArkScale<&[short_weierstrass::Affine<Self>]> = bases.into();
-        let scalars: ArkScale<&[<Self as CurveConfig>::ScalarField]> = scalars.into();
+        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
 
-        let result =
-            H::ed_on_bls12_381_bandersnatch_sw_msm(bases.encode(), scalars.encode()).unwrap();
+        let res = H::ed_on_bls12_381_bandersnatch_sw_msm(bases.encode(), scalars.encode())
+            .unwrap_or_default();
 
-        let result = <ArkScaleProjective<short_weierstrass::Projective<Self>> as Decode>::decode(
-            &mut result.as_slice(),
-        );
-        result.map_err(|_| 0).map(|res| res.0)
+        let res =
+            ArkScaleProjective::<short_weierstrass::Projective<Self>>::decode(&mut res.as_slice());
+        res.map(|res| res.0).map_err(|_| 0)
     }
 
+    /// Projective multiplication jumping into the user-defined `sw_mul_projective` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_projective(
         base: &short_weierstrass::Projective<Self>,
         scalar: &[u64],
@@ -224,31 +166,21 @@ impl<H: HostFunctions> SWCurveConfig for BandersnatchConfig<H> {
         let base: ArkScaleProjective<short_weierstrass::Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result =
-            H::ed_on_bls12_381_bandersnatch_sw_mul_projective(base.encode(), scalar.encode())
-                .unwrap();
+        let res = H::ed_on_bls12_381_bandersnatch_sw_mul_projective(base.encode(), scalar.encode())
+            .unwrap_or_default();
 
-        let result = <ArkScaleProjective<short_weierstrass::Projective<Self>> as Decode>::decode(
-            &mut result.as_slice(),
-        );
-        result.unwrap().0
+        let res =
+            ArkScaleProjective::<short_weierstrass::Projective<Self>>::decode(&mut res.as_slice());
+        res.map(|v| v.0).unwrap_or_default()
     }
 
+    /// Affine multiplication jumping into the user-defined `sw_mul_projective` hook.
+    ///
+    /// On any internal error returns `Projective::zero()`.
     fn mul_affine(
         base: &short_weierstrass::Affine<Self>,
         scalar: &[u64],
     ) -> short_weierstrass::Projective<Self> {
-        let base: short_weierstrass::Projective<Self> = (*base).into();
-        let base: ArkScaleProjective<short_weierstrass::Projective<Self>> = base.into();
-        let scalar: ArkScale<&[u64]> = scalar.into();
-
-        let result =
-            H::ed_on_bls12_381_bandersnatch_sw_mul_projective(base.encode(), scalar.encode())
-                .unwrap();
-
-        let result = <ArkScaleProjective<short_weierstrass::Projective<Self>> as Decode>::decode(
-            &mut result.as_slice(),
-        );
-        result.unwrap().0
+        <Self as SWCurveConfig>::mul_projective(&(*base).into(), scalar)
     }
 }

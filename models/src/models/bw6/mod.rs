@@ -2,6 +2,7 @@ use crate::{
     models::{short_weierstrass::SWCurveConfig, CurveConfig},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
+pub use ark_ec::bw6::TwistType;
 use ark_ff::fields::{
     fp3::Fp3Config,
     fp6_2over3::{Fp6, Fp6Config},
@@ -10,11 +11,6 @@ use ark_ff::fields::{
 use derivative::Derivative;
 
 use ark_std::marker::PhantomData;
-
-pub enum TwistType {
-    M,
-    D,
-}
 
 pub trait BW6Config: 'static + Sized {
     const X: <Self::Fp as PrimeField>::BigInt;

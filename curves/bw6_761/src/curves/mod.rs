@@ -1,5 +1,8 @@
-use crate::{ArkScale, Fq, Fq3Config, Fq6Config};
-use ark_ff::{biginteger::BigInteger768 as BigInteger, BigInt};
+use crate::ArkScale;
+
+use ark_bw6_761::Config as ArkConfig;
+use ark_ec::bw6::BW6Config as ArkBW6Config;
+use ark_ff::PrimeField;
 use ark_scale::scale::{Decode, Encode};
 use ark_std::{marker::PhantomData, vec::Vec};
 use sp_ark_models::{
@@ -18,9 +21,9 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
-pub struct Config<H: HostFunctions>(PhantomData<fn() -> H>);
+pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-pub trait HostFunctions: 'static {
+pub trait CurveHooks: 'static {
     fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
     fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()>;
@@ -29,44 +32,30 @@ pub trait HostFunctions: 'static {
     fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
-impl<H: HostFunctions> BW6Config for Config<H> {
-    const X: BigInteger = BigInt::new([
-        0x8508c00000000001,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-        0x0,
-    ]);
-    /// `x` is positive.
-    const X_IS_NEGATIVE: bool = false;
-    // X+1
-    const ATE_LOOP_COUNT_1: &'static [u64] = &[0x8508c00000000002];
-    const ATE_LOOP_COUNT_1_IS_NEGATIVE: bool = false;
-    // X^3-X^2-X
-    const ATE_LOOP_COUNT_2: &'static [i8] = &[
-        -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
-        0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, -1, 0, 0, 0, 0, -1, 0, 0,
-        1, 0, 0, 0, -1, 0, 0, -1, 0, 1, 0, -1, 0, 0, 0, 1, 0, 0, 1, 0, -1, 0, 1, 0, 1, 0, 0, 0, 1,
-        0, -1, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-    ];
-    const ATE_LOOP_COUNT_2_IS_NEGATIVE: bool = false;
-    const TWIST_TYPE: TwistType = TwistType::M;
-    type Fp = Fq;
-    type Fp3Config = Fq3Config;
-    type Fp6Config = Fq6Config;
+impl<H: CurveHooks> BW6Config for Config<H> {
+    type Fp = <ArkConfig as ArkBW6Config>::Fp;
+    type Fp3Config = <ArkConfig as ArkBW6Config>::Fp3Config;
+    type Fp6Config = <ArkConfig as ArkBW6Config>::Fp6Config;
+
     type G1Config = g1::Config<H>;
     type G2Config = g2::Config<H>;
 
+    const X: <Self::Fp as PrimeField>::BigInt = <ArkConfig as ArkBW6Config>::X;
+    const X_IS_NEGATIVE: bool = <ArkConfig as ArkBW6Config>::X_IS_NEGATIVE;
+
+    const ATE_LOOP_COUNT_1: &'static [u64] = <ArkConfig as ArkBW6Config>::ATE_LOOP_COUNT_1;
+    const ATE_LOOP_COUNT_1_IS_NEGATIVE: bool =
+        <ArkConfig as ArkBW6Config>::ATE_LOOP_COUNT_1_IS_NEGATIVE;
+
+    const ATE_LOOP_COUNT_2: &'static [i8] = <ArkConfig as ArkBW6Config>::ATE_LOOP_COUNT_2;
+    const ATE_LOOP_COUNT_2_IS_NEGATIVE: bool =
+        <ArkConfig as ArkBW6Config>::ATE_LOOP_COUNT_2_IS_NEGATIVE;
+
+    const TWIST_TYPE: TwistType = <ArkConfig as ArkBW6Config>::TWIST_TYPE;
+
+    /// Multi Miller loop jumping into the user-defined `multi_miller_loop` hook.
+    ///
+    /// For any internal error returns `TargetField::zero()`.
     fn multi_miller_loop(
         a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
@@ -87,26 +76,23 @@ impl<H: HostFunctions> BW6Config for Config<H> {
             })
             .collect::<Vec<_>>()
             .into();
-        let result = H::bw6_761_multi_miller_loop(a.encode(), b.encode()).unwrap();
 
-        let result = <ArkScale<<BW6<Self> as Pairing>::TargetField> as Decode>::decode(
-            &mut result.as_slice(),
-        )
-        .unwrap()
-        .0;
-        MillerLoopOutput(result)
+        let res = H::bw6_761_multi_miller_loop(a.encode(), b.encode()).unwrap_or_default();
+
+        let res = ArkScale::<<BW6<Self> as Pairing>::TargetField>::decode(&mut res.as_slice());
+        MillerLoopOutput(res.map(|v| v.0).unwrap_or_default())
     }
 
+    /// Final exponentiation jumping into the user-defined `final_exponentiation` hook.
+    ///
+    /// For any internal error returns `None`.
     fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
         let target: ArkScale<<BW6<Self> as Pairing>::TargetField> = f.0.into();
 
-        let result = H::bw6_761_final_exponentiation(target.encode());
+        let res = H::bw6_761_final_exponentiation(target.encode()).unwrap_or_default();
 
-        result.ok().map(|res| {
-            <ArkScale<PairingOutput<BW6<Self>>> as Decode>::decode(&mut res.as_slice())
-                .unwrap()
-                .0
-        })
+        let res = ArkScale::<PairingOutput<BW6<Self>>>::decode(&mut res.as_slice());
+        res.map(|res| res.0).ok()
     }
 }
 

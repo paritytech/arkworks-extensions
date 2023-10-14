@@ -23,6 +23,9 @@ The following usage examples are extracted from the hooks provided by
 [Substrate](https://github.com/paritytech/polkadot-sdk/primitives/crypto/ec-utils)
 which are used to jump from wasm32 into the native host.
 
+For working examples refer to Ark Substrate examples repo
+[here](https://github.com/paritytech/ark-substrate/examples).
+
 ### BLS12-377
 
 ```rust
