@@ -20,6 +20,7 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
+#[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 pub trait CurveHooks: 'static {

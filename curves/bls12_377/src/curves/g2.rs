@@ -20,6 +20,7 @@ pub use ark_bls12_377::g2::{
 pub type G2Affine<H> = bls12::G2Affine<crate::curves::Config<H>>;
 pub type G2Projective<H> = bls12::G2Projective<crate::curves::Config<H>>;
 
+#[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {

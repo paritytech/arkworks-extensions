@@ -43,6 +43,7 @@ pub type EdwardsProjective<H> = twisted_edwards::Projective<BandersnatchConfig<H
 pub type SWAffine<H> = short_weierstrass::Affine<BandersnatchConfig<H>>;
 pub type SWProjective<H> = short_weierstrass::Projective<BandersnatchConfig<H>>;
 
+#[derive(Clone, Copy)]
 pub struct BandersnatchConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
 pub type EdwardsConfig<H> = BandersnatchConfig<H>;

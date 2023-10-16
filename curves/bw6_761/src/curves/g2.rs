@@ -17,6 +17,7 @@ pub use ark_bw6_761::g2::{G2_GENERATOR_X, G2_GENERATOR_Y};
 pub type G2Affine<H> = bw6::G2Affine<crate::Config<H>>;
 pub type G2Projective<H> = bw6::G2Projective<crate::Config<H>>;
 
+#[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {

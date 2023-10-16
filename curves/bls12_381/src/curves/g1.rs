@@ -30,6 +30,7 @@ pub use ark_bls12_381::g1::{BETA, G1_GENERATOR_X, G1_GENERATOR_Y};
 pub type G1Affine<H> = bls12::G1Affine<crate::Config<H>>;
 pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
+#[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {

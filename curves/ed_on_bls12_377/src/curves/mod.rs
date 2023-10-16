@@ -32,6 +32,7 @@ const GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField =
 pub type EdwardsAffine<H> = Affine<EdwardsConfig<H>>;
 pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 
+#[derive(Clone, Copy)]
 pub struct EdwardsConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
 pub trait CurveHooks: 'static {
