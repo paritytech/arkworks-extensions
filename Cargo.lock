@@ -829,7 +829,6 @@ dependencies = [
  "ark-serialize",
  "ark-std",
  "derivative",
- "num-traits",
 ]
 
 [[package]]
