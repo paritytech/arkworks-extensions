@@ -25,27 +25,24 @@ test-utils.workspace = true
 
 [features]
 default = [ "std" ]
-std = [ 
+std = [
+  "ark-algebra-test-templates/std",
+  "ark-bls12-377/std",
   "ark-ec/std",
   "ark-ff/std",
-  "ark-std/std", 
-  "ark-bls12-377/std",
   "ark-scale/std",
-  "sp-ark-models/std",
   "ark-serialize/std",
-  "ark-algebra-test-templates/std",
+  "ark-std/std",
+  "sp-ark-models/std",
   "test-utils/std",
 ]
 r1cs = [ "ark-bls12-377/r1cs" ]
 # SCALE encoding related features for most of the arkworks types.
 # Defaults to "compressed" and "validated".
 scale-fast = [
-  "scale-no-compress",
-  "scale-no-validate",
+	"scale-no-compress",
+	"scale-no-validate", 
+	"test-utils/scale-fast"
 ]
-scale-no-compress = [
-  "test-utils/scale-no-compress",
-]
-scale-no-validate = [
-  "test-utils/scale-no-validate",
-]
+scale-no-compress = [ "test-utils/scale-no-compress" ]
+scale-no-validate = [ "test-utils/scale-no-validate" ]
