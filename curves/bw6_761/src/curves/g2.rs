@@ -49,7 +49,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         let bases: ArkScale<&[Affine<Self>]> = bases.into();
         let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
 
-        let result = H::bw6_761_msm_g2(bases.encode(), scalars.encode()).unwrap();
+        let result = H::bw6_761_msm_g2(bases.encode(), scalars.encode()).unwrap_or_default();
 
         let result =
             <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
@@ -63,7 +63,8 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         let base: ArkScaleProjective<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
 
-        let result = H::bw6_761_mul_projective_g2(base.encode(), scalar.encode()).unwrap();
+        let result =
+            H::bw6_761_mul_projective_g2(base.encode(), scalar.encode()).unwrap_or_default();
 
         let result =
             <ArkScaleProjective<Projective<Self>> as Decode>::decode(&mut result.as_slice());
