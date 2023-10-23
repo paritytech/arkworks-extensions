@@ -1,4 +1,4 @@
-name: Check Set-Up & Build
+name: Check and Test
 
 on:
   push:
@@ -7,57 +7,50 @@ on:
   pull_request:
     branches: 
 
-  workflow_dispatch:
+env:
+  RUST_BACKTRACE: 1
 
 jobs:   
   rustfmt:
-    runs-on: 'ubuntu-latest'
+    runs-on: ubuntu-latest
     steps:
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           components: rustfmt
-
       - uses: actions/checkout@v3
-
       - name: Cargo fmt
         uses: actions-rs/cargo@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           command: fmt
           args: --all -- --check   
 
   build:
-    runs-on: ubuntu-22.04
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
-
+          toolchain: stable
       - name: Check Build
         run: |
           cargo build --workspace --release
 
   clippy:
-    runs-on: ubuntu-22.04
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
           components: rustfmt      
-          
       - name: Cargo clippy
         uses: actions-rs/cargo@v1
         with:
@@ -67,14 +60,12 @@ jobs:
 
   test:
     runs-on: ubuntu-22.04
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
       - name: Run tests
         run: cargo test --workspace --verbose --release
