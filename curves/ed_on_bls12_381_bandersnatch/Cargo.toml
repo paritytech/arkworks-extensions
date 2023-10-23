@@ -1,5 +1,5 @@
 [package]
-name = "sp-ark-ed-on-bls12-381-bandersnatch"
+name = "ark-ed-on-bls12-381-bandersnatch-ext"
 description = "Extensions for Bandersnatch curve defined over the scalar field of the BLS12-381 curve"
 version.workspace = true
 authors.workspace = true
@@ -16,7 +16,7 @@ ark-ff.workspace = true
 ark-std.workspace = true
 ark-ed-on-bls12-381-bandersnatch.workspace = true
 ark-scale.workspace = true
-sp-ark-models.workspace = true
+ark-models-ext.workspace = true
 
 [dev-dependencies]
 ark-serialize.workspace = true
@@ -33,7 +33,7 @@ std = [
   "ark-scale/std",
   "ark-serialize/std",
   "ark-std/std",
-  "sp-ark-models/std",
+  "ark-models-ext/std",
   "test-utils/std",
 ]
 r1cs = [ "ark-ed-on-bls12-381-bandersnatch/r1cs" ]

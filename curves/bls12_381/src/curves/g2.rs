@@ -1,5 +1,11 @@
 use ark_bls12_381::{fq2::Fq2, g2::Config as ArkConfig, Fq};
 use ark_ff::{Field, MontFp, Zero};
+use ark_models_ext::{
+    bls12,
+    bls12::Bls12Config,
+    short_weierstrass::{Affine, Projective, SWCurveConfig},
+    AffineRepr, CurveConfig, CurveGroup, Group,
+};
 use ark_scale::{
     ark_serialize::{Compress, SerializationError, Validate},
     hazmat::ArkScaleProjective,
@@ -9,12 +15,6 @@ use ark_std::{
     io::{Read, Write},
     marker::PhantomData,
     ops::Neg,
-};
-use sp_ark_models::{
-    bls12,
-    bls12::Bls12Config,
-    short_weierstrass::{Affine, Projective, SWCurveConfig},
-    AffineRepr, CurveConfig, CurveGroup, Group,
 };
 
 use crate::{

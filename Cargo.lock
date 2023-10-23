@@ -46,6 +46,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-bls12-377-ext"
+version = "0.4.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-bls12-377",
+ "ark-ec",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-scale",
+ "ark-serialize",
+ "ark-std",
+ "test-utils",
+]
+
+[[package]]
 name = "ark-bls12-381"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -58,6 +73,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-bls12-381-ext"
+version = "0.4.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-bls12-381",
+ "ark-ec",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-scale",
+ "ark-serialize",
+ "ark-std",
+ "test-utils",
+]
+
+[[package]]
 name = "ark-bw6-761"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -67,6 +97,21 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-std",
+]
+
+[[package]]
+name = "ark-bw6-761-ext"
+version = "0.4.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-bw6-761",
+ "ark-ec",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-scale",
+ "ark-serialize",
+ "ark-std",
+ "test-utils",
 ]
 
 [[package]]
@@ -100,6 +145,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-ed-on-bls12-377-ext"
+version = "0.4.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-ec",
+ "ark-ed-on-bls12-377",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-scale",
+ "ark-serialize",
+ "ark-std",
+ "test-utils",
+]
+
+[[package]]
 name = "ark-ed-on-bls12-381-bandersnatch"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -110,6 +170,21 @@ dependencies = [
  "ark-ff",
  "ark-r1cs-std",
  "ark-std",
+]
+
+[[package]]
+name = "ark-ed-on-bls12-381-bandersnatch-ext"
+version = "0.4.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-ec",
+ "ark-ed-on-bls12-381-bandersnatch",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-scale",
+ "ark-serialize",
+ "ark-std",
+ "test-utils",
 ]
 
 [[package]]
@@ -153,6 +228,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "ark-models-ext"
+version = "0.4.0"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-serialize",
+ "ark-std",
+ "derivative",
 ]
 
 [[package]]
@@ -746,92 +832,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sp-ark-bls12-377"
-version = "0.4.1-beta"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-bls12-377",
- "ark-ec",
- "ark-ff",
- "ark-scale",
- "ark-serialize",
- "ark-std",
- "sp-ark-models",
- "test-utils",
-]
-
-[[package]]
-name = "sp-ark-bls12-381"
-version = "0.4.1-beta"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-bls12-381",
- "ark-ec",
- "ark-ff",
- "ark-scale",
- "ark-serialize",
- "ark-std",
- "sp-ark-models",
- "test-utils",
-]
-
-[[package]]
-name = "sp-ark-bw6-761"
-version = "0.4.1-beta"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-bw6-761",
- "ark-ec",
- "ark-ff",
- "ark-scale",
- "ark-serialize",
- "ark-std",
- "sp-ark-models",
- "test-utils",
-]
-
-[[package]]
-name = "sp-ark-ed-on-bls12-377"
-version = "0.4.1-beta"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-ec",
- "ark-ed-on-bls12-377",
- "ark-ff",
- "ark-scale",
- "ark-serialize",
- "ark-std",
- "sp-ark-models",
- "test-utils",
-]
-
-[[package]]
-name = "sp-ark-ed-on-bls12-381-bandersnatch"
-version = "0.4.1-beta"
-dependencies = [
- "ark-algebra-test-templates",
- "ark-ec",
- "ark-ed-on-bls12-381-bandersnatch",
- "ark-ff",
- "ark-scale",
- "ark-serialize",
- "ark-std",
- "sp-ark-models",
- "test-utils",
-]
-
-[[package]]
-name = "sp-ark-models"
-version = "0.4.1-beta"
-dependencies = [
- "ark-ec",
- "ark-ff",
- "ark-serialize",
- "ark-std",
- "derivative",
-]
-
-[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -861,7 +861,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
 name = "test-utils"
-version = "0.4.1-beta"
+version = "0.4.0"
 dependencies = [
  "ark-ec",
  "ark-scale",

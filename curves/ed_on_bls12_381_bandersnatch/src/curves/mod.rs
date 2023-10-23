@@ -2,17 +2,17 @@ use crate::ArkScale;
 
 use ark_ed_on_bls12_381_bandersnatch::BandersnatchConfig as ArkConfig;
 use ark_ff::MontFp;
+use ark_models_ext::{
+    models::CurveConfig,
+    short_weierstrass::{self, SWCurveConfig},
+    twisted_edwards::{self, Affine, MontCurveConfig, Projective, TECurveConfig},
+};
 use ark_scale::{
     hazmat::ArkScaleProjective,
     scale::{Decode, Encode},
 };
 use ark_std::marker::PhantomData;
 use ark_std::vec::Vec;
-use sp_ark_models::{
-    models::CurveConfig,
-    short_weierstrass::{self, SWCurveConfig},
-    twisted_edwards::{self, Affine, MontCurveConfig, Projective, TECurveConfig},
-};
 
 #[cfg(test)]
 mod tests;

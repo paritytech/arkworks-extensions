@@ -1,16 +1,16 @@
 use crate::{ArkScale, CurveHooks};
 
 use ark_bw6_761::g2::Config as ArkConfig;
+use ark_models_ext::{
+    bw6,
+    short_weierstrass::{Affine, Projective},
+    {short_weierstrass::SWCurveConfig, CurveConfig},
+};
 use ark_scale::{
     hazmat::ArkScaleProjective,
     scale::{Decode, Encode},
 };
 use ark_std::marker::PhantomData;
-use sp_ark_models::{
-    bw6,
-    short_weierstrass::{Affine, Projective},
-    {short_weierstrass::SWCurveConfig, CurveConfig},
-};
 
 pub use ark_bw6_761::g2::{G2_GENERATOR_X, G2_GENERATOR_Y};
 

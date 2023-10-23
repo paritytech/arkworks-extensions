@@ -218,12 +218,12 @@ pub mod fields {
 
 pub mod curves {
     use ark_ff::{BitIteratorLE, Field, One, PrimeField};
-    use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
-    use ark_std::{test_rng, vec, vec::Vec, UniformRand};
-    use sp_ark_models::{
+    use ark_models_ext::{
         short_weierstrass::Projective as SWProjective, twisted_edwards::Projective as TEProjective,
         CurveGroup, Group,
     };
+    use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
+    use ark_std::{test_rng, vec, vec::Vec, UniformRand};
 
     use ark_r1cs_std::prelude::*;
 
@@ -369,7 +369,7 @@ pub mod curves {
 
     pub fn sw_test<P, GG>() -> Result<(), SynthesisError>
     where
-        P: sp_ark_models::short_weierstrass::SWCurveConfig,
+        P: ark_models_ext::short_weierstrass::SWCurveConfig,
         GG: CurveVar<SWProjective<P>, <P::BaseField as Field>::BasePrimeField>,
         for<'a> &'a GG: GroupOpsBounds<'a, SWProjective<P>, GG>,
     {
@@ -440,7 +440,7 @@ pub mod curves {
 
     pub fn te_test<P, GG>() -> Result<(), SynthesisError>
     where
-        P: sp_ark_models::twisted_edwards::TECurveConfig,
+        P: ark_models_ext::twisted_edwards::TECurveConfig,
         GG: CurveVar<TEProjective<P>, <P::BaseField as Field>::BasePrimeField>,
         for<'a> &'a GG: GroupOpsBounds<'a, TEProjective<P>, GG>,
     {
@@ -509,13 +509,13 @@ pub mod curves {
 
 pub mod pairing {
     use ark_ff::{BitIteratorLE, Field, PrimeField};
-    use ark_r1cs_std::prelude::*;
-    use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
-    use ark_std::{test_rng, vec::Vec, UniformRand};
-    use sp_ark_models::{
+    use ark_models_ext::{
         pairing::{Pairing, PairingOutput},
         AffineRepr, CurveGroup,
     };
+    use ark_r1cs_std::prelude::*;
+    use ark_relations::r1cs::{ConstraintSystem, SynthesisError};
+    use ark_std::{test_rng, vec::Vec, UniformRand};
 
     #[allow(dead_code)]
     pub fn bilinearity_test<E: Pairing, P: PairingVar<E>>() -> Result<(), SynthesisError>

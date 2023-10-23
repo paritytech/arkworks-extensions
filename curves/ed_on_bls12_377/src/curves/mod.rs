@@ -2,15 +2,15 @@ use crate::ArkScale;
 
 use ark_ed_on_bls12_377::EdwardsConfig as ArkConfig;
 use ark_ff::MontFp;
+use ark_models_ext::{
+    twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
+    CurveConfig,
+};
 use ark_scale::{
     hazmat::ArkScaleProjective,
     scale::{Decode, Encode},
 };
 use ark_std::{marker::PhantomData, vec::Vec};
-use sp_ark_models::{
-    twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
-    CurveConfig,
-};
 
 #[cfg(test)]
 mod tests;

@@ -2,12 +2,12 @@ use crate::ArkScale;
 
 use ark_bls12_381::Config as ArkConfig;
 use ark_ec::bls12::Bls12Config as ArkBls12Config;
-use ark_scale::scale::{Decode, Encode};
-use ark_std::{marker::PhantomData, vec::Vec};
-use sp_ark_models::{
+use ark_models_ext::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
+use ark_scale::scale::{Decode, Encode};
+use ark_std::{marker::PhantomData, vec::Vec};
 
 pub mod g1;
 pub mod g2;

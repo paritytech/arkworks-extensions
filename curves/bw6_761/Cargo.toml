@@ -1,5 +1,5 @@
 [package]
-name = "sp-ark-bw6-761"
+name = "ark-bw6-761-ext"
 description = "Extensions for the BW6-761 pairing-friendly elliptic curve"
 version.workspace = true
 authors.workspace = true
@@ -17,7 +17,7 @@ ark-ff.workspace = true
 ark-std.workspace = true
 ark-bw6-761.workspace = true
 ark-scale.workspace = true
-sp-ark-models.workspace = true
+ark-models-ext.workspace = true
 
 [dev-dependencies]
 ark-serialize.workspace = true
@@ -34,7 +34,7 @@ std = [
   "ark-scale/std",
   "ark-serialize/std",
   "ark-std/std",
-  "sp-ark-models/std",
+  "ark-models-ext/std",
   "test-utils/std",
 ]
 # SCALE encoding related features for most of the arkworks types.

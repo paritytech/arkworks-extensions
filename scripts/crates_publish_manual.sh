@@ -8,9 +8,9 @@ then
       exit 1
 fi
 
-cargo publish -p sp-ark-models
-cargo publish -p sp-ark-bls12-377
-cargo publish -p sp-ark-ed-on-bls12-377
-cargo publish -p sp-ark-bls12-381
-cargo publish -p sp-ark-bw6-761
-cargo publish -p sp-ark-ed-on-bls12-381-bandersnatch
+cargo publish -p ark-models-ext
+cargo publish -p ark-bls12-377-ext
+cargo publish -p ark-ed-on-bls12-377-ext
+cargo publish -p ark-bls12-381-ext
+cargo publish -p ark-bw6-761-ext
+cargo publish -p ark-ed-on-bls12-381-bandersnatch-ext

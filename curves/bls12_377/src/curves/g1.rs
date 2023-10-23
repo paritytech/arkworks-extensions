@@ -1,12 +1,7 @@
 use crate::{ArkScale, CurveHooks};
 
 use ark_bls12_377::g1::Config as ArkConfig;
-use ark_scale::{
-    hazmat::ArkScaleProjective,
-    scale::{Decode, Encode},
-};
-use ark_std::marker::PhantomData;
-use sp_ark_models::{
+use ark_models_ext::{
     bls12,
     short_weierstrass::{Affine as SWAffine, Projective, SWCurveConfig},
     twisted_edwards::{
@@ -14,6 +9,11 @@ use sp_ark_models::{
     },
     CurveConfig,
 };
+use ark_scale::{
+    hazmat::ArkScaleProjective,
+    scale::{Decode, Encode},
+};
+use ark_std::marker::PhantomData;
 
 pub use ark_bls12_377::g1::{G1_GENERATOR_X, G1_GENERATOR_Y, TE_GENERATOR_X, TE_GENERATOR_Y};
 

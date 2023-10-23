@@ -11,7 +11,7 @@ ark-serialize.workspace = true
 ark-ff.workspace = true
 ark-relations.workspace = true
 ark-r1cs-std.workspace = true
-sp-ark-models.workspace = true
+ark-models-ext.workspace = true
 
 [features]
 default = [ "std" ]
@@ -20,5 +20,5 @@ std = [
   "ark-serialize/std",  
   "ark-ff/std", 
   "ark-r1cs-std/std",
-  "sp-ark-models/std"
+  "ark-models-ext/std"
 ]

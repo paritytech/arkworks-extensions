@@ -3,12 +3,12 @@ use crate::ArkScale;
 use ark_bw6_761::Config as ArkConfig;
 use ark_ec::bw6::BW6Config as ArkBW6Config;
 use ark_ff::PrimeField;
-use ark_scale::scale::{Decode, Encode};
-use ark_std::{marker::PhantomData, vec::Vec};
-use sp_ark_models::{
+use ark_models_ext::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
 };
+use ark_scale::scale::{Decode, Encode};
+use ark_std::{marker::PhantomData, vec::Vec};
 
 pub mod g1;
 pub mod g2;

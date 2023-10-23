@@ -7,6 +7,12 @@ use crate::{
 
 use ark_bls12_381::g1::Config as ArkConfig;
 use ark_ff::PrimeField;
+use ark_models_ext::{
+    bls12,
+    bls12::Bls12Config,
+    short_weierstrass::{Affine, Projective, SWCurveConfig},
+    AffineRepr, CurveConfig, Group,
+};
 use ark_scale::{
     ark_serialize::{Compress, SerializationError, Validate},
     hazmat::ArkScaleProjective,
@@ -17,12 +23,6 @@ use ark_std::{
     marker::PhantomData,
     ops::Neg,
     One,
-};
-use sp_ark_models::{
-    bls12,
-    bls12::Bls12Config,
-    short_weierstrass::{Affine, Projective, SWCurveConfig},
-    AffineRepr, CurveConfig, Group,
 };
 
 pub use ark_bls12_381::g1::{BETA, G1_GENERATOR_X, G1_GENERATOR_Y};

@@ -29,5 +29,5 @@ impl CurveHooks for Mock {
 
 test_group!(g1; crate::G1Projective<Mock>; sw);
 test_group!(g2; crate::G2Projective<Mock>; sw);
-test_group!(pairing_output; sp_ark_models::pairing::PairingOutput<ArkBW6_761>; msm);
+test_group!(pairing_output; ark_models_ext::pairing::PairingOutput<ArkBW6_761>; msm);
 test_pairing!(pairing; crate::BW6_761<super::Mock>);
