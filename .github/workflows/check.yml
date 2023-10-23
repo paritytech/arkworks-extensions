@@ -77,6 +77,4 @@ jobs:
           profile: minimal
           toolchain: nightly
       - name: Run tests
-        run: cargo test --workspace --verbose
-
-      
+        run: cargo test --workspace --verbose --release
