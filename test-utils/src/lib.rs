@@ -3,8 +3,7 @@
 
 use ark_ec::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
-    short_weierstrass,
-    short_weierstrass::SWCurveConfig,
+    short_weierstrass::{self, Affine as SWAffine, Projective as SWProjective, SWCurveConfig},
     twisted_edwards,
     twisted_edwards::TECurveConfig,
     CurveConfig, VariableBaseMSM,
@@ -46,6 +45,25 @@ pub fn multi_miller_loop_generic<Curve: Pairing>(g1: Vec<u8>, g2: Vec<u8>) -> Re
     Ok(result.encode())
 }
 
+pub fn multi_miller_loop_generic2<ExtCurve: Pairing, ArkCurve: Pairing>(
+    g1: impl Iterator<Item = ExtCurve::G1Prepared>,
+    g2: impl Iterator<Item = ExtCurve::G2Prepared>,
+) -> Result<ExtCurve::TargetField, ()> {
+    let g1: ArkScale<Vec<ExtCurve::G1Prepared>> = g1.collect::<Vec<_>>().into();
+    let buf = g1.encode();
+    let g1 = ArkScale::<Vec<ArkCurve::G1Affine>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    let g2: ArkScale<Vec<ExtCurve::G2Prepared>> = g2.collect::<Vec<_>>().into();
+    let buf = g2.encode();
+    let g2 = ArkScale::<Vec<ArkCurve::G2Affine>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    let res: ArkScale<ArkCurve::TargetField> = ArkCurve::multi_miller_loop(g1.0, g2.0).0.into();
+    let buf = res.encode();
+    let res = ArkScale::<ExtCurve::TargetField>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    Ok(res.0)
+}
+
 pub fn final_exponentiation_generic<Curve: Pairing>(target: Vec<u8>) -> Result<Vec<u8>, ()> {
     let target =
         <ArkScale<<Curve as Pairing>::TargetField> as Decode>::decode(&mut target.as_slice())
@@ -55,6 +73,21 @@ pub fn final_exponentiation_generic<Curve: Pairing>(target: Vec<u8>) -> Result<V
 
     let result: ArkScale<PairingOutput<Curve>> = result.into();
     Ok(result.encode())
+}
+
+pub fn final_exponentiation_generic2<ExtCurve: Pairing, ArkCurve: Pairing>(
+    target: ExtCurve::TargetField,
+) -> Result<ExtCurve::TargetField, ()> {
+    let target: ArkScale<ExtCurve::TargetField> = target.into();
+    let buf = target.encode();
+    let target = ArkScale::<ArkCurve::TargetField>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    let res = ArkCurve::final_exponentiation(MillerLoopOutput(target.0)).ok_or(())?;
+    let res: ArkScale<ArkCurve::TargetField> = res.0.into();
+    let buf = res.encode();
+    let res = ArkScale::<ExtCurve::TargetField>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    Ok(res.0)
 }
 
 pub fn msm_sw_generic<Curve: SWCurveConfig>(
@@ -75,6 +108,26 @@ pub fn msm_sw_generic<Curve: SWCurveConfig>(
 
     let result: ArkScaleProjective<short_weierstrass::Projective<Curve>> = result.into();
     Ok(result.encode())
+}
+
+pub fn msm_sw_generic2<ExtCurve: SWCurveConfig, ArkCurve: SWCurveConfig>(
+    bases: &[SWAffine<ExtCurve>],
+    scalars: &[ExtCurve::ScalarField],
+) -> Result<short_weierstrass::Projective<ExtCurve>, ()> {
+    let bases: ArkScale<&[SWAffine<ExtCurve>]> = bases.into();
+    let buf = bases.encode();
+    let bases = ArkScale::<Vec<SWAffine<ArkCurve>>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    let buf = ArkScale::<_>::from(scalars).encode();
+    let scalars =
+        ArkScale::<Vec<ArkCurve::ScalarField>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    let res =
+        <SWProjective<ArkCurve> as VariableBaseMSM>::msm(&bases.0, &scalars.0).map_err(|_| ())?;
+    let buf = ArkScale::<_>::from(res).encode();
+    let res = ArkScale::<SWProjective<ExtCurve>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+
+    Ok(res.0)
 }
 
 pub fn msm_te_generic<Curve: TECurveConfig>(

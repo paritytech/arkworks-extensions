@@ -49,23 +49,21 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
 
     /// Multi scalar multiplication jumping into the user-defined `msm_g1` hook.
     ///
-    /// On any internal error returns `Err(0)`.
+    /// On any external error returns `Err(0)`.
     fn msm(
         bases: &[SWAffine<Self>],
         scalars: &[Self::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: ArkScale<&[SWAffine<Self>]> = bases.into();
-        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
-
-        let res = H::bls12_377_msm_g1(bases.encode(), scalars.encode()).unwrap_or_default();
-
-        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
-        res.map(|res| res.0).map_err(|_| 0)
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        let res = H::bls12_377_msm_g1(bases, scalars);
+        res.map_err(|_| 0)
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective_g1` hook.
     ///
-    /// On any internal error returns `Projective::zero()`.
+    /// On any external error returns `Projective::zero()`.
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
         let base: ArkScaleProjective<Projective<Self>> = (*base).into();
         let scalar: ArkScale<&[u64]> = scalar.into();
@@ -79,7 +77,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
 
     /// Affine multiplication jumping into the user-defined `mul_projective_g1` hook.
     ///
-    /// On any internal error returns `Projective::zero()`.
+    /// On any external error returns `Projective::zero()`.
     fn mul_affine(base: &SWAffine<Self>, scalar: &[u64]) -> Projective<Self> {
         <Self as SWCurveConfig>::mul_projective(&(*base).into(), scalar)
     }

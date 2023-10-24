@@ -47,7 +47,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bls12-377-ext"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-377",
@@ -74,7 +74,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bls12-381-ext"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-381",
@@ -101,7 +101,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bw6-761-ext"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bw6-761",
@@ -146,7 +146,7 @@ dependencies = [
 
 [[package]]
 name = "ark-ed-on-bls12-377-ext"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -174,7 +174,7 @@ dependencies = [
 
 [[package]]
 name = "ark-ed-on-bls12-381-bandersnatch-ext"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -232,7 +232,7 @@ dependencies = [
 
 [[package]]
 name = "ark-models-ext"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -861,7 +861,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 
 [[package]]
 name = "test-utils"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "ark-ec",
  "ark-scale",
