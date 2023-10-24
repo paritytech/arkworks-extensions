@@ -78,6 +78,6 @@ impl<H: CurveHooks> Bls12Config for Config<H> {
         target: MillerLoopOutput<Bls12<Self>>,
     ) -> Option<PairingOutput<Bls12<Self>>> {
         let res = H::bls12_377_final_exponentiation(target.0);
-        res.map(|r| PairingOutput(r)).ok()
+        res.map(PairingOutput).ok()
     }
 }
