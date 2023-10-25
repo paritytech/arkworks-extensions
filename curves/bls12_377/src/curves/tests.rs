@@ -1,7 +1,4 @@
-use crate::{
-    g1::{Config as G1Config, G1Projective, G1SWAffine},
-    Bls12_377 as ExtBls12_377, *,
-};
+use crate::CurveHooks;
 use ark_algebra_test_templates::*;
 use ark_bls12_377::{
     g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bls12_377 as ArkBls12_377,
@@ -10,45 +7,61 @@ use ark_models_ext::{
     pairing::{Pairing, PairingOutput},
     CurveConfig,
 };
-use ark_std::vec::Vec;
 
-struct Mock;
+struct TestHooks;
 
-impl CurveHooks for Mock {
+type Bls12_377 = crate::Bls12_377<TestHooks>;
+type G1Projective = crate::G1Projective<TestHooks>;
+type G2Projective = crate::G2Projective<TestHooks>;
+type G1Affine = crate::G1Affine<TestHooks>;
+type G2Affine = crate::G2Affine<TestHooks>;
+type G1Config = crate::g1::Config<TestHooks>;
+type G2Config = crate::g2::Config<TestHooks>;
+
+impl CurveHooks for TestHooks {
     fn bls12_377_multi_miller_loop(
-        a: impl Iterator<Item = <ExtBls12_377<Self> as Pairing>::G1Prepared>,
-        b: impl Iterator<Item = <ExtBls12_377<Self> as Pairing>::G2Prepared>,
-    ) -> Result<<Bls12_377<Self> as Pairing>::TargetField, ()> {
-        test_utils::multi_miller_loop_generic2::<crate::Bls12_377<Self>, ArkBls12_377>(a, b)
+        g1: impl Iterator<Item = <Bls12_377 as Pairing>::G1Prepared>,
+        g2: impl Iterator<Item = <Bls12_377 as Pairing>::G2Prepared>,
+    ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
+        test_utils::multi_miller_loop_generic2::<Bls12_377, ArkBls12_377>(g1, g2)
     }
 
     fn bls12_377_final_exponentiation(
-        target: <ExtBls12_377<Self> as Pairing>::TargetField,
-    ) -> Result<<ExtBls12_377<Self> as Pairing>::TargetField, ()> {
-        test_utils::final_exponentiation_generic2::<ExtBls12_377<Self>, ArkBls12_377>(target)
+        target: <Bls12_377 as Pairing>::TargetField,
+    ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
+        test_utils::final_exponentiation_generic2::<Bls12_377, ArkBls12_377>(target)
     }
 
     fn bls12_377_msm_g1(
-        bases: &[G1SWAffine<Self>],
-        scalars: &[<G1Config<Self> as CurveConfig>::ScalarField],
-    ) -> Result<G1Projective<Self>, ()> {
-        test_utils::msm_sw_generic2::<G1Config<Self>, ArkG1Config>(bases, scalars)
+        bases: &[G1Affine],
+        scalars: &[<G1Config as CurveConfig>::ScalarField],
+    ) -> Result<G1Projective, ()> {
+        test_utils::msm_sw_generic2::<G1Config, ArkG1Config>(bases, scalars)
     }
 
-    fn bls12_377_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::msm_sw_generic::<ArkG2Config>(bases, scalars)
+    fn bls12_377_msm_g2(
+        bases: &[G2Affine],
+        scalars: &[<G2Config as CurveConfig>::ScalarField],
+    ) -> Result<G2Projective, ()> {
+        test_utils::msm_sw_generic2::<G2Config, ArkG2Config>(bases, scalars)
     }
 
-    fn bls12_377_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::mul_projective_generic::<ArkG1Config>(base, scalar)
+    fn bls12_377_mul_projective_g1(
+        base: &G1Projective,
+        scalar: &[u64],
+    ) -> Result<G1Projective, ()> {
+        test_utils::mul_projective_generic2::<G1Config, ArkG1Config>(base, scalar)
     }
 
-    fn bls12_377_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::mul_projective_generic::<ArkG2Config>(base, scalar)
+    fn bls12_377_mul_projective_g2(
+        base: &G2Projective,
+        scalar: &[u64],
+    ) -> Result<G2Projective, ()> {
+        test_utils::mul_projective_generic2::<G2Config, ArkG2Config>(base, scalar)
     }
 }
 
-test_group!(g1; crate::G1Projective<Mock>; sw);
-test_group!(g2; crate::G2Projective<Mock>; sw);
+test_group!(g1; crate::G1Projective<TestHooks>; sw);
+test_group!(g2; crate::G2Projective<TestHooks>; sw);
 test_group!(pairing_output; PairingOutput<ArkBls12_377>; msm);
-test_pairing!(pairing; crate::Bls12_377<super::Mock>);
+test_pairing!(pairing; crate::Bls12_377<super::TestHooks>);

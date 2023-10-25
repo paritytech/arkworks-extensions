@@ -1,16 +1,10 @@
-use crate::ArkScale;
-
 use ark_ed_on_bls12_377::EdwardsConfig as ArkConfig;
 use ark_ff::MontFp;
 use ark_models_ext::{
     twisted_edwards::{Affine, MontCurveConfig, Projective, TECurveConfig},
     CurveConfig,
 };
-use ark_scale::{
-    hazmat::ArkScaleProjective,
-    scale::{Decode, Encode},
-};
-use ark_std::{marker::PhantomData, vec::Vec};
+use ark_std::marker::PhantomData;
 
 #[cfg(test)]
 mod tests;
@@ -35,16 +29,19 @@ pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 #[derive(Clone, Copy)]
 pub struct EdwardsConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
-/// Hooks for *ed-on-bls12-377*.
+/// Hooks for *Ed-on-BLS12-377*.
 pub trait CurveHooks: 'static + Sized {
     /// Twisted Edwards multi scalar multiplication.
     fn ed_on_bls12_377_msm(
-        bases: &[Affine<EdwardsConfig<Self>>],
+        bases: &[EdwardsAffine<Self>],
         scalars: &[<EdwardsConfig<Self> as CurveConfig>::ScalarField],
-    ) -> Result<Projective<EdwardsConfig<Self>>, ()>;
+    ) -> Result<EdwardsProjective<Self>, ()>;
 
     /// Twisted Edwards projective multiplication.
-    fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
+    fn ed_on_bls12_377_mul_projective(
+        base: &EdwardsProjective<Self>,
+        scalar: &[u64],
+    ) -> Result<EdwardsProjective<Self>, ()>;
 }
 
 impl<H: CurveHooks> CurveConfig for EdwardsConfig<H> {
@@ -70,7 +67,8 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
 
     /// Multi scalar multiplication jumping into the user-defined `msm` hook.
     ///
-    /// On any internal error returns `Err(0)`.
+    /// On any *external* error returns `Err(0)`.
+    #[inline(always)]
     fn msm(
         bases: &[Affine<Self>],
         scalars: &[Self::ScalarField],
@@ -80,21 +78,16 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
 
     /// Projective multiplication jumping into the user-defined `mul_projective` hook.
     ///
-    /// On any internal error returns `Projective::zero()`.
+    /// On any *external* error returns `Projective::zero()`.
+    #[inline(always)]
     fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScaleProjective<Projective<Self>> = (*base).into();
-        let scalar: ArkScale<&[u64]> = scalar.into();
-
-        let res =
-            H::ed_on_bls12_377_mul_projective(base.encode(), scalar.encode()).unwrap_or_default();
-
-        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
-        res.map(|v| v.0).unwrap_or_default()
+        H::ed_on_bls12_377_mul_projective(base, scalar).unwrap_or_default()
     }
 
     /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
     ///
     /// On any internal error returns `Projective::zero()`.
+    #[inline(always)]
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
         Self::mul_projective(&(*base).into(), scalar)
     }

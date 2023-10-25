@@ -12,15 +12,15 @@ edition.workspace = true
 
 [dependencies]
 ark-ec.workspace = true
-ark-ff.workspace = true
 ark-std.workspace = true
 ark-bls12-377.workspace = true
-ark-scale.workspace = true
 ark-models-ext.workspace = true
 
 [dev-dependencies]
 ark-serialize.workspace = true
+ark-scale.workspace = true
 ark-algebra-test-templates.workspace = true
+ark-ff.workspace = true
 test-utils.workspace = true
 
 [features]
@@ -36,13 +36,5 @@ std = [
   "ark-std/std",
   "test-utils/std",
 ]
+parallel = [ "ark-ec/parallel", "ark-ff/parallel", "ark-std/parallel" ]
 r1cs = [ "ark-bls12-377/r1cs" ]
-# SCALE encoding related features for most of the arkworks types.
-# Defaults to "compressed" and "validated".
-scale-fast = [
-  "scale-no-compress",
-  "scale-no-validate",
-  "test-utils/scale-fast",
-]
-scale-no-compress = [ "test-utils/scale-no-compress" ]
-scale-no-validate = [ "test-utils/scale-no-validate" ]

@@ -24,16 +24,14 @@ const SCALE_COMPRESS: Compress = Compress::No;
 #[cfg(not(feature = "scale-no-compress"))]
 const SCALE_COMPRESS: Compress = Compress::Yes;
 
-#[cfg(feature = "scale-no-validate")]
-const SCALE_VALIDATE: Validate = Validate::No;
-#[cfg(not(feature = "scale-no-validate"))]
-const SCALE_VALIDATE: Validate = Validate::Yes;
-
 /// SCALE codec usage settings.
 ///
 /// Determines whether compression and validation has been enabled for SCALE codec
 /// with respect to ARK related types.
-pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
+///
+/// WARNING: usage of validation can be dangeruos in the hooks as it may re-enter
+/// the same hook ad cause a stack-overflow.
+pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, Validate::No);
 
 type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
 
@@ -179,6 +177,16 @@ pub fn mul_projective_generic<Group: SWCurveConfig>(
     Ok(result.encode())
 }
 
+pub fn mul_projective_generic2<ExtConfig: SWCurveConfig, ArkConfig: SWCurveConfig>(
+    base: &SWProjective<ExtConfig>,
+    scalar: &[u64],
+) -> Result<SWProjective<ExtConfig>, ()> {
+    let base: SWProjective<ArkConfig> = base.try_transmute()?;
+
+    let res = <ArkConfig as SWCurveConfig>::mul_projective(&base, scalar);
+    res.try_transmute()
+}
+
 pub fn mul_projective_te_generic<Group: TECurveConfig>(
     base: Vec<u8>,
     scalar: Vec<u8>,
@@ -193,4 +201,14 @@ pub fn mul_projective_te_generic<Group: TECurveConfig>(
 
     let result: ArkScaleProjective<twisted_edwards::Projective<Group>> = result.into();
     Ok(result.encode())
+}
+
+pub fn mul_projective_te_generic2<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
+    base: &TEProjective<ExtConfig>,
+    scalar: &[u64],
+) -> Result<TEProjective<ExtConfig>, ()> {
+    let base: TEProjective<ArkConfig> = base.try_transmute()?;
+
+    let res = <ArkConfig as TECurveConfig>::mul_projective(&base, scalar);
+    res.try_transmute()
 }

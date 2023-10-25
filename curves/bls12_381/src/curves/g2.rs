@@ -6,11 +6,7 @@ use ark_models_ext::{
     short_weierstrass::{Affine, Projective, SWCurveConfig},
     AffineRepr, CurveConfig, CurveGroup, Group,
 };
-use ark_scale::{
-    ark_serialize::{Compress, SerializationError, Validate},
-    hazmat::ArkScaleProjective,
-    scale::{Decode, Encode},
-};
+use ark_serialize::{Compress, SerializationError, Validate};
 use ark_std::{
     io::{Read, Write},
     marker::PhantomData,
@@ -21,7 +17,7 @@ use crate::{
     util::{
         read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
     },
-    ArkScale, CurveHooks,
+    CurveHooks,
 };
 
 pub use ark_bls12_381::g2::{
@@ -67,6 +63,36 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
 
     const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
 
+    /// Multi scalar multiplication jumping into the user-defined `msm_g2` hook.
+    ///
+    /// On any *external* error returns `Err(0)`.
+    #[inline(always)]
+    fn msm(
+        bases: &[Affine<Self>],
+        scalars: &[Self::ScalarField],
+    ) -> Result<Projective<Self>, usize> {
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        H::bls12_381_msm_g2(bases, scalars).map_err(|_| 0)
+    }
+
+    /// Projective multiplication jumping into the user-defined `mul_projective_g2` hook.
+    ///
+    /// On any *external* error returns `Projective::zero()`.
+    #[inline(always)]
+    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+        H::bls12_381_mul_projective_g2(base, scalar).unwrap_or_default()
+    }
+
+    /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
+    ///
+    /// On any *external* error returns `Projective::zero()`.
+    #[inline(always)]
+    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
+        Self::mul_projective(&(*base).into(), scalar)
+    }
+
     #[inline(always)]
     fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
         Self::BaseField::zero()
@@ -74,6 +100,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
 
     // Verbatim copy of upstream implementation.
     // Can't call it directly because of different `Affine` config.
+    #[inline(always)]
     fn is_in_correct_subgroup_assuming_on_curve(point: &Affine<Self>) -> bool {
         let mut x_times_point = point.mul_bigint(crate::Config::<H>::X);
         if crate::Config::<H>::X_IS_NEGATIVE {
@@ -189,43 +216,6 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     // Can't call it directly because of different `Affine` config.
     fn serialized_size(compress: Compress) -> usize {
         <ArkConfig as SWCurveConfig>::serialized_size(compress)
-    }
-
-    /// Multi scalar multiplication jumping into the user-defined `msm_g2` hook.
-    ///
-    /// On any internal error returns `Err(0)`.
-    fn msm(
-        bases: &[Affine<Self>],
-        scalars: &[Self::ScalarField],
-    ) -> Result<Projective<Self>, usize> {
-        let bases: ArkScale<&[Affine<Self>]> = bases.into();
-        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
-
-        let res = H::bls12_381_msm_g2(bases.encode(), scalars.encode()).unwrap_or_default();
-
-        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
-        res.map_err(|_| 0).map(|res| res.0)
-    }
-
-    /// Projective multiplication jumping into the user-defined `mul_projective_g2` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScaleProjective<Projective<Self>> = (*base).into();
-        let scalar: ArkScale<&[u64]> = scalar.into();
-
-        let res =
-            H::bls12_381_mul_projective_g2(base.encode(), scalar.encode()).unwrap_or_default();
-
-        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
-        res.map(|v| v.0).unwrap_or_default()
-    }
-
-    /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        Self::mul_projective(&(*base).into(), scalar)
     }
 }
 

@@ -1,6 +1,6 @@
 use ark_ff::{BigInteger384, PrimeField};
 use ark_models_ext::{short_weierstrass::Affine, AffineRepr};
-use ark_scale::ark_serialize::SerializationError;
+use ark_serialize::SerializationError;
 use ark_std::{io::Read, vec::Vec};
 
 use crate::CurveHooks;
