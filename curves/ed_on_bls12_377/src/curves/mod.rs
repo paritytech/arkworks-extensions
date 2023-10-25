@@ -35,8 +35,15 @@ pub type EdwardsProjective<H> = Projective<EdwardsConfig<H>>;
 #[derive(Clone, Copy)]
 pub struct EdwardsConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
-pub trait CurveHooks: 'static {
-    fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()>;
+/// Hooks for *ed-on-bls12-377*.
+pub trait CurveHooks: 'static + Sized {
+    /// Twisted Edwards multi scalar multiplication.
+    fn ed_on_bls12_377_msm(
+        bases: &[Affine<EdwardsConfig<Self>>],
+        scalars: &[<EdwardsConfig<Self> as CurveConfig>::ScalarField],
+    ) -> Result<Projective<EdwardsConfig<Self>>, ()>;
+
+    /// Twisted Edwards projective multiplication.
     fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
 }
 
@@ -68,13 +75,7 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
         bases: &[Affine<Self>],
         scalars: &[Self::ScalarField],
     ) -> Result<Projective<Self>, usize> {
-        let bases: ArkScale<&[Affine<Self>]> = bases.into();
-        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
-
-        let res = H::ed_on_bls12_377_msm(bases.encode(), scalars.encode()).unwrap_or_default();
-
-        let res = ArkScaleProjective::<Projective<EdwardsConfig<H>>>::decode(&mut res.as_slice());
-        res.map(|res| res.0).map_err(|_| 0)
+        H::ed_on_bls12_377_msm(bases, scalars).map_err(|_| 0)
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective` hook.

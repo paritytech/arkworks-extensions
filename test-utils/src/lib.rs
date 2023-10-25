@@ -1,15 +1,19 @@
+//! Implementations for test hooks.
+//!
+//! We just safely transmute from Arkworks-Ext types to Arkworks upstream types by
+//! encoding and deconding and jump into the *Arkworks* upstream methods.
+
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(clippy::result_unit_err)]
 
 use ark_ec::{
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
     short_weierstrass::{self, Affine as SWAffine, Projective as SWProjective, SWCurveConfig},
-    twisted_edwards,
-    twisted_edwards::TECurveConfig,
+    twisted_edwards::{self, Affine as TEAffine, Projective as TEProjective, TECurveConfig},
     CurveConfig, VariableBaseMSM,
 };
 use ark_scale::{
-    ark_serialize::{Compress, Validate},
+    ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate},
     hazmat::ArkScaleProjective,
     scale::{Decode, Encode},
 };
@@ -32,6 +36,19 @@ const SCALE_VALIDATE: Validate = Validate::Yes;
 pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
 
 type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
+
+trait TryTransmute {
+    fn try_transmute<U: CanonicalDeserialize>(self) -> Result<U, ()>;
+}
+
+impl<T: CanonicalSerialize> TryTransmute for T {
+    fn try_transmute<U: CanonicalDeserialize>(self) -> Result<U, ()> {
+        let buf = ArkScale::from(self).encode();
+        ArkScale::<U>::decode(&mut &buf[..])
+            .map(|v| v.0)
+            .map_err(|_| ())
+    }
+}
 
 pub fn multi_miller_loop_generic<Curve: Pairing>(g1: Vec<u8>, g2: Vec<u8>) -> Result<Vec<u8>, ()> {
     let g1 = <ArkScale<Vec<<Curve as Pairing>::G1Affine>> as Decode>::decode(&mut g1.as_slice())
@@ -78,16 +95,10 @@ pub fn final_exponentiation_generic<Curve: Pairing>(target: Vec<u8>) -> Result<V
 pub fn final_exponentiation_generic2<ExtCurve: Pairing, ArkCurve: Pairing>(
     target: ExtCurve::TargetField,
 ) -> Result<ExtCurve::TargetField, ()> {
-    let target: ArkScale<ExtCurve::TargetField> = target.into();
-    let buf = target.encode();
-    let target = ArkScale::<ArkCurve::TargetField>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+    let target: ArkCurve::TargetField = target.try_transmute()?;
 
-    let res = ArkCurve::final_exponentiation(MillerLoopOutput(target.0)).ok_or(())?;
-    let res: ArkScale<ArkCurve::TargetField> = res.0.into();
-    let buf = res.encode();
-    let res = ArkScale::<ExtCurve::TargetField>::decode(&mut buf.as_slice()).map_err(|_| ())?;
-
-    Ok(res.0)
+    let res = ArkCurve::final_exponentiation(MillerLoopOutput(target)).ok_or(())?;
+    res.try_transmute()
 }
 
 pub fn msm_sw_generic<Curve: SWCurveConfig>(
@@ -114,20 +125,11 @@ pub fn msm_sw_generic2<ExtCurve: SWCurveConfig, ArkCurve: SWCurveConfig>(
     bases: &[SWAffine<ExtCurve>],
     scalars: &[ExtCurve::ScalarField],
 ) -> Result<short_weierstrass::Projective<ExtCurve>, ()> {
-    let bases: ArkScale<&[SWAffine<ExtCurve>]> = bases.into();
-    let buf = bases.encode();
-    let bases = ArkScale::<Vec<SWAffine<ArkCurve>>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+    let bases: Vec<SWAffine<ArkCurve>> = bases.try_transmute()?;
+    let scalars: Vec<ArkCurve::ScalarField> = scalars.try_transmute()?;
 
-    let buf = ArkScale::<_>::from(scalars).encode();
-    let scalars =
-        ArkScale::<Vec<ArkCurve::ScalarField>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
-
-    let res =
-        <SWProjective<ArkCurve> as VariableBaseMSM>::msm(&bases.0, &scalars.0).map_err(|_| ())?;
-    let buf = ArkScale::<_>::from(res).encode();
-    let res = ArkScale::<SWProjective<ExtCurve>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
-
-    Ok(res.0)
+    let res = <SWProjective<ArkCurve> as VariableBaseMSM>::msm(&bases, &scalars).map_err(|_| ())?;
+    res.try_transmute()
 }
 
 pub fn msm_te_generic<Curve: TECurveConfig>(
@@ -147,6 +149,18 @@ pub fn msm_te_generic<Curve: TECurveConfig>(
 
     let result: ArkScaleProjective<twisted_edwards::Projective<Curve>> = result.into();
     Ok(result.encode())
+}
+
+pub fn msm_te_generic2<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
+    bases: &[TEAffine<ExtConfig>],
+    scalars: &[ExtConfig::ScalarField],
+) -> Result<TEProjective<ExtConfig>, ()> {
+    let bases: Vec<TEAffine<ArkConfig>> = bases.try_transmute()?;
+    let scalars: Vec<<ArkConfig as CurveConfig>::ScalarField> = scalars.try_transmute()?;
+
+    let res =
+        <TEProjective<ArkConfig> as VariableBaseMSM>::msm(&bases, &scalars).map_err(|_| ())?;
+    res.try_transmute()
 }
 
 pub fn mul_projective_generic<Group: SWCurveConfig>(

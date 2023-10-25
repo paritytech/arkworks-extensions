@@ -1,18 +1,23 @@
-use crate::CurveHooks;
+use crate::{CurveHooks, EdwardsConfig};
 
 use ark_algebra_test_templates::*;
 use ark_ed_on_bls12_377::EdwardsConfig as ArkEdwardsConfig;
+use ark_models_ext::{Affine, CurveConfig, Projective};
 use ark_std::vec::Vec;
 
-struct Mock;
+struct TestHooks;
 
-impl CurveHooks for Mock {
-    fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::msm_te_generic::<ArkEdwardsConfig>(bases, scalars)
+impl CurveHooks for TestHooks {
+    fn ed_on_bls12_377_msm(
+        bases: &[Affine<EdwardsConfig<Self>>],
+        scalars: &[<EdwardsConfig<Self> as CurveConfig>::ScalarField],
+    ) -> Result<Projective<EdwardsConfig<Self>>, ()> {
+        test_utils::msm_te_generic2::<EdwardsConfig<TestHooks>, ArkEdwardsConfig>(bases, scalars)
     }
+
     fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
         test_utils::mul_projective_te_generic::<ArkEdwardsConfig>(base, scalar)
     }
 }
 
-test_group!(te; crate::EdwardsProjective<Mock>; te);
+test_group!(te; crate::EdwardsProjective<TestHooks>; te);
