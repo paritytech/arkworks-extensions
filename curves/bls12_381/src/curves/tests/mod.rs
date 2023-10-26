@@ -66,8 +66,8 @@ impl CurveHooks for TestHooks {
     }
 }
 
-test_group!(g1; crate::G1Projective<TestHooks>; sw);
-test_group!(g2; crate::G2Projective<TestHooks>; sw);
+test_group!(g1; G1Projective; sw);
+test_group!(g2; G2Projective; sw);
 test_group!(pairing_output; PairingOutput<Bls12_381>; msm);
 test_pairing!(ark_pairing; crate::Bls12_381<super::TestHooks>);
 

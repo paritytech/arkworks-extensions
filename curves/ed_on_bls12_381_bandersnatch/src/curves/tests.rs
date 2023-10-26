@@ -1,36 +1,46 @@
 use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
-use ark_ed_on_bls12_381_bandersnatch::BandersnatchConfig as ArkBandersnatchConfig;
-use ark_std::vec::Vec;
+use ark_ed_on_bls12_381_bandersnatch::BandersnatchConfig as ArkConfig;
+use ark_models_ext::CurveConfig;
 
-pub struct Mock;
+pub struct TestHooks;
 
-impl CurveHooks for Mock {
+type Config = crate::BandersnatchConfig<TestHooks>;
+type EdwardsAffine = crate::EdwardsAffine<TestHooks>;
+type EdwardsProjective = crate::EdwardsProjective<TestHooks>;
+type SWAffine = crate::SWAffine<TestHooks>;
+type SWProjective = crate::SWProjective<TestHooks>;
+
+impl CurveHooks for TestHooks {
     fn ed_on_bls12_381_bandersnatch_te_msm(
-        bases: Vec<u8>,
-        scalars: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        test_utils::msm_te_generic::<ArkBandersnatchConfig>(bases, scalars)
+        bases: &[EdwardsAffine],
+        scalars: &[<Config as CurveConfig>::ScalarField],
+    ) -> Result<EdwardsProjective, ()> {
+        test_utils::msm_te_generic2::<Config, ArkConfig>(bases, scalars)
     }
-    fn ed_on_bls12_381_bandersnatch_sw_msm(
-        bases: Vec<u8>,
-        scalars: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        test_utils::msm_sw_generic::<ArkBandersnatchConfig>(bases, scalars)
-    }
+
     fn ed_on_bls12_381_bandersnatch_te_mul_projective(
-        base: Vec<u8>,
-        scalar: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        test_utils::mul_projective_te_generic::<ArkBandersnatchConfig>(base, scalar)
+        base: &EdwardsProjective,
+        scalar: &[u64],
+    ) -> Result<EdwardsProjective, ()> {
+        test_utils::mul_projective_te_generic2::<Config, ArkConfig>(base, scalar)
     }
+
+    fn ed_on_bls12_381_bandersnatch_sw_msm(
+        bases: &[SWAffine],
+        scalars: &[<Config as CurveConfig>::ScalarField],
+    ) -> Result<SWProjective, ()> {
+        test_utils::msm_sw_generic2::<Config, ArkConfig>(bases, scalars)
+    }
+
     fn ed_on_bls12_381_bandersnatch_sw_mul_projective(
-        base: Vec<u8>,
-        scalar: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        test_utils::mul_projective_generic::<ArkBandersnatchConfig>(base, scalar)
+        base: &SWProjective,
+        scalar: &[u64],
+    ) -> Result<SWProjective, ()> {
+        test_utils::mul_projective_generic2::<Config, ArkConfig>(base, scalar)
     }
 }
 
-test_group!(te; crate::EdwardsProjective<Mock>; te);
+test_group!(te; EdwardsProjective; te);
+test_group!(sw; SWProjective; sw);

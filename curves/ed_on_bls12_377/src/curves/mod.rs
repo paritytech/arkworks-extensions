@@ -60,11 +60,6 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
 
     const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(GENERATOR_X, GENERATOR_Y);
 
-    #[inline(always)]
-    fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
-        <ArkConfig as TECurveConfig>::mul_by_a(elem)
-    }
-
     /// Multi scalar multiplication jumping into the user-defined `msm` hook.
     ///
     /// On any *external* error returns `Err(0)`.
@@ -90,6 +85,11 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
     #[inline(always)]
     fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
         Self::mul_projective(&(*base).into(), scalar)
+    }
+
+    #[inline(always)]
+    fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
+        <ArkConfig as TECurveConfig>::mul_by_a(elem)
     }
 }
 

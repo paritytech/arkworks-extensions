@@ -1,14 +1,12 @@
-use crate::ArkScale;
-
 use ark_bw6_761::Config as ArkConfig;
 use ark_ec::bw6::BW6Config as ArkBW6Config;
 use ark_ff::PrimeField;
 use ark_models_ext::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
+    CurveConfig,
 };
-use ark_scale::scale::{Decode, Encode};
-use ark_std::{marker::PhantomData, vec::Vec};
+use ark_std::marker::PhantomData;
 
 pub mod g1;
 pub mod g2;
@@ -21,17 +19,48 @@ pub use self::{
     g2::{G2Affine, G2Projective},
 };
 
+/// Hooks for *BW6-761* curve.
+pub trait CurveHooks: 'static + Sized {
+    /// Pairing multi Miller loop.
+    fn bw6_761_multi_miller_loop(
+        g1: impl Iterator<Item = <BW6_761<Self> as Pairing>::G1Prepared>,
+        g2: impl Iterator<Item = <BW6_761<Self> as Pairing>::G2Prepared>,
+    ) -> Result<<BW6_761<Self> as Pairing>::TargetField, ()>;
+
+    /// Pairing final exponentiation.
+    fn bw6_761_final_exponentiation(
+        target: <BW6_761<Self> as Pairing>::TargetField,
+    ) -> Result<<BW6_761<Self> as Pairing>::TargetField, ()>;
+
+    /// Multi scalar multiplication on G1.
+    fn bw6_761_msm_g1(
+        bases: &[g1::G1Affine<Self>],
+        scalars: &[<g1::Config<Self> as CurveConfig>::ScalarField],
+    ) -> Result<g1::G1Projective<Self>, ()>;
+
+    /// Multi scalar multiplication on G2.
+    fn bw6_761_msm_g2(
+        bases: &[g2::G2Affine<Self>],
+        scalars: &[<g2::Config<Self> as CurveConfig>::ScalarField],
+    ) -> Result<g2::G2Projective<Self>, ()>;
+
+    /// Projective multiplication on G1.
+    fn bw6_761_mul_projective_g1(
+        base: &g1::G1Projective<Self>,
+        scalar: &[u64],
+    ) -> Result<g1::G1Projective<Self>, ()>;
+
+    /// Projective multiplication on G2.
+    fn bw6_761_mul_projective_g2(
+        base: &g2::G2Projective<Self>,
+        scalar: &[u64],
+    ) -> Result<g2::G2Projective<Self>, ()>;
+}
+
 #[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
-pub trait CurveHooks: 'static {
-    fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_msm_g1(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_msm_g2(bases: Vec<u8>, bigints: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
-    fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()>;
-}
+pub type BW6_761<H> = BW6<Config<H>>;
 
 impl<H: CurveHooks> BW6Config for Config<H> {
     type Fp = <ArkConfig as ArkBW6Config>::Fp;
@@ -57,44 +86,25 @@ impl<H: CurveHooks> BW6Config for Config<H> {
     /// Multi Miller loop jumping into the user-defined `multi_miller_loop` hook.
     ///
     /// For any internal error returns `TargetField::zero()`.
+    #[inline(always)]
     fn multi_miller_loop(
-        a: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
-        b: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
+        g1: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
+        g2: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<BW6<Self>> {
-        let a: ArkScale<Vec<<BW6<Self> as Pairing>::G1Prepared>> = a
-            .into_iter()
-            .map(|el| {
-                let el: <BW6<Self> as Pairing>::G1Prepared = el.into();
-                el
-            })
-            .collect::<Vec<_>>()
-            .into();
-        let b: ArkScale<Vec<<BW6<Self> as Pairing>::G2Prepared>> = b
-            .into_iter()
-            .map(|el| {
-                let el: <BW6<Self> as Pairing>::G2Prepared = el.into();
-                el
-            })
-            .collect::<Vec<_>>()
-            .into();
-
-        let res = H::bw6_761_multi_miller_loop(a.encode(), b.encode()).unwrap_or_default();
-
-        let res = ArkScale::<<BW6<Self> as Pairing>::TargetField>::decode(&mut res.as_slice());
-        MillerLoopOutput(res.map(|v| v.0).unwrap_or_default())
+        let g1 = g1.into_iter().map(|item| item.into());
+        let g2 = g2.into_iter().map(|item| item.into());
+        let res = H::bw6_761_multi_miller_loop(g1, g2);
+        MillerLoopOutput(res.unwrap_or_default())
     }
 
     /// Final exponentiation jumping into the user-defined `final_exponentiation` hook.
     ///
     /// For any internal error returns `None`.
-    fn final_exponentiation(f: MillerLoopOutput<BW6<Self>>) -> Option<PairingOutput<BW6<Self>>> {
-        let target: ArkScale<<BW6<Self> as Pairing>::TargetField> = f.0.into();
-
-        let res = H::bw6_761_final_exponentiation(target.encode()).unwrap_or_default();
-
-        let res = ArkScale::<PairingOutput<BW6<Self>>>::decode(&mut res.as_slice());
-        res.map(|res| res.0).ok()
+    #[inline(always)]
+    fn final_exponentiation(
+        target: MillerLoopOutput<BW6<Self>>,
+    ) -> Option<PairingOutput<BW6<Self>>> {
+        let res = H::bw6_761_final_exponentiation(target.0);
+        res.map(PairingOutput).ok()
     }
 }
-
-pub type BW6_761<H> = BW6<Config<H>>;

@@ -31,7 +31,7 @@ const SCALE_COMPRESS: Compress = Compress::Yes;
 ///
 /// WARNING: usage of validation can be dangeruos in the hooks as it may re-enter
 /// the same hook ad cause a stack-overflow.
-pub const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, Validate::No);
+const SCALE_USAGE: u8 = ark_scale::make_usage(SCALE_COMPRESS, Validate::No);
 
 type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
 
@@ -60,23 +60,15 @@ pub fn multi_miller_loop_generic<Curve: Pairing>(g1: Vec<u8>, g2: Vec<u8>) -> Re
     Ok(result.encode())
 }
 
-pub fn multi_miller_loop_generic2<ExtCurve: Pairing, ArkCurve: Pairing>(
-    g1: impl Iterator<Item = ExtCurve::G1Prepared>,
-    g2: impl Iterator<Item = ExtCurve::G2Prepared>,
-) -> Result<ExtCurve::TargetField, ()> {
-    let g1: ArkScale<Vec<ExtCurve::G1Prepared>> = g1.collect::<Vec<_>>().into();
-    let buf = g1.encode();
-    let g1 = ArkScale::<Vec<ArkCurve::G1Affine>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
+pub fn multi_miller_loop_generic2<ExtPairing: Pairing, ArkPairing: Pairing>(
+    g1: impl Iterator<Item = ExtPairing::G1Prepared>,
+    g2: impl Iterator<Item = ExtPairing::G2Prepared>,
+) -> Result<ExtPairing::TargetField, ()> {
+    let g1: Vec<ArkPairing::G1Affine> = g1.collect::<Vec<_>>().try_transmute()?;
+    let g2: Vec<ArkPairing::G2Affine> = g2.collect::<Vec<_>>().try_transmute()?;
 
-    let g2: ArkScale<Vec<ExtCurve::G2Prepared>> = g2.collect::<Vec<_>>().into();
-    let buf = g2.encode();
-    let g2 = ArkScale::<Vec<ArkCurve::G2Affine>>::decode(&mut buf.as_slice()).map_err(|_| ())?;
-
-    let res: ArkScale<ArkCurve::TargetField> = ArkCurve::multi_miller_loop(g1.0, g2.0).0.into();
-    let buf = res.encode();
-    let res = ArkScale::<ExtCurve::TargetField>::decode(&mut buf.as_slice()).map_err(|_| ())?;
-
-    Ok(res.0)
+    let res = ArkPairing::multi_miller_loop(g1, g2).0;
+    res.try_transmute()
 }
 
 pub fn final_exponentiation_generic<Curve: Pairing>(target: Vec<u8>) -> Result<Vec<u8>, ()> {
@@ -90,12 +82,12 @@ pub fn final_exponentiation_generic<Curve: Pairing>(target: Vec<u8>) -> Result<V
     Ok(result.encode())
 }
 
-pub fn final_exponentiation_generic2<ExtCurve: Pairing, ArkCurve: Pairing>(
-    target: ExtCurve::TargetField,
-) -> Result<ExtCurve::TargetField, ()> {
-    let target: ArkCurve::TargetField = target.try_transmute()?;
+pub fn final_exponentiation_generic2<ExtPairing: Pairing, ArkPairing: Pairing>(
+    target: ExtPairing::TargetField,
+) -> Result<ExtPairing::TargetField, ()> {
+    let target: ArkPairing::TargetField = target.try_transmute()?;
 
-    let res = ArkCurve::final_exponentiation(MillerLoopOutput(target)).ok_or(())?;
+    let res = ArkPairing::final_exponentiation(MillerLoopOutput(target)).ok_or(())?;
     res.try_transmute()
 }
 
