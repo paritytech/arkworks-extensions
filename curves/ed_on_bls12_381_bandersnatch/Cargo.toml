@@ -15,7 +15,6 @@ ark-ec.workspace = true
 ark-ff.workspace = true
 ark-std.workspace = true
 ark-ed-on-bls12-381-bandersnatch.workspace = true
-ark-scale.workspace = true
 ark-models-ext.workspace = true
 
 [dev-dependencies]
@@ -31,18 +30,9 @@ std = [
   "ark-ed-on-bls12-381-bandersnatch/std",
   "ark-ff/std",
   "ark-models-ext/std",
-  "ark-scale/std",
   "ark-serialize/std",
   "ark-std/std",
   "test-utils/std",
 ]
+parallel = [ "ark-ec/parallel", "ark-ff/parallel", "ark-std/parallel" ]
 r1cs = [ "ark-ed-on-bls12-381-bandersnatch/r1cs" ]
-# SCALE encoding related features for most of the arkworks types.
-# Defaults to "compressed" and "validated".
-scale-fast = [
-  "scale-no-compress",
-  "scale-no-validate",
-  "test-utils/scale-fast",
-]
-scale-no-compress = [ "test-utils/scale-no-compress" ]
-scale-no-validate = [ "test-utils/scale-no-validate" ]

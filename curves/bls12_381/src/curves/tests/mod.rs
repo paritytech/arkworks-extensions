@@ -4,46 +4,72 @@ use ark_algebra_test_templates::*;
 use ark_bls12_381::{
     g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bls12_381 as ArkBls12_381,
 };
-use ark_ec::{
-    pairing::PairingOutput, short_weierstrass::SWCurveConfig, AffineRepr, CurveGroup, Group,
-};
 use ark_ff::{fields::Field, One, Zero};
+use ark_models_ext::{
+    pairing::{Pairing, PairingOutput},
+    short_weierstrass::SWCurveConfig,
+    AffineRepr, CurveConfig, CurveGroup, Group,
+};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
-use ark_std::{rand::Rng, test_rng, vec, vec::Vec, UniformRand};
+use ark_std::{rand::Rng, test_rng, vec, UniformRand};
 
-struct Mock;
+struct TestHooks;
 
-impl CurveHooks for Mock {
-    fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::multi_miller_loop_generic::<ArkBls12_381>(a, b)
+type Bls12_381 = crate::Bls12_381<TestHooks>;
+type G1Projective = crate::G1Projective<TestHooks>;
+type G2Projective = crate::G2Projective<TestHooks>;
+type G1Affine = crate::G1Affine<TestHooks>;
+type G2Affine = crate::G2Affine<TestHooks>;
+type G1Config = crate::g1::Config<TestHooks>;
+type G2Config = crate::g2::Config<TestHooks>;
+
+impl CurveHooks for TestHooks {
+    fn bls12_381_multi_miller_loop(
+        g1: impl Iterator<Item = <Bls12_381 as Pairing>::G1Prepared>,
+        g2: impl Iterator<Item = <Bls12_381 as Pairing>::G2Prepared>,
+    ) -> Result<<Bls12_381 as Pairing>::TargetField, ()> {
+        test_utils::multi_miller_loop_generic2::<Bls12_381, ArkBls12_381>(g1, g2)
     }
-    fn bls12_381_final_exponentiation(f: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::final_exponentiation_generic::<ArkBls12_381>(f)
+
+    fn bls12_381_final_exponentiation(
+        target: <Bls12_381 as Pairing>::TargetField,
+    ) -> Result<<Bls12_381 as Pairing>::TargetField, ()> {
+        test_utils::final_exponentiation_generic2::<Bls12_381, ArkBls12_381>(target)
     }
-    fn bls12_381_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::msm_sw_generic::<ArkG1Config>(bases, scalars)
+
+    fn bls12_381_msm_g1(
+        bases: &[G1Affine],
+        scalars: &[<G1Config as CurveConfig>::ScalarField],
+    ) -> Result<G1Projective, ()> {
+        test_utils::msm_sw_generic2::<G1Config, ArkG1Config>(bases, scalars)
     }
-    fn bls12_381_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::msm_sw_generic::<ArkG2Config>(bases, scalars)
+
+    fn bls12_381_msm_g2(
+        bases: &[G2Affine],
+        scalars: &[<G2Config as CurveConfig>::ScalarField],
+    ) -> Result<G2Projective, ()> {
+        test_utils::msm_sw_generic2::<G2Config, ArkG2Config>(bases, scalars)
     }
-    fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::mul_projective_generic::<ArkG1Config>(base, scalar)
+
+    fn bls12_381_mul_projective_g1(
+        base: &G1Projective,
+        scalar: &[u64],
+    ) -> Result<G1Projective, ()> {
+        test_utils::mul_projective_generic2::<G1Config, ArkG1Config>(base, scalar)
     }
-    fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        test_utils::mul_projective_generic::<ArkG2Config>(base, scalar)
+
+    fn bls12_381_mul_projective_g2(
+        base: &G2Projective,
+        scalar: &[u64],
+    ) -> Result<G2Projective, ()> {
+        test_utils::mul_projective_generic2::<G2Config, ArkG2Config>(base, scalar)
     }
 }
 
-type Bls12_381 = crate::Bls12_381<Mock>;
-type G1Projective = crate::G1Projective<Mock>;
-type G2Projective = crate::G2Projective<Mock>;
-type G1Affine = crate::G1Affine<Mock>;
-type G2Affine = crate::G2Affine<Mock>;
-
-test_group!(g1; crate::G1Projective<Mock>; sw);
-test_group!(g2; crate::G2Projective<Mock>; sw);
+test_group!(g1; G1Projective; sw);
+test_group!(g2; G2Projective; sw);
 test_group!(pairing_output; PairingOutput<Bls12_381>; msm);
-test_pairing!(ark_pairing; crate::Bls12_381<super::Mock>);
+test_pairing!(ark_pairing; crate::Bls12_381<super::TestHooks>);
 
 #[test]
 fn test_g1_endomorphism_beta() {
@@ -197,7 +223,7 @@ fn test_cofactor_clearing_g2() {
     for _ in 0..SAMPLES {
         let p = G2Affine::rand(&mut rng);
         let optimised = p.clear_cofactor().into_group();
-        let naive = crate::g2::Config::<Mock>::mul_affine(&p, h_eff);
+        let naive = crate::g2::Config::<TestHooks>::mul_affine(&p, h_eff);
         assert_eq!(optimised, naive);
     }
 }

@@ -165,3 +165,19 @@ impl ark_ed_on_bls12_381_bandersnatch::CurveHook for Host {
 type EdwardsProjetive = ark_ed_on_bls12_381_bandersnatch::EdwardsProjective<Host>;
 type SWProjective = ark_ed_on_bls12_381_bandersnatch::SWProjective<Host>;
 ```
+
+## ⚠️ WARNING ⚠️
+
+Be aware that while in the hook context, any usage of functions which may re-enter into the same hook
+
+For example, in a hook for projective multiplication we may decide to serialize and deserialize the point
+which should be multiplied.
+
+0. If the deserialization is performed with `Validate::Yes` then a loop is entered:
+1. Validation of serialized value: https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/mod.rs#L145-L147
+2. Check if is in correct subgroup: https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/affine.rs#L321
+3. Jump into the `TECurveConfig` for the check: https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/affine.rs#L159
+4. Calls the "custom" (defined by this crate) implementation of `mul_affine` which calls `mul_projective`.
+5. Goto 0
+
+So pay special attention to what you do in your `CurveHooks` implementations.

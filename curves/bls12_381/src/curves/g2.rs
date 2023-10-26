@@ -1,16 +1,10 @@
 use ark_bls12_381::{fq2::Fq2, g2::Config as ArkConfig, Fq};
 use ark_ff::{Field, MontFp, Zero};
 use ark_models_ext::{
-    bls12,
-    bls12::Bls12Config,
-    short_weierstrass::{Affine, Projective, SWCurveConfig},
-    AffineRepr, CurveConfig, CurveGroup, Group,
+    bls12, bls12::Bls12Config, short_weierstrass::SWCurveConfig, AffineRepr, CurveConfig,
+    CurveGroup, Group,
 };
-use ark_scale::{
-    ark_serialize::{Compress, SerializationError, Validate},
-    hazmat::ArkScaleProjective,
-    scale::{Decode, Encode},
-};
+use ark_serialize::{Compress, SerializationError, Validate};
 use ark_std::{
     io::{Read, Write},
     marker::PhantomData,
@@ -21,7 +15,7 @@ use crate::{
     util::{
         read_g2_compressed, read_g2_uncompressed, serialize_fq, EncodingFlags, G2_SERIALIZED_SIZE,
     },
-    ArkScale, CurveHooks,
+    CurveHooks,
 };
 
 pub use ark_bls12_381::g2::{
@@ -54,18 +48,45 @@ pub type G2Projective<H> = bls12::G2Projective<crate::Config<H>>;
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
-    type BaseField = <ArkConfig as CurveConfig>::BaseField;
-    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
-
     const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
     const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
+
+    type BaseField = <ArkConfig as CurveConfig>::BaseField;
+    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 }
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
-    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
+    const GENERATOR: G2Affine<H> = G2Affine::<H>::new_unchecked(G2_GENERATOR_X, G2_GENERATOR_Y);
+
+    /// Multi scalar multiplication jumping into the user-defined `msm_g2` hook.
+    ///
+    /// On any *external* error returns `Err(0)`.
+    #[inline(always)]
+    fn msm(bases: &[G2Affine<H>], scalars: &[Self::ScalarField]) -> Result<G2Projective<H>, usize> {
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        H::bls12_381_msm_g2(bases, scalars).map_err(|_| 0)
+    }
+
+    /// Projective multiplication jumping into the user-defined `mul_projective_g2` hook.
+    ///
+    /// On any *external* error returns `Projective::zero()`.
+    #[inline(always)]
+    fn mul_projective(base: &G2Projective<H>, scalar: &[u64]) -> G2Projective<H> {
+        H::bls12_381_mul_projective_g2(base, scalar).unwrap_or_default()
+    }
+
+    /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
+    ///
+    /// On any *external* error returns `Projective::zero()`.
+    #[inline(always)]
+    fn mul_affine(base: &G2Affine<H>, scalar: &[u64]) -> G2Projective<H> {
+        Self::mul_projective(&(*base).into(), scalar)
+    }
 
     #[inline(always)]
     fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
@@ -73,8 +94,10 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
-    fn is_in_correct_subgroup_assuming_on_curve(point: &Affine<Self>) -> bool {
+    //
+    // Can't call it directly because of different `Affine` configuration.
+    #[inline(always)]
+    fn is_in_correct_subgroup_assuming_on_curve(point: &G2Affine<H>) -> bool {
         let mut x_times_point = point.mul_bigint(crate::Config::<H>::X);
         if crate::Config::<H>::X_IS_NEGATIVE {
             x_times_point = -x_times_point;
@@ -86,9 +109,10 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     #[inline]
-    fn clear_cofactor(p: &Affine<Self>) -> Affine<Self> {
+    fn clear_cofactor(p: &G2Affine<H>) -> G2Affine<H> {
         // Based on Section 4.1 of https://eprint.iacr.org/2017/419.pdf
         // [h(ψ)]P = [x^2 − x − 1]P + [x − 1]ψ(P) + (ψ^2)(2P)
 
@@ -111,7 +135,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         tmp += &psi_p;
 
         // tmp2 = [x^2]P + [x]ψ(P)
-        let mut tmp2: Projective<Config<H>> = tmp;
+        let mut tmp2: G2Projective<H> = tmp;
         tmp2 = tmp2.mul_bigint(x).neg();
 
         // add up all the terms
@@ -122,12 +146,13 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     fn deserialize_with_mode<R: Read>(
         mut reader: R,
         compress: Compress,
         validate: Validate,
-    ) -> Result<Affine<Self>, SerializationError> {
+    ) -> Result<G2Affine<H>, SerializationError> {
         let p = if compress == Compress::Yes {
             read_g2_compressed(&mut reader)?
         } else {
@@ -141,9 +166,10 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     fn serialize_with_mode<W: Write>(
-        item: &Affine<Self>,
+        item: &G2Affine<H>,
         mut writer: W,
         compress: Compress,
     ) -> Result<(), SerializationError> {
@@ -154,7 +180,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         };
         let mut p = *item;
         if encoding.is_infinity {
-            p = Affine::<Self>::zero();
+            p = G2Affine::<H>::zero();
         }
 
         let mut x_bytes = [0u8; G2_SERIALIZED_SIZE];
@@ -186,51 +212,15 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     fn serialized_size(compress: Compress) -> usize {
         <ArkConfig as SWCurveConfig>::serialized_size(compress)
-    }
-
-    /// Multi scalar multiplication jumping into the user-defined `msm_g2` hook.
-    ///
-    /// On any internal error returns `Err(0)`.
-    fn msm(
-        bases: &[Affine<Self>],
-        scalars: &[Self::ScalarField],
-    ) -> Result<Projective<Self>, usize> {
-        let bases: ArkScale<&[Affine<Self>]> = bases.into();
-        let scalars: ArkScale<&[Self::ScalarField]> = scalars.into();
-
-        let res = H::bls12_381_msm_g2(bases.encode(), scalars.encode()).unwrap_or_default();
-
-        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
-        res.map_err(|_| 0).map(|res| res.0)
-    }
-
-    /// Projective multiplication jumping into the user-defined `mul_projective_g2` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
-        let base: ArkScaleProjective<Projective<Self>> = (*base).into();
-        let scalar: ArkScale<&[u64]> = scalar.into();
-
-        let res =
-            H::bls12_381_mul_projective_g2(base.encode(), scalar.encode()).unwrap_or_default();
-
-        let res = ArkScaleProjective::<Projective<Self>>::decode(&mut res.as_slice());
-        res.map(|v| v.0).unwrap_or_default()
-    }
-
-    /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
-        Self::mul_projective(&(*base).into(), scalar)
     }
 }
 
 /// psi(P) is the untwist-Frobenius-twist endomorhism on E'(Fq2)
-fn p_power_endomorphism<H: CurveHooks>(p: &Affine<Config<H>>) -> Affine<Config<H>> {
+fn p_power_endomorphism<H: CurveHooks>(p: &G2Affine<H>) -> G2Affine<H> {
     // The p-power endomorphism for G2 is defined as follows:
     // 1. Note that G2 is defined on curve E': y^2 = x^3 + 4(u+1).
     //    To map a point (x, y) in E' to (s, t) in E,
@@ -258,7 +248,7 @@ fn p_power_endomorphism<H: CurveHooks>(p: &Affine<Config<H>>) -> Affine<Config<H
 }
 
 /// For a p-power endomorphism psi(P), compute psi(psi(P))
-fn double_p_power_endomorphism<H: CurveHooks>(p: &Projective<Config<H>>) -> Projective<Config<H>> {
+fn double_p_power_endomorphism<H: CurveHooks>(p: &G2Projective<H>) -> G2Projective<H> {
     let mut res = *p;
 
     res.x *= DOUBLE_P_POWER_ENDOMORPHISM_COEFF_0;

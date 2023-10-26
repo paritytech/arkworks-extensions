@@ -33,26 +33,3 @@ pub mod curves;
 
 pub use ark_bw6_761::{fq, fq::*, fq3, fq3::*, fq6, fq6::*, fr, fr::*};
 pub use curves::*;
-
-use ark_scale::{
-    ark_serialize::{Compress, Validate},
-    Usage,
-};
-
-#[cfg(feature = "scale-no-compress")]
-const SCALE_COMPRESS: Compress = Compress::No;
-#[cfg(not(feature = "scale-no-compress"))]
-const SCALE_COMPRESS: Compress = Compress::Yes;
-
-#[cfg(feature = "scale-no-validate")]
-const SCALE_VALIDATE: Validate = Validate::No;
-#[cfg(not(feature = "scale-no-validate"))]
-const SCALE_VALIDATE: Validate = Validate::Yes;
-
-/// SCALE codec usage settings.
-///
-/// Determines whether compression and validation has been enabled for SCALE codec
-/// with respect to ARK related types.
-pub const SCALE_USAGE: Usage = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
-
-type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;

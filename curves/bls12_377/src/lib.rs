@@ -34,26 +34,3 @@ pub use curves::*;
 
 #[cfg(feature = "r1cs")]
 pub use ark_bls12_377::constraints;
-
-use ark_scale::{
-    ark_serialize::{Compress, Validate},
-    Usage,
-};
-
-#[cfg(feature = "scale-no-compress")]
-const SCALE_COMPRESS: Compress = Compress::No;
-#[cfg(not(feature = "scale-no-compress"))]
-const SCALE_COMPRESS: Compress = Compress::Yes;
-
-#[cfg(feature = "scale-no-validate")]
-const SCALE_VALIDATE: Validate = Validate::No;
-#[cfg(not(feature = "scale-no-validate"))]
-const SCALE_VALIDATE: Validate = Validate::Yes;
-
-/// SCALE codec usage settings.
-///
-/// Determines whether compression and validation has been enabled for SCALE codec
-/// with respect to ARK related types.
-pub const SCALE_USAGE: Usage = ark_scale::make_usage(SCALE_COMPRESS, SCALE_VALIDATE);
-
-pub type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;

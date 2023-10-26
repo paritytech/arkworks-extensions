@@ -39,6 +39,7 @@ pub trait Bls12Config: 'static + Sized {
         a_vec: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
         b_vec: impl IntoIterator<Item = impl Into<G2Prepared<Self>>>,
     ) -> MillerLoopOutput<Bls12<Self>>;
+
     fn final_exponentiation(f: MillerLoopOutput<Bls12<Self>>)
         -> Option<PairingOutput<Bls12<Self>>>;
 }
