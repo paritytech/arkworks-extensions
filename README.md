@@ -27,32 +27,37 @@ See [Known Limitations](https://github.com/paritytech/ark-substrate#known-limita
 ## Usage
 
 The following usage example is extracted from the hooks provided by
+[substrate-curves](https://github.com/paritytech/substrate-curves) project.
+
+The project provides a set of ready to use `CurveHooks` implementations compatible with
 [Substrate](https://github.com/paritytech/polkadot-sdk/primitives/crypto/ec-utils)
-which are used to jump from *wasm32* computational domain into the native host.
+host functions to jump from *wasm32* computational domain into the native host.
 
 The motivation is:
 - native target is typically more efficient that *wasm32*.
 - *wasm32* is single thread while in the native target we can hopefully leverage
   the Arkworks `parallel` feature.
 
-For working examples refer to Ark Substrate examples repo
-[here](https://github.com/davxy/ark-substrate-examples).
-
-Substrate elliptic curves support hooks take and return raw byte arrays
+Note that Substrate elliptic curves host functions take and return raw byte arrays
 representing SCALE encoded values.
 
 ### BLS12-377
 
 ```rust
+use ark_bls12_377_ext::CurveHooks;
+use ark_ec::{pairing::Pairing, CurveConfig}
 use ark_scale::{
     ark_serialize::{Compress, Validate},
     scale::{Decode, Encode},
 };
 use sp_crypto_ec_utils::bls12_377_ops;
 
+
 const SCALE_USAGE: u8 = ark_scale::make_usage(Compress::No, Validate::No);
 type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
+type ArkScaleProjective<T> = ark_scale::hazmat::ArkScaleProjective<T>;
 
+#[derive(Copy, Clone)]
 pub struct HostHooks;
 
 type Bls12_377 = ark_bls12_377_ext::Bls12_377<HostHooks>;
@@ -61,18 +66,18 @@ type G1Config = ark_bls12_377_ext::g1::Config<HostHooks>;
 type G2Affine = ark_bls12_377_ext::g2::G2Affine<HostHooks>;
 type G2Config = ark_bls12_377_ext::g2::Config<HostHooks>;
 
-impl ark_bls12_377_ext::CurveHooks for HostHooks {
+
+impl CurveHooks for HostHooks {
     fn bls12_377_multi_miller_loop(
-        g1: Iterator<Item = <Bls12_377 as Pairing>::G1Prepared>,
-        g2: Iterator<Item = <Bls12_377 as Pairing>::G2Prepared>,
+        g1: impl Iterator<Item = <Bls12_377 as Pairing>::G1Prepared>,
+        g2: impl Iterator<Item = <Bls12_377 as Pairing>::G2Prepared>,
     ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
         let g1 = ArkScale::from(g1.collect::<Vec<_>>()).encode();
         let g2 = ArkScale::from(g2.collect::<Vec<_>>()).encode();
 
-        let res = bls12_377_ops::bls12_377_multi_miller_loop(g2, g1).unwrap_or_default();
+        let res = bls12_377_ops::bls12_377_multi_miller_loop(g1, g2).unwrap_or_default();
         let res = ArkScale::<<Bls12_377 as Pairing>::TargetField>::decode(&mut res.as_slice());
-        MillerLoopOutput(res.map(|v| v.0).unwrap_or_default())
-
+        res.map(|v| v.0).map_err(|_| ())
     }
 
     fn bls12_377_final_exponentiation(
@@ -81,8 +86,8 @@ impl ark_bls12_377_ext::CurveHooks for HostHooks {
         let target = ArkScale::from(target).encode();
 
         let res = bls12_377_ops::bls12_377_final_exponentiation(target).unwrap_or_default();
-        let res = ArkScale::<PairingOutput<Bls12_377>>::decode(&mut res.as_slice());
-        res.map(|v| v.0).ok()
+        let res = ArkScale::<<Bls12_377 as Pairing>::TargetField>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| ())
     }
 
     fn bls12_377_msm_g1(
@@ -93,8 +98,8 @@ impl ark_bls12_377_ext::CurveHooks for HostHooks {
         let scalars = ArkScale::from(scalars).encode();
 
         let res = bls12_377_ops::bls12_377_msm_g1(bases, scalars).unwrap_or_default();
-        let res = ArkScale::<G1Projective>::decode(&mut res.as_slice());
-        res.map(|v| v.0).map_err(|_| 0)
+        let res = ArkScaleProjective::<G1Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| ())
     }
 
     fn bls12_377_msm_g2(
@@ -105,35 +110,39 @@ impl ark_bls12_377_ext::CurveHooks for HostHooks {
         let scalars = ArkScale::from(scalars).encode();
 
         let res = bls12_377_ops::bls12_377_msm_g2(bases, scalars).unwrap_or_default();
-        let res = ArkScale::<G2Projective>::decode(&mut res.as_slice());
-        res.map(|v| v.0).map_err(|_| 0)
+        let res = ArkScaleProjective::<G2Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| ())
     }
 
     fn bls12_377_mul_projective_g1(
         base: &G1Projective,
         scalar: &[u64],
     ) -> Result<G1Projective, ()> {
-        let base = ArkScale::from(base).encode();
+        let base = ArkScaleProjective::from(base).encode();
         let scalar = ArkScale::from(scalar).encode();
 
         let res = bls12_377_ops::bls12_377_mul_projective_g1(base, scalar).unwrap_or_default();
-        let res = ArkScale::<G1Projective>::decode(&mut res.as_slice());
-        res.map(|v| v.0).map_err(|_| 0)
+        let res = ArkScaleProjective::<G1Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| ())
     }
 
     fn bls12_377_mul_projective_g2(
         base: &G2Projective,
         scalar: &[u64],
     ) -> Result<G2Projective, ()> {
-        let base = ArkScale::from(base).encode();
+        let base = ArkScaleProjective::from(base).encode();
         let scalar = ArkScale::from(scalar).encode();
 
         let res = bls12_377_ops::bls12_377_mul_projective_g2(base, scalar).unwrap_or_default();
-        let res = ArkScale::<G2Projective>::decode(&mut res.as_slice());
-        res.map(|v| v.0).map_err(|_| 0)
+        let res = ArkScaleProjective::<G2Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| ())
     }
 }
 ```
+
+For more working refer to Ark Substrate [examples](https://github.com/davxy/ark-substrate-examples)
+project.
+
 
 ## Known Limitations
 
