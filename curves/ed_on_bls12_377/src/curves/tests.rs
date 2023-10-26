@@ -15,11 +15,11 @@ impl CurveHooks for TestHooks {
         bases: &[Affine],
         scalars: &[<Config as CurveConfig>::ScalarField],
     ) -> Result<Projective, ()> {
-        test_utils::msm_te_generic2::<Config, ArkConfig>(bases, scalars)
+        test_utils::msm_te_generic::<Config, ArkConfig>(bases, scalars)
     }
 
     fn ed_on_bls12_377_mul_projective(base: &Projective, scalar: &[u64]) -> Result<Projective, ()> {
-        test_utils::mul_projective_te_generic2::<Config, ArkConfig>(base, scalar)
+        test_utils::mul_projective_te_generic::<Config, ArkConfig>(base, scalar)
     }
 }
 

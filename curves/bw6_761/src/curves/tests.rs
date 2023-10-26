@@ -22,35 +22,35 @@ impl CurveHooks for TestHooks {
         g1: impl Iterator<Item = <BW6_761 as Pairing>::G1Prepared>,
         g2: impl Iterator<Item = <BW6_761 as Pairing>::G2Prepared>,
     ) -> Result<<BW6_761 as Pairing>::TargetField, ()> {
-        test_utils::multi_miller_loop_generic2::<BW6_761, ArkBW6_761>(g1, g2)
+        test_utils::multi_miller_loop_generic::<BW6_761, ArkBW6_761>(g1, g2)
     }
 
     fn bw6_761_final_exponentiation(
         target: <BW6_761 as Pairing>::TargetField,
     ) -> Result<<BW6_761 as Pairing>::TargetField, ()> {
-        test_utils::final_exponentiation_generic2::<BW6_761, ArkBW6_761>(target)
+        test_utils::final_exponentiation_generic::<BW6_761, ArkBW6_761>(target)
     }
 
     fn bw6_761_msm_g1(
         bases: &[G1Affine],
         scalars: &[<G1Config as CurveConfig>::ScalarField],
     ) -> Result<G1Projective, ()> {
-        test_utils::msm_sw_generic2::<G1Config, ArkG1Config>(bases, scalars)
+        test_utils::msm_sw_generic::<G1Config, ArkG1Config>(bases, scalars)
     }
 
     fn bw6_761_msm_g2(
         bases: &[G2Affine],
         scalars: &[<G2Config as CurveConfig>::ScalarField],
     ) -> Result<G2Projective, ()> {
-        test_utils::msm_sw_generic2::<G2Config, ArkG2Config>(bases, scalars)
+        test_utils::msm_sw_generic::<G2Config, ArkG2Config>(bases, scalars)
     }
 
     fn bw6_761_mul_projective_g1(base: &G1Projective, scalar: &[u64]) -> Result<G1Projective, ()> {
-        test_utils::mul_projective_generic2::<G1Config, ArkG1Config>(base, scalar)
+        test_utils::mul_projective_sw_generic::<G1Config, ArkG1Config>(base, scalar)
     }
 
     fn bw6_761_mul_projective_g2(base: &G2Projective, scalar: &[u64]) -> Result<G2Projective, ()> {
-        test_utils::mul_projective_generic2::<G2Config, ArkG2Config>(base, scalar)
+        test_utils::mul_projective_sw_generic::<G2Config, ArkG2Config>(base, scalar)
     }
 }
 

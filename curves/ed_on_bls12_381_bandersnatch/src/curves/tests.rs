@@ -17,28 +17,28 @@ impl CurveHooks for TestHooks {
         bases: &[EdwardsAffine],
         scalars: &[<Config as CurveConfig>::ScalarField],
     ) -> Result<EdwardsProjective, ()> {
-        test_utils::msm_te_generic2::<Config, ArkConfig>(bases, scalars)
+        test_utils::msm_te_generic::<Config, ArkConfig>(bases, scalars)
     }
 
     fn ed_on_bls12_381_bandersnatch_te_mul_projective(
         base: &EdwardsProjective,
         scalar: &[u64],
     ) -> Result<EdwardsProjective, ()> {
-        test_utils::mul_projective_te_generic2::<Config, ArkConfig>(base, scalar)
+        test_utils::mul_projective_te_generic::<Config, ArkConfig>(base, scalar)
     }
 
     fn ed_on_bls12_381_bandersnatch_sw_msm(
         bases: &[SWAffine],
         scalars: &[<Config as CurveConfig>::ScalarField],
     ) -> Result<SWProjective, ()> {
-        test_utils::msm_sw_generic2::<Config, ArkConfig>(bases, scalars)
+        test_utils::msm_sw_generic::<Config, ArkConfig>(bases, scalars)
     }
 
     fn ed_on_bls12_381_bandersnatch_sw_mul_projective(
         base: &SWProjective,
         scalar: &[u64],
     ) -> Result<SWProjective, ()> {
-        test_utils::mul_projective_generic2::<Config, ArkConfig>(base, scalar)
+        test_utils::mul_projective_sw_generic::<Config, ArkConfig>(base, scalar)
     }
 }
 
