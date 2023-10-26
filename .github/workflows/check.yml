@@ -1,32 +1,31 @@
-name: Check and Test
+name: CI
 
 on:
   push:
-    branches:    
-      - '*'
+    branches: [ '**' ]
   pull_request:
-    branches: 
+    branches: [ '**' ]
 
 env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: '-D warnings'
   RUST_BACKTRACE: 1
 
 jobs:   
   rustfmt:
+    name: Rust format
     runs-on: ubuntu-latest
     steps:
-      - name: Install Rust toolchain
+      - name: install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           components: rustfmt
-      - uses: actions/checkout@v3
-      - name: Cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          toolchain: stable
-          command: fmt
-          args: --all -- --check   
+      - name: checkout repo
+        uses: actions/checkout@v4
+      - name: cargo format
+        run: cargo fmt --all -- --check
 
   build:
     runs-on: ubuntu-latest
