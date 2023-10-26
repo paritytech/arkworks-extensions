@@ -7,177 +7,152 @@ This is a partial fork of the code from
 [arkworks-rs/curves](https://github.com/arkworks-rs/curves).
 
 We fork the popular elliptic curves `BLS12_381`, `BLS12_377`, `BW6_761`,
-`ED_ON_BLS12_381_BANDERSNATCH` and `ED_ON_BLS12_377` in a way which allows us
-to replace the elliptic curve arithmetic which is computationally heavy
-with user defined hooks (e.g. to jump into the host from a wasm context).
+`ED_ON_BLS12_381_BANDERSNATCH` and `ED_ON_BLS12_377` in a way which allows
+delegating some of the most computationally expensive operations to some user
+defined hooks.
 
 We also provide forks of the models `BW6` and `BLS12` to avoid the point
-preparation before the hooks calls during pairing operations. Therefore we
+preparation before the hooks calls during pairing operations. Therefore, we
 redefine the elliptic curve sub-groups `G2` for both models as thin wrappers
 around the affine points and move the point preparation procedure to the
 user defined hook.
 
+## ⚠️ WARNING ⚠️
+
+Be aware that, while in the hook context, any usage of functions which may
+re-enter into the same hook with the same value, may cause an infinite loop.
+
+See [Known Limitations](https://github.com/paritytech/ark-substrate#known-limitations) sections.
+
 ## Usage
 
-The following usage examples are extracted from the hooks provided by
+The following usage example is extracted from the hooks provided by
 [Substrate](https://github.com/paritytech/polkadot-sdk/primitives/crypto/ec-utils)
-which are used to jump from wasm32 into the native host.
+which are used to jump from *wasm32* computational domain into the native host.
+
+The motivation is:
+- native target is typically more efficient that *wasm32*.
+- *wasm32* is single thread while in the native target we can hopefully leverage
+  the Arkworks `parallel` feature.
 
 For working examples refer to Ark Substrate examples repo
-[here](https://github.com/paritytech/ark-substrate/examples).
+[here](https://github.com/davxy/ark-substrate-examples).
+
+Substrate elliptic curves support hooks take and return raw byte arrays
+representing SCALE encoded values.
 
 ### BLS12-377
 
 ```rust
-pub struct Host;
+use ark_scale::{
+    ark_serialize::{Compress, Validate},
+    scale::{Decode, Encode},
+};
+use sp_crypto_ec_utils::bls12_377_ops;
 
-impl ark_bls12_377_ext::CurveHooks for Host {
-    fn bls12_377_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_multi_miller_loop(a, b)
+const SCALE_USAGE: u8 = ark_scale::make_usage(Compress::No, Validate::No);
+type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
+
+pub struct HostHooks;
+
+type Bls12_377 = ark_bls12_377_ext::Bls12_377<HostHooks>;
+type G1Affine = ark_bls12_377_ext::g1::G1Affine<HostHooks>;
+type G1Config = ark_bls12_377_ext::g1::Config<HostHooks>;
+type G2Affine = ark_bls12_377_ext::g2::G2Affine<HostHooks>;
+type G2Config = ark_bls12_377_ext::g2::Config<HostHooks>;
+
+impl ark_bls12_377_ext::CurveHooks for HostHooks {
+    fn bls12_377_multi_miller_loop(
+        g1: Iterator<Item = <Bls12_377 as Pairing>::G1Prepared>,
+        g2: Iterator<Item = <Bls12_377 as Pairing>::G2Prepared>,
+    ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
+        let g1 = ArkScale::from(g1.collect::<Vec<_>>()).encode();
+        let g2 = ArkScale::from(g2.collect::<Vec<_>>()).encode();
+
+        let res = bls12_377_ops::bls12_377_multi_miller_loop(g2, g1).unwrap_or_default();
+        let res = ArkScale::<<Bls12_377 as Pairing>::TargetField>::decode(&mut res.as_slice());
+        MillerLoopOutput(res.map(|v| v.0).unwrap_or_default())
+
     }
-    fn bls12_377_final_exponentiation(f: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_final_exponentiation(f)
+
+    fn bls12_377_final_exponentiation(
+        target: <Bls12_377 as Pairing>::TargetField,
+    ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
+        let target = ArkScale::from(target).encode();
+
+        let res = bls12_377_ops::bls12_377_final_exponentiation(target).unwrap_or_default();
+        let res = ArkScale::<PairingOutput<Bls12_377>>::decode(&mut res.as_slice());
+        res.map(|v| v.0).ok()
     }
-    fn bls12_377_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_msm_g1(bases, scalars)
+
+    fn bls12_377_msm_g1(
+        bases: &[G1Affine],
+        scalars: &[<G1Config as CurveConfig>::ScalarField],
+    ) -> Result<G1Projective, ()> {
+        let bases = ArkScale::from(bases).encode();
+        let scalars = ArkScale::from(scalars).encode();
+
+        let res = bls12_377_ops::bls12_377_msm_g1(bases, scalars).unwrap_or_default();
+        let res = ArkScale::<G1Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| 0)
     }
-    fn bls12_377_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_msm_g2(bases, scalars)
+
+    fn bls12_377_msm_g2(
+        bases: &[G2Affine],
+        scalars: &[<G2Config as CurveConfig>::ScalarField],
+    ) -> Result<G2Projective, ()> {
+        let bases = ArkScale::from(bases).encode();
+        let scalars = ArkScale::from(scalars).encode();
+
+        let res = bls12_377_ops::bls12_377_msm_g2(bases, scalars).unwrap_or_default();
+        let res = ArkScale::<G2Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| 0)
     }
-    fn bls12_377_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_mul_projective_g1(base, scalar)
+
+    fn bls12_377_mul_projective_g1(
+        base: &G1Projective,
+        scalar: &[u64],
+    ) -> Result<G1Projective, ()> {
+        let base = ArkScale::from(base).encode();
+        let scalar = ArkScale::from(scalar).encode();
+
+        let res = bls12_377_ops::bls12_377_mul_projective_g1(base, scalar).unwrap_or_default();
+        let res = ArkScale::<G1Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| 0)
     }
-    fn bls12_377_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_377_mul_projective_g2(base, scalar)
+
+    fn bls12_377_mul_projective_g2(
+        base: &G2Projective,
+        scalar: &[u64],
+    ) -> Result<G2Projective, ()> {
+        let base = ArkScale::from(base).encode();
+        let scalar = ArkScale::from(scalar).encode();
+
+        let res = bls12_377_ops::bls12_377_mul_projective_g2(base, scalar).unwrap_or_default();
+        let res = ArkScale::<G2Projective>::decode(&mut res.as_slice());
+        res.map(|v| v.0).map_err(|_| 0)
     }
 }
-
-type Bls12_377 = ark_bls12_377_ext::Bls12_377<Host>;
 ```
 
-### BLS12-381
+## Known Limitations
 
-```rust
-pub struct Host;
+We are aware of hooks re-entrancy issues when using **point checked
+deserialization** in projective multiplication hooks.
 
-impl ark_bls12_381_ext::CurveHooks for Host {
-    fn bls12_381_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_multi_miller_loop(a, b)
-    }
-    fn bls12_381_final_exponentiation(f: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_final_exponentiation(f)
-    }
-    fn bls12_381_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g1(bases, scalars)
-    }
-    fn bls12_381_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_msm_g2(bases, scalars)
-    }
-    fn bls12_381_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g1(base, scalar)
-    }
-    fn bls12_381_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bls12_381_mul_projective_g2(base, scalar)
-    }
-}
+In particular, if you serialize and deserialize (**with point checking**) the
+input point in one of the projective multiplication hooks then we end up
+re-entering the multiplication hook with the same value as a consequence of the
+internally performed check.
 
-type Bls12_381 = ark_bls12_381_ext::Bls12_381<Host>;
-```
+The following invocation flow applies:
 
-### BW6-761
-
-```rust
-pub struct Host;
-
-impl ark_bw6_761_ext::CurveHooks for Host {
-    fn bw6_761_multi_miller_loop(a: Vec<u8>, b: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_multi_miller_loop(a, b)
-    }
-    fn bw6_761_final_exponentiation(f12: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_final_exponentiation(f12)
-    }
-    fn bw6_761_msm_g1(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_msm_g1(bases, scalars)
-    }
-    fn bw6_761_msm_g2(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_msm_g2(bases, scalars)
-    }
-    fn bw6_761_mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_mul_projective_g1(base, scalar)
-    }
-    fn bw6_761_mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::bw6_761_mul_projective_g2(base, scalar)
-    }
-}
-
-type BW6_761 = ark_bw6_761_ext::BW6_761<Host>;
-```
-
-### ED-ON-BLS12-377
-
-```rust
-pub struct Host;
-
-impl ark_ed_on_bls12_377_ext::CurveHooks for Host {
-    fn ed_on_bls12_377_msm(bases: Vec<u8>, scalars: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_377_msm(bases, scalars)
-    }
-    fn ed_on_bls12_377_mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_377_mul_projective(base, scalar)
-    }
-}
-
-type EdwardsProjective = ark_ed_on_bls12_377_ext::EdwardsProjective<Host>;
-```
-
-### ED-ON-BLS12-381-BANDERSNATCH
-
-```rust
-pub struct Host;
-
-impl ark_ed_on_bls12_381_bandersnatch::CurveHook for Host {
-    fn ed_on_bls12_381_bandersnatch_bandersnatch_te_msm(
-        bases: Vec<u8>,
-        scalars: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_te_msm(bases, scalars)
-    }
-    fn ed_on_bls12_381_bandersnatch_bandersnatch_sw_msm(
-        bases: Vec<u8>,
-        scalars: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_sw_msm(bases, scalars)
-    }
-    fn ed_on_bls12_381_bandersnatch_bandersnatch_te_mul_projective(
-        base: Vec<u8>,
-        scalar: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_te_mul_projective(base, scalar)
-    }
-    fn ed_on_bls12_381_bandersnatch_bandersnatch_sw_mul_projective(
-        base: Vec<u8>,
-        scalar: Vec<u8>,
-    ) -> Result<Vec<u8>, ()> {
-        sp_crypto_ec_utils::elliptic_curves::ed_on_bls12_381_bandersnatch_bandersnatch_sw_mul_projective(base, scalar)
-    }
-}
-
-type EdwardsProjetive = ark_ed_on_bls12_381_bandersnatch::EdwardsProjective<Host>;
-type SWProjective = ark_ed_on_bls12_381_bandersnatch::SWProjective<Host>;
-```
-
-## ⚠️ WARNING ⚠️
-
-Be aware that while in the hook context, any usage of functions which may re-enter into the same hook
-
-For example, in a hook for projective multiplication we may decide to serialize and deserialize the point
-which should be multiplied.
-
-0. If the deserialization is performed with `Validate::Yes` then a loop is entered:
-1. Validation of serialized value: https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/mod.rs#L145-L147
-2. Check if is in correct subgroup: https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/affine.rs#L321
-3. Jump into the `TECurveConfig` for the check: https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/affine.rs#L159
+1. [Validation of deserialized value](https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/mod.rs#L145-L147).
+2. [Check if point is in the correct subgroup](https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/affine.rs#L321).
+3. [Jump into the `TECurveConfig` for the check](https://github.com/arkworks-rs/algebra/blob/c0666a81190dbcade1b735ffd383a5f577dd33d5/ec/src/models/twisted_edwards/affine.rs#L159).
 4. Calls the "custom" (defined by this crate) implementation of `mul_affine` which calls `mul_projective`.
-5. Goto 0
+5. Goto 1
 
-So pay special attention to what you do in your `CurveHooks` implementations.
+So pay special attention to the actions in your `CurveHooks` implementations.
+
+If you encounter any other way to trigger the open, please file an issue.
