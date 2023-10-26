@@ -3,7 +3,6 @@ use crate::CurveHooks;
 use ark_bw6_761::g1::Config as ArkConfig;
 use ark_models_ext::{
     bw6,
-    short_weierstrass::{Affine, Projective},
     {short_weierstrass::SWCurveConfig, CurveConfig},
 };
 use ark_std::marker::PhantomData;
@@ -17,27 +16,24 @@ pub type G1Projective<H> = bw6::G1Projective<crate::Config<H>>;
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
-    type BaseField = <ArkConfig as CurveConfig>::BaseField;
-    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
-
     const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
     const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
+
+    type BaseField = <ArkConfig as CurveConfig>::BaseField;
+    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 }
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
-    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
+    const GENERATOR: G1Affine<H> = G1Affine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
     /// Multi scalar multiplication jumping into the user-defined `msm_g1` hook.
     ///
     /// On any internal error returns `Err(0)`.
     #[inline(always)]
-    fn msm(
-        bases: &[Affine<Self>],
-        scalars: &[Self::ScalarField],
-    ) -> Result<Projective<Self>, usize> {
+    fn msm(bases: &[G1Affine<H>], scalars: &[Self::ScalarField]) -> Result<G1Projective<H>, usize> {
         if bases.len() != scalars.len() {
             return Err(bases.len().min(scalars.len()));
         }
@@ -48,7 +44,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     ///
     /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_projective(base: &G1Projective<H>, scalar: &[u64]) -> G1Projective<H> {
         H::bw6_761_mul_projective_g1(base, scalar).unwrap_or_default()
     }
 
@@ -56,7 +52,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     ///
     /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_affine(base: &G1Affine<H>, scalar: &[u64]) -> G1Projective<H> {
         <Self as SWCurveConfig>::mul_projective(&(*base).into(), scalar)
     }
 

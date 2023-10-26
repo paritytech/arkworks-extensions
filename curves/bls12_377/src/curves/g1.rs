@@ -36,17 +36,16 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
-    const GENERATOR: SWAffine<Self> =
-        SWAffine::<Self>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
+    const GENERATOR: G1SWAffine<H> = G1SWAffine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
     /// Multi scalar multiplication jumping into the user-defined `msm_g1` hook.
     ///
     /// On any external error returns `Err(0)`.
     #[inline(always)]
     fn msm(
-        bases: &[SWAffine<Self>],
+        bases: &[G1SWAffine<H>],
         scalars: &[Self::ScalarField],
-    ) -> Result<SWProjective<Self>, usize> {
+    ) -> Result<G1SWProjective<H>, usize> {
         if bases.len() != scalars.len() {
             return Err(bases.len().min(scalars.len()));
         }
@@ -57,7 +56,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     ///
     /// On any external error returns `Projective::zero()`.
     #[inline(always)]
-    fn mul_projective(base: &SWProjective<Self>, scalar: &[u64]) -> SWProjective<Self> {
+    fn mul_projective(base: &G1SWProjective<H>, scalar: &[u64]) -> G1SWProjective<H> {
         H::bls12_377_mul_projective_g1(base, scalar).unwrap_or_default()
     }
 
@@ -65,7 +64,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     ///
     /// On any external error returns `Projective::zero()`.
     #[inline(always)]
-    fn mul_affine(base: &SWAffine<Self>, scalar: &[u64]) -> SWProjective<Self> {
+    fn mul_affine(base: &G1SWAffine<H>, scalar: &[u64]) -> G1SWProjective<H> {
         <Self as SWCurveConfig>::mul_projective(&(*base).into(), scalar)
     }
 
@@ -81,7 +80,7 @@ impl<H: CurveHooks> TECurveConfig for Config<H> {
 
     const GENERATOR: G1TEAffine<H> = G1TEAffine::<H>::new_unchecked(TE_GENERATOR_X, TE_GENERATOR_Y);
 
-    type MontCurveConfig = Config<H>;
+    type MontCurveConfig = Self;
 
     #[inline(always)]
     fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
@@ -93,5 +92,5 @@ impl<H: CurveHooks> MontCurveConfig for Config<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as MontCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as MontCurveConfig>::COEFF_B;
 
-    type TECurveConfig = Config<H>;
+    type TECurveConfig = Self;
 }

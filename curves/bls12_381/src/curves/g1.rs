@@ -10,7 +10,7 @@ use ark_ff::PrimeField;
 use ark_models_ext::{
     bls12,
     bls12::Bls12Config,
-    short_weierstrass::{Affine, Projective, SWCurveConfig},
+    short_weierstrass::{Affine, SWCurveConfig},
     AffineRepr, CurveConfig, Group,
 };
 use ark_serialize::{Compress, SerializationError, Validate};
@@ -30,27 +30,24 @@ pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
-    type BaseField = <ArkConfig as CurveConfig>::BaseField;
-    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
-
     const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
     const COFACTOR_INV: Self::ScalarField = <ArkConfig as CurveConfig>::COFACTOR_INV;
+
+    type BaseField = <ArkConfig as CurveConfig>::BaseField;
+    type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 }
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
-    const GENERATOR: Affine<Self> = Affine::<Self>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
+    const GENERATOR: G1Affine<H> = G1Affine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
     /// Multi scalar multiplication jumping into the user-defined `msm_g1` hook.
     ///
     /// On any internal error returns `Err(0)`.
     #[inline(always)]
-    fn msm(
-        bases: &[Affine<Self>],
-        scalars: &[Self::ScalarField],
-    ) -> Result<Projective<Self>, usize> {
+    fn msm(bases: &[G1Affine<H>], scalars: &[Self::ScalarField]) -> Result<G1Projective<H>, usize> {
         if bases.len() != scalars.len() {
             return Err(bases.len().min(scalars.len()));
         }
@@ -61,7 +58,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     ///
     /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_projective(base: &G1Projective<H>, scalar: &[u64]) -> G1Projective<H> {
         H::bls12_381_mul_projective_g1(base, scalar).unwrap_or_default()
     }
 
@@ -69,7 +66,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     ///
     /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
-    fn mul_affine(base: &Affine<Self>, scalar: &[u64]) -> Projective<Self> {
+    fn mul_affine(base: &G1Affine<H>, scalar: &[u64]) -> G1Projective<H> {
         Self::mul_projective(&(*base).into(), scalar)
     }
 
@@ -79,9 +76,10 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     #[inline(always)]
-    fn is_in_correct_subgroup_assuming_on_curve(p: &Affine<Self>) -> bool {
+    fn is_in_correct_subgroup_assuming_on_curve(p: &G1Affine<H>) -> bool {
         let x_times_p = p.mul_bigint(crate::Config::<H>::X);
         if x_times_p.eq(p) && !p.infinity {
             return false;
@@ -93,9 +91,10 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     #[inline(always)]
-    fn clear_cofactor(p: &Affine<Self>) -> Affine<Self> {
+    fn clear_cofactor(p: &G1Affine<H>) -> G1Affine<H> {
         let h_eff =
             one_minus_x(crate::Config::<H>::X_IS_NEGATIVE, crate::Config::<H>::X).into_bigint();
         Self::mul_affine(p, h_eff.as_ref()).into()
@@ -107,9 +106,10 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     fn serialize_with_mode<W: Write>(
-        item: &Affine<Self>,
+        item: &G1Affine<H>,
         mut writer: W,
         compress: Compress,
     ) -> Result<(), SerializationError> {
@@ -142,12 +142,13 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     // Verbatim copy of upstream implementation.
-    // Can't call it directly because of different `Affine` config.
+    //
+    // Can't call it directly because of different `Affine` configuration.
     fn deserialize_with_mode<R: Read>(
         mut reader: R,
         compress: Compress,
         validate: Validate,
-    ) -> Result<Affine<Self>, SerializationError> {
+    ) -> Result<G1Affine<H>, SerializationError> {
         let p = if compress == Compress::Yes {
             read_g1_compressed(&mut reader)?
         } else {
@@ -169,7 +170,7 @@ fn one_minus_x(
     <ArkConfig as CurveConfig>::ScalarField::one() - x
 }
 
-pub fn endomorphism<T: CurveHooks>(p: &Affine<Config<T>>) -> Affine<Config<T>> {
+pub fn endomorphism<H: CurveHooks>(p: &G1Affine<H>) -> G1Affine<H> {
     // Endomorphism of the points on the curve.
     // endomorphism_p(x,y) = (BETA * x, y)
     // where BETA is a non-trivial cubic root of unity in fq.

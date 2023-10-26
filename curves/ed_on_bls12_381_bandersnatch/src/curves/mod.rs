@@ -10,8 +10,7 @@ use ark_std::marker::PhantomData;
 #[cfg(test)]
 mod tests;
 
-// TODO: @davxy
-// Directly use upstream generator values as soon as version > 0.4.0 is released.
+// TODO: use upstream generator values as soon as version > 0.4.0 is released.
 // Ref: https://github.com/arkworks-rs/curves/pull/184
 
 /// x coordinate for TE curve generator
@@ -84,7 +83,7 @@ impl<H: CurveHooks> TECurveConfig for BandersnatchConfig<H> {
     const GENERATOR: EdwardsAffine<H> =
         EdwardsAffine::<H>::new_unchecked(TE_GENERATOR_X, TE_GENERATOR_Y);
 
-    type MontCurveConfig = BandersnatchConfig<H>;
+    type MontCurveConfig = Self;
 
     /// Multi scalar multiplication jumping into the user-defined `te_msm` hook.
     ///
@@ -154,5 +153,5 @@ impl<H: CurveHooks> MontCurveConfig for BandersnatchConfig<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as MontCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as MontCurveConfig>::COEFF_B;
 
-    type TECurveConfig = BandersnatchConfig<H>;
+    type TECurveConfig = Self;
 }

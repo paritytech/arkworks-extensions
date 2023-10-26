@@ -63,15 +63,9 @@ pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
 pub type BW6_761<H> = BW6<Config<H>>;
 
 impl<H: CurveHooks> BW6Config for Config<H> {
-    type Fp = <ArkConfig as ArkBW6Config>::Fp;
-    type Fp3Config = <ArkConfig as ArkBW6Config>::Fp3Config;
-    type Fp6Config = <ArkConfig as ArkBW6Config>::Fp6Config;
-
-    type G1Config = g1::Config<H>;
-    type G2Config = g2::Config<H>;
-
     const X: <Self::Fp as PrimeField>::BigInt = <ArkConfig as ArkBW6Config>::X;
     const X_IS_NEGATIVE: bool = <ArkConfig as ArkBW6Config>::X_IS_NEGATIVE;
+    const TWIST_TYPE: TwistType = <ArkConfig as ArkBW6Config>::TWIST_TYPE;
 
     const ATE_LOOP_COUNT_1: &'static [u64] = <ArkConfig as ArkBW6Config>::ATE_LOOP_COUNT_1;
     const ATE_LOOP_COUNT_1_IS_NEGATIVE: bool =
@@ -81,7 +75,12 @@ impl<H: CurveHooks> BW6Config for Config<H> {
     const ATE_LOOP_COUNT_2_IS_NEGATIVE: bool =
         <ArkConfig as ArkBW6Config>::ATE_LOOP_COUNT_2_IS_NEGATIVE;
 
-    const TWIST_TYPE: TwistType = <ArkConfig as ArkBW6Config>::TWIST_TYPE;
+    type Fp = <ArkConfig as ArkBW6Config>::Fp;
+    type Fp3Config = <ArkConfig as ArkBW6Config>::Fp3Config;
+    type Fp6Config = <ArkConfig as ArkBW6Config>::Fp6Config;
+
+    type G1Config = g1::Config<H>;
+    type G2Config = g2::Config<H>;
 
     /// Multi Miller loop jumping into the user-defined `multi_miller_loop` hook.
     ///
