@@ -18,7 +18,6 @@ ark-ed-on-bls12-381-bandersnatch.workspace = true
 ark-models-ext.workspace = true
 
 [dev-dependencies]
-ark-scale.workspace = true
 ark-serialize.workspace = true
 ark-algebra-test-templates.workspace = true
 test-utils.workspace = true
@@ -31,7 +30,6 @@ std = [
   "ark-ed-on-bls12-381-bandersnatch/std",
   "ark-ff/std",
   "ark-models-ext/std",
-  "ark-scale/std",
   "ark-serialize/std",
   "ark-std/std",
   "test-utils/std",

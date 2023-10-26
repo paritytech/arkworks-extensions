@@ -20,7 +20,6 @@ ark-serialize.workspace = true
 
 [dev-dependencies] 
 ark-algebra-test-templates.workspace = true
-ark-scale.workspace = true
 test-utils.workspace = true
 
 [features]
@@ -31,7 +30,6 @@ std = [
   "ark-ec/std",
   "ark-ff/std",
   "ark-models-ext/std",
-  "ark-scale/std",
   "ark-serialize/std",
   "ark-std/std",
   "test-utils/std",
