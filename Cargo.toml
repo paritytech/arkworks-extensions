@@ -17,7 +17,7 @@ authors = [
   "Achim Schneider <achim@parity.io>",
   "Davide Galassi <davxy@datawok.net>"
 ]
-repository = "https://github.com/paritytech/arkworks-ext"
+repository = "https://github.com/paritytech/arkworks-extensions"
 keywords = ["cryptography", "elliptic-curves", "pairing"]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
