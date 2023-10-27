@@ -25,14 +25,12 @@ test-utils.workspace = true
 [features]
 default = [ "std" ]
 std = [
-  "ark-algebra-test-templates/std",
   "ark-bls12-377/std",
   "ark-ec/std",
   "ark-ff/std",
   "ark-models-ext/std",
   "ark-serialize/std",
   "ark-std/std",
-  "test-utils/std",
 ]
 parallel = [ "ark-ec/parallel", "ark-ff/parallel", "ark-std/parallel" ]
 r1cs = [ "ark-bls12-377/r1cs" ]
