@@ -281,9 +281,9 @@ dependencies = [
 
 [[package]]
 name = "ark-scale"
-version = "0.0.11"
+version = "0.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51bd73bb6ddb72630987d37fa963e99196896c0d0ea81b7c894567e74a2f83af"
+checksum = "5f69c00b3b529be29528a6f2fd5fa7b1790f8bed81b9cdca17e326538545a179"
 dependencies = [
  "ark-ec",
  "ark-ff",

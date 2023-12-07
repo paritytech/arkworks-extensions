@@ -37,8 +37,7 @@ jobs:
           profile: minimal
           toolchain: stable
       - name: Check Build
-        run: |
-          cargo build --workspace --release
+        run: cargo build --workspace --release
 
   clippy:
     runs-on: ubuntu-latest
