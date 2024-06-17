@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ '**' ]
+    branches: [ main ]
   pull_request:
-    branches: [ '**' ]
+    branches: [ main ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -12,58 +12,66 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:   
-  rustfmt:
-    name: Rust format
+  fmt:
     runs-on: ubuntu-latest
     steps:
-      - name: install Rust toolchain
+      - uses: actions/checkout@v3
+      - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           components: rustfmt
-      - name: checkout repo
-        uses: actions/checkout@v4
-      - name: cargo format
-        run: cargo fmt --all -- --check
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-      - name: Check Build
-        run: cargo build --workspace --release
+      - name: Format
+        run: cargo fmt --all --check
 
   clippy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Rust toolchain
+      - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
-          components: rustfmt      
-      - name: Cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          toolchain: stable
-          command: clippy
-          args: --workspace --all-targets
-
-  test:
-    runs-on: ubuntu-22.04
+          components: clippy
+      - name: Clippy
+        run: cargo clippy --all-targets --all-features
+       
+  build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Rust toolchain
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Build
+        run: cargo build --verbose --all-features
+
+  build-wasm32:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: wasm32-unknown-unknown
+      - name: Build
+        run: cargo build --verbose --no-default-features --target wasm32-unknown-unknown
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
       - name: Run tests
-        run: cargo test --workspace --verbose --release
+        run: cargo test --release --all-features
+
