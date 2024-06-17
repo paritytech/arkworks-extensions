@@ -37,27 +37,41 @@ jobs:
           components: clippy
       - name: Clippy
         run: cargo clippy --all-targets --all-features
-
+       
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Rust toolchain
+      - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
-      - name: Check Build
-        run: cargo build --workspace --release
+      - name: Build
+        run: cargo build --verbose --all-features
 
-  test:
-    runs-on: ubuntu-22.04
+  build-wasm32:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Rust toolchain
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: wasm32-unknown-unknown
+      - name: Build
+        run: cargo build --verbose --no-default-features --target wasm32-unknown-unknown
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
       - name: Run tests
-        run: cargo test --workspace --verbose --release
+        run: cargo test --release --all-features
+
