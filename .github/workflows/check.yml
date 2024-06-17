@@ -12,32 +12,18 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:   
-  rustfmt:
-    name: Rust format
+  fmt:
     runs-on: ubuntu-latest
     steps:
-      - name: install Rust toolchain
+      - uses: actions/checkout@v3
+      - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           components: rustfmt
-      - name: checkout repo
-        uses: actions/checkout@v4
-      - name: cargo format
-        run: cargo fmt --all -- --check
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-      - name: Check Build
-        run: cargo build --workspace --release
+      - name: Format
+        run: cargo fmt --all --check
 
   clippy:
     runs-on: ubuntu-latest
@@ -55,6 +41,18 @@ jobs:
           toolchain: stable
           command: clippy
           args: --workspace --all-targets
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Check Build
+        run: cargo build --workspace --release
 
   test:
     runs-on: ubuntu-22.04
