@@ -1,5 +1,5 @@
 use ark_bls12_381::{fq2::Fq2, g2::Config as ArkConfig, Fq};
-use ark_ff::{Field, MontFp, Zero};
+use ark_ff::{Field, MontFp};
 use ark_models_ext::{
     bls12, bls12::Bls12Config, short_weierstrass::SWCurveConfig, AffineRepr, CurveConfig,
     CurveGroup, Group,
@@ -89,8 +89,8 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     #[inline(always)]
-    fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
-        Self::BaseField::zero()
+    fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
+        <ArkConfig as SWCurveConfig>::mul_by_a(elem)
     }
 
     // Verbatim copy of upstream implementation.
