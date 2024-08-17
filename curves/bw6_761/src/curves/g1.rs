@@ -1,6 +1,7 @@
 use crate::CurveHooks;
 
 use ark_bw6_761::g1::Config as ArkConfig;
+use ark_ff::Zero;
 use ark_models_ext::{
     bw6,
     {short_weierstrass::SWCurveConfig, CurveConfig},
@@ -57,7 +58,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     #[inline(always)]
-    fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
-        <ArkConfig as SWCurveConfig>::mul_by_a(elem)
+    fn mul_by_a(_elem: Self::BaseField) -> Self::BaseField {
+        Self::BaseField::zero()
     }
 }
