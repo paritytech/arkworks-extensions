@@ -6,7 +6,7 @@ use crate::{
 };
 
 use ark_bls12_381::g1::Config as ArkConfig;
-use ark_ff::PrimeField;
+use ark_ff::{PrimeField, Zero};
 use ark_models_ext::{
     bls12,
     bls12::Bls12Config,
@@ -71,8 +71,8 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     #[inline(always)]
-    fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
-        <ArkConfig as SWCurveConfig>::mul_by_a(elem)
+    fn mul_by_a(_elem: Self::BaseField) -> Self::BaseField {
+        Self::BaseField::zero()
     }
 
     // Verbatim copy of upstream implementation.
