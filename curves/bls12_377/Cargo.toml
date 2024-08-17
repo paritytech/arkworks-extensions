@@ -13,13 +13,13 @@ edition.workspace = true
 [dependencies]
 ark-ec.workspace = true
 ark-std.workspace = true
+ark-ff.workspace = true
 ark-bls12-377.workspace = true
 ark-models-ext.workspace = true
 
 [dev-dependencies]
 ark-serialize.workspace = true
 ark-algebra-test-templates.workspace = true
-ark-ff.workspace = true
 test-utils.workspace = true
 
 [features]
