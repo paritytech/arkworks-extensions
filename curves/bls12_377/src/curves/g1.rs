@@ -72,6 +72,23 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
         <ArkConfig as SWCurveConfig>::mul_by_a(elem)
     }
+
+    #[inline(always)]
+    fn is_in_correct_subgroup_assuming_on_curve(item: &G1SWAffine<H>) -> bool {
+        if Self::cofactor_is_one() {
+            true
+        } else {
+            // https://github.com/arkworks-rs/algebra/issues/948
+            use ark_ff::Field;
+            use ark_std::Zero;
+            let char = Self::ScalarField::characteristic();
+            let l1 = [0, 0, char[2], char[3]];
+            let l2 = [char[0], char[1], 0, 0];
+            (<Self as SWCurveConfig>::mul_affine(item, &l1)
+                + <Self as SWCurveConfig>::mul_affine(item, &l2))
+            .is_zero()
+        }
+    }
 }
 
 impl<H: CurveHooks> TECurveConfig for Config<H> {

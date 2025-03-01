@@ -8,7 +8,7 @@ use ark_ff::{fields::Field, One, Zero};
 use ark_models_ext::{
     pairing::{Pairing, PairingOutput},
     short_weierstrass::SWCurveConfig,
-    AffineRepr, CurveConfig, CurveGroup, Group,
+    AffineRepr, CurveConfig, CurveGroup, PrimeGroup,
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, UniformRand};
@@ -89,9 +89,15 @@ fn test_g1_subgroup_non_membership_via_endomorphism() {
     loop {
         let x = Fq::rand(&mut rng);
         let greatest = rng.gen();
-
         if let Some(p) = G1Affine::get_point_from_x_unchecked(x, greatest) {
-            if !<G1Projective as ark_std::Zero>::is_zero(&p.mul_bigint(Fr::characteristic())) {
+            // As internally the characteristic is loaded into an Fr instance scalar,
+            // this is reduced modulo Fr order, thus we end up multiplying by zero.
+            // to prevent this we split the characteristic scalar.
+            let char = Fr::characteristic();
+            let l1 = [0, 0, char[2], char[3]];
+            let l2 = [char[0], char[1], 0, 0];
+            let v = p.mul_bigint(l1) + p.mul_bigint(l2);
+            if !v.is_zero() {
                 assert!(!p.is_in_correct_subgroup_assuming_on_curve());
                 return;
             }
@@ -112,9 +118,15 @@ fn test_g2_subgroup_non_membership_via_endomorphism() {
     loop {
         let x = Fq2::rand(&mut rng);
         let greatest = rng.gen();
-
         if let Some(p) = G2Affine::get_point_from_x_unchecked(x, greatest) {
-            if !<G2Projective as ark_std::Zero>::is_zero(&p.mul_bigint(Fr::characteristic())) {
+            // As internally the characteristic is loaded into an Fr instance scalar,
+            // this is reduced modulo Fr order, thus we end up multiplying by zero.
+            // to prevent this we split the characteristic scalar.
+            let char = Fr::characteristic();
+            let l1 = [0, 0, char[2], char[3]];
+            let l2 = [char[0], char[1], 0, 0];
+            let v = p.mul_bigint(l1) + p.mul_bigint(l2);
+            if !v.is_zero() {
                 assert!(!p.is_in_correct_subgroup_assuming_on_curve());
                 return;
             }

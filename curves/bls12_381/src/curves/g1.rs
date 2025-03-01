@@ -11,7 +11,7 @@ use ark_models_ext::{
     bls12,
     bls12::Bls12Config,
     short_weierstrass::{Affine, SWCurveConfig},
-    AffineRepr, CurveConfig, Group,
+    AffineRepr, CurveConfig, PrimeGroup,
 };
 use ark_serialize::{Compress, SerializationError, Validate};
 use ark_std::{

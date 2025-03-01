@@ -8,13 +8,8 @@ publish = false
 [dependencies]
 ark-ec.workspace = true
 ark-std.workspace = true
-ark-scale.workspace = true
+ark-serialize.workspace = true
 
 [features]
 default = [ "std" ]
-std = [ "ark-ec/std", "ark-scale/std", "ark-std/std" ]
-# SCALE encoding related features for most of Arkworks types.
-# Defaults to "compressed" and "validated"
-scale-fast = [ "scale-no-compress", "scale-no-validate" ]
-scale-no-compress = []
-scale-no-validate = []
+std = [ "ark-ec/std", "ark-std/std" ]

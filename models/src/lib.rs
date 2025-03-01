@@ -4,8 +4,8 @@
 #![allow(clippy::non_canonical_clone_impl)]
 
 pub use ark_ec::{
-    scalar_mul, scalar_mul::*, twisted_edwards, twisted_edwards::*, AffineRepr, CurveGroup, Group,
-    VariableBaseMSM,
+    scalar_mul, scalar_mul::*, twisted_edwards, twisted_edwards::*, AffineRepr, CurveGroup,
+    PrimeGroup, VariableBaseMSM,
 };
 pub mod models;
 pub use models::*;
