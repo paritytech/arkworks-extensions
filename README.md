@@ -140,8 +140,7 @@ impl CurveHooks for HostHooks {
 }
 ```
 
-For more working refer to Ark Substrate [examples](https://github.com/davxy/ark-substrate-examples)
-project.
+For more working examples refer to [Ark Substrate](https://github.com/davxy/ark-substrate-examples).
 
 
 ## Known Limitations

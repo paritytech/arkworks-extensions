@@ -35,7 +35,6 @@ ark-bw6-761 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-377 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-381-bandersnatch = { version = "0.5", default-features = false }
 ark-algebra-test-templates = { version = "0.5", default-features = false }
-ark-scale = { version = "0.0.13", default-features = false, features = ["hazmat"] }
 
 ark-models-ext = { path = "./models", default-features = false }
 test-utils = { path = "./test-utils", default-features = false }

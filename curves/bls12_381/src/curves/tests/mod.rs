@@ -55,9 +55,6 @@ impl CurveHooks for TestHooks {
         base: &G1Projective,
         scalar: &[u64],
     ) -> Result<G1Projective, ()> {
-        println!("MUL G1");
-        println!("base: {}", base);
-        println!("scalar: {:?}", scalar);
         test_utils::mul_projective_sw_generic::<G1Config, ArkG1Config>(base, scalar)
     }
 
