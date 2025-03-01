@@ -11,6 +11,7 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
+ark-ff.workspace = true
 ark-ec.workspace = true
 ark-std.workspace = true
 ark-bls12-377.workspace = true
