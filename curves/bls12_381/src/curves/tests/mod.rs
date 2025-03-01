@@ -55,6 +55,9 @@ impl CurveHooks for TestHooks {
         base: &G1Projective,
         scalar: &[u64],
     ) -> Result<G1Projective, ()> {
+        println!("MUL G1");
+        println!("base: {}", base);
+        println!("scalar: {:?}", scalar);
         test_utils::mul_projective_sw_generic::<G1Config, ArkG1Config>(base, scalar)
     }
 
@@ -89,9 +92,15 @@ fn test_g1_subgroup_non_membership_via_endomorphism() {
     loop {
         let x = Fq::rand(&mut rng);
         let greatest = rng.gen();
-
         if let Some(p) = G1Affine::get_point_from_x_unchecked(x, greatest) {
-            if !<G1Projective as ark_std::Zero>::is_zero(&p.mul_bigint(Fr::characteristic())) {
+            // As internally the characteristic is loaded into an Fr instance scalar,
+            // this is reduced modulo Fr order, thus we end up multiplying by zero.
+            // to prevent this we split the characteristic scalar.
+            let char = Fr::characteristic();
+            let l1 = [0, 0, char[2], char[3]];
+            let l2 = [char[0], char[1], 0, 0];
+            let v = p.mul_bigint(l1) + p.mul_bigint(l2);
+            if !v.is_zero() {
                 assert!(!p.is_in_correct_subgroup_assuming_on_curve());
                 return;
             }
@@ -106,21 +115,27 @@ fn test_g2_subgroup_membership_via_endomorphism() {
     assert!(generator.is_in_correct_subgroup_assuming_on_curve());
 }
 
-// #[test]
-// fn test_g2_subgroup_non_membership_via_endomorphism() {
-//     let mut rng = test_rng();
-//     loop {
-//         let x = Fq2::rand(&mut rng);
-//         let greatest = rng.gen();
-
-//         if let Some(p) = G2Affine::get_point_from_x_unchecked(x, greatest) {
-//             if !<G2Projective as ark_std::Zero>::is_zero(&p.mul_bigint(Fr::characteristic())) {
-//                 assert!(!p.is_in_correct_subgroup_assuming_on_curve());
-//                 return;
-//             }
-//         }
-//     }
-// }
+#[test]
+fn test_g2_subgroup_non_membership_via_endomorphism() {
+    let mut rng = test_rng();
+    loop {
+        let x = Fq2::rand(&mut rng);
+        let greatest = rng.gen();
+        if let Some(p) = G2Affine::get_point_from_x_unchecked(x, greatest) {
+            // As internally the characteristic is loaded into an Fr instance scalar,
+            // this is reduced modulo Fr order, thus we end up multiplying by zero.
+            // to prevent this we split the characteristic scalar.
+            let char = Fr::characteristic();
+            let l1 = [0, 0, char[2], char[3]];
+            let l2 = [char[0], char[1], 0, 0];
+            let v = p.mul_bigint(l1) + p.mul_bigint(l2);
+            if !v.is_zero() {
+                assert!(!p.is_in_correct_subgroup_assuming_on_curve());
+                return;
+            }
+        }
+    }
+}
 
 // Test vectors and macro adapted from https://github.com/zkcrypto/bls12_381/blob/e224ad4ea1babfc582ccd751c2bf128611d10936/src/tests/mod.rs
 macro_rules! test_vectors {
