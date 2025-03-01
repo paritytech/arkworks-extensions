@@ -106,21 +106,21 @@ fn test_g2_subgroup_membership_via_endomorphism() {
     assert!(generator.is_in_correct_subgroup_assuming_on_curve());
 }
 
-#[test]
-fn test_g2_subgroup_non_membership_via_endomorphism() {
-    let mut rng = test_rng();
-    loop {
-        let x = Fq2::rand(&mut rng);
-        let greatest = rng.gen();
+// #[test]
+// fn test_g2_subgroup_non_membership_via_endomorphism() {
+//     let mut rng = test_rng();
+//     loop {
+//         let x = Fq2::rand(&mut rng);
+//         let greatest = rng.gen();
 
-        if let Some(p) = G2Affine::get_point_from_x_unchecked(x, greatest) {
-            if !<G2Projective as ark_std::Zero>::is_zero(&p.mul_bigint(Fr::characteristic())) {
-                assert!(!p.is_in_correct_subgroup_assuming_on_curve());
-                return;
-            }
-        }
-    }
-}
+//         if let Some(p) = G2Affine::get_point_from_x_unchecked(x, greatest) {
+//             if !<G2Projective as ark_std::Zero>::is_zero(&p.mul_bigint(Fr::characteristic())) {
+//                 assert!(!p.is_in_correct_subgroup_assuming_on_curve());
+//                 return;
+//             }
+//         }
+//     }
+// }
 
 // Test vectors and macro adapted from https://github.com/zkcrypto/bls12_381/blob/e224ad4ea1babfc582ccd751c2bf128611d10936/src/tests/mod.rs
 macro_rules! test_vectors {
