@@ -1,8 +1,9 @@
 use ark_bls12_381::{fq2::Fq2, g2::Config as ArkConfig, Fq};
+use ark_ec::AdditiveGroup;
 use ark_ff::{Field, MontFp};
 use ark_models_ext::{
     bls12, bls12::Bls12Config, short_weierstrass::SWCurveConfig, AffineRepr, CurveConfig,
-    CurveGroup, Group,
+    CurveGroup, PrimeGroup,
 };
 use ark_serialize::{Compress, SerializationError, Validate};
 use ark_std::{

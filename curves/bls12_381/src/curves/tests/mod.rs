@@ -8,7 +8,7 @@ use ark_ff::{fields::Field, One, Zero};
 use ark_models_ext::{
     pairing::{Pairing, PairingOutput},
     short_weierstrass::SWCurveConfig,
-    AffineRepr, CurveConfig, CurveGroup, Group,
+    AffineRepr, CurveConfig, CurveGroup, PrimeGroup,
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, UniformRand};
