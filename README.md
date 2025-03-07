@@ -2,9 +2,7 @@
 
 ## Overview
 
-This is a partial fork of the code from
-[arkworks-rs/algebra](https://github.com/arkworks-rs/algebra) and
-[arkworks-rs/curves](https://github.com/arkworks-rs/curves).
+This library extends [arkworks-rs/algebra](https://github.com/arkworks-rs/algebra).
 
 We fork the popular elliptic curves `BLS12_381`, `BLS12_377`, `BW6_761`,
 `ED_ON_BLS12_381_BANDERSNATCH` and `ED_ON_BLS12_377` in a way which allows
@@ -16,13 +14,6 @@ preparation before the hooks calls during pairing operations. Therefore, we
 redefine the elliptic curve sub-groups `G2` for both models as thin wrappers
 around the affine points and move the point preparation procedure to the
 user defined hook.
-
-## ⚠️ WARNING ⚠️
-
-Be aware that, while in the hook context, any usage of functions which may
-re-enter into the same hook with the same value, may cause an infinite loop.
-
-See [Known Limitations](https://github.com/paritytech/ark-substrate#known-limitations) sections.
 
 ## Usage
 
@@ -54,7 +45,7 @@ use sp_crypto_ec_utils::bls12_377_ops;
 
 
 const SCALE_USAGE: u8 = ark_scale::make_usage(Compress::No, Validate::No);
-type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;
+type ArkScale<T> = ark_scale::ArkScale<T, SCALE_USAGE>;o
 type ArkScaleProjective<T> = ark_scale::hazmat::ArkScaleProjective<T>;
 
 #[derive(Copy, Clone)]
@@ -72,10 +63,12 @@ impl CurveHooks for HostHooks {
         g1: impl Iterator<Item = <Bls12_377 as Pairing>::G1Prepared>,
         g2: impl Iterator<Item = <Bls12_377 as Pairing>::G2Prepared>,
     ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
+        // Encode to SCALE to call into Substrate HF
         let g1 = ArkScale::from(g1.collect::<Vec<_>>()).encode();
         let g2 = ArkScale::from(g2.collect::<Vec<_>>()).encode();
-
+        // Call into native host function
         let res = bls12_377_ops::bls12_377_multi_miller_loop(g1, g2).unwrap_or_default();
+        // Decode from SCALE
         let res = ArkScale::<<Bls12_377 as Pairing>::TargetField>::decode(&mut res.as_slice());
         res.map(|v| v.0).map_err(|_| ())
     }
@@ -84,7 +77,6 @@ impl CurveHooks for HostHooks {
         target: <Bls12_377 as Pairing>::TargetField,
     ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
         let target = ArkScale::from(target).encode();
-
         let res = bls12_377_ops::bls12_377_final_exponentiation(target).unwrap_or_default();
         let res = ArkScale::<<Bls12_377 as Pairing>::TargetField>::decode(&mut res.as_slice());
         res.map(|v| v.0).map_err(|_| ())
@@ -96,7 +88,6 @@ impl CurveHooks for HostHooks {
     ) -> Result<G1Projective, ()> {
         let bases = ArkScale::from(bases).encode();
         let scalars = ArkScale::from(scalars).encode();
-
         let res = bls12_377_ops::bls12_377_msm_g1(bases, scalars).unwrap_or_default();
         let res = ArkScaleProjective::<G1Projective>::decode(&mut res.as_slice());
         res.map(|v| v.0).map_err(|_| ())
@@ -108,7 +99,6 @@ impl CurveHooks for HostHooks {
     ) -> Result<G2Projective, ()> {
         let bases = ArkScale::from(bases).encode();
         let scalars = ArkScale::from(scalars).encode();
-
         let res = bls12_377_ops::bls12_377_msm_g2(bases, scalars).unwrap_or_default();
         let res = ArkScaleProjective::<G2Projective>::decode(&mut res.as_slice());
         res.map(|v| v.0).map_err(|_| ())
@@ -120,7 +110,6 @@ impl CurveHooks for HostHooks {
     ) -> Result<G1Projective, ()> {
         let base = ArkScaleProjective::from(base).encode();
         let scalar = ArkScale::from(scalar).encode();
-
         let res = bls12_377_ops::bls12_377_mul_projective_g1(base, scalar).unwrap_or_default();
         let res = ArkScaleProjective::<G1Projective>::decode(&mut res.as_slice());
         res.map(|v| v.0).map_err(|_| ())
@@ -132,18 +121,20 @@ impl CurveHooks for HostHooks {
     ) -> Result<G2Projective, ()> {
         let base = ArkScaleProjective::from(base).encode();
         let scalar = ArkScale::from(scalar).encode();
-
         let res = bls12_377_ops::bls12_377_mul_projective_g2(base, scalar).unwrap_or_default();
         let res = ArkScaleProjective::<G2Projective>::decode(&mut res.as_slice());
         res.map(|v| v.0).map_err(|_| ())
-    }
+    }o
 }
 ```
 
 For more working examples refer to [Ark Substrate](https://github.com/davxy/ark-substrate-examples).
 
 
-## Known Limitations
+## ⚠️ Known Limitations ⚠️
+
+Be aware that, while in the hook context, any usage of functions which may
+re-enter into the same hook with the same value, may cause an infinite loop.
 
 We are aware of hooks re-entrancy issues when using **point checked
 deserialization** in projective multiplication hooks.
