@@ -76,12 +76,14 @@ pub fn msm_sw_generic<ExtCurve: SWCurveConfig, ArkCurve: SWCurveConfig>(
 pub fn msm_te_generic<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
     bases: &[TEAffine<ExtConfig>],
     scalars: &[ExtConfig::ScalarField],
-) -> Result<TEProjective<ExtConfig>, ()> {
-    let bases: Vec<TEAffine<ArkConfig>> = bases.try_transmute()?;
-    let scalars: Vec<<ArkConfig as CurveConfig>::ScalarField> = scalars.try_transmute()?;
-    let res =
-        <TEProjective<ArkConfig> as VariableBaseMSM>::msm(&bases, &scalars).map_err(|_| ())?;
-    res.try_transmute()
+) -> TEProjective<ExtConfig> {
+    default_on_fail! {
+        let bases: Vec<TEAffine<ArkConfig>> = bases.try_transmute()?;
+        let scalars: Vec<<ArkConfig as CurveConfig>::ScalarField> = scalars.try_transmute()?;
+        let res =
+            <TEProjective<ArkConfig> as VariableBaseMSM>::msm(&bases, &scalars).map_err(|_| ())?;
+        res.try_transmute()
+    }
 }
 
 /// On any internal error returns `SWProjective::default()`.
@@ -100,8 +102,10 @@ pub fn mul_projective_sw_generic<ExtConfig: SWCurveConfig, ArkConfig: SWCurveCon
 pub fn mul_projective_te_generic<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
     base: &TEProjective<ExtConfig>,
     scalar: &[u64],
-) -> Result<TEProjective<ExtConfig>, ()> {
-    let base: TEProjective<ArkConfig> = base.try_transmute()?;
-    let res = <ArkConfig as TECurveConfig>::mul_projective(&base, scalar);
-    res.try_transmute()
+) -> TEProjective<ExtConfig> {
+    default_on_fail! {
+        let base: TEProjective<ArkConfig> = base.try_transmute()?;
+        let res = <ArkConfig as TECurveConfig>::mul_projective(&base, scalar);
+        res.try_transmute()
+    }
 }

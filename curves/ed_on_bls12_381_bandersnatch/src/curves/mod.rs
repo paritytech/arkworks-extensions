@@ -1,5 +1,6 @@
-use ark_ed_on_bls12_381_bandersnatch::BandersnatchConfig as ArkConfig;
-use ark_ff::MontFp;
+use ark_ed_on_bls12_381_bandersnatch::{
+    BandersnatchConfig as ArkConfig, SW_GENERATOR_X, SW_GENERATOR_Y, TE_GENERATOR_X, TE_GENERATOR_Y,
+};
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
@@ -9,25 +10,6 @@ use ark_std::marker::PhantomData;
 
 #[cfg(test)]
 mod tests;
-
-// TODO: use upstream generator values as soon as version > 0.4.0 is released.
-// Ref: https://github.com/arkworks-rs/curves/pull/184
-
-/// x coordinate for TE curve generator
-pub const TE_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField =
-    MontFp!("18886178867200960497001835917649091219057080094937609519140440539760939937304");
-
-/// y coordinate for TE curve generator
-pub const TE_GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField =
-    MontFp!("19188667384257783945677642223292697773471335439753913231509108946878080696678");
-
-/// x coordinate for SW curve generator
-pub const SW_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField =
-    MontFp!("30900340493481298850216505686589334086208278925799850409469406976849338430199");
-
-/// y coordinate for SW curve generator
-pub const SW_GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField =
-    MontFp!("12663882780877899054958035777720958383845500985908634476792678820121468453298");
 
 pub type EdwardsAffine<H> = twisted_edwards::Affine<BandersnatchConfig<H>>;
 pub type EdwardsProjective<H> = twisted_edwards::Projective<BandersnatchConfig<H>>;
@@ -47,25 +29,25 @@ pub trait CurveHooks: 'static + Sized {
     fn ed_on_bls12_381_bandersnatch_te_msm(
         bases: &[EdwardsAffine<Self>],
         scalars: &[<EdwardsConfig<Self> as CurveConfig>::ScalarField],
-    ) -> Result<EdwardsProjective<Self>, ()>;
+    ) -> EdwardsProjective<Self>;
 
     /// Twisted Edwards projective multiplication.
     fn ed_on_bls12_381_bandersnatch_te_mul_projective(
         base: &EdwardsProjective<Self>,
         scalar: &[u64],
-    ) -> Result<EdwardsProjective<Self>, ()>;
+    ) -> EdwardsProjective<Self>;
 
     /// Short Weierstrass multi scalar multiplication.
     fn ed_on_bls12_381_bandersnatch_sw_msm(
         bases: &[SWAffine<Self>],
         scalars: &[<SWConfig<Self> as CurveConfig>::ScalarField],
-    ) -> Result<SWProjective<Self>, ()>;
+    ) -> SWProjective<Self>;
 
     /// Short Weierstrass projective multiplication.
     fn ed_on_bls12_381_bandersnatch_sw_mul_projective(
         base: &SWProjective<Self>,
         scalar: &[u64],
-    ) -> Result<SWProjective<Self>, ()>;
+    ) -> SWProjective<Self>;
 }
 
 impl<H: CurveHooks> CurveConfig for BandersnatchConfig<H> {
@@ -86,27 +68,24 @@ impl<H: CurveHooks> TECurveConfig for BandersnatchConfig<H> {
     type MontCurveConfig = Self;
 
     /// Multi scalar multiplication jumping into the user-defined `te_msm` hook.
-    ///
-    /// On any internal error returns `Err(0)`.
     #[inline(always)]
     fn msm(
         bases: &[EdwardsAffine<H>],
         scalars: &[Self::ScalarField],
     ) -> Result<EdwardsProjective<H>, usize> {
-        H::ed_on_bls12_381_bandersnatch_te_msm(bases, scalars).map_err(|_| 0)
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        Ok(H::ed_on_bls12_381_bandersnatch_te_msm(bases, scalars))
     }
 
     /// Projective multiplication jumping into the user-defined `te_mul_projective` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &EdwardsProjective<H>, scalar: &[u64]) -> EdwardsProjective<H> {
-        H::ed_on_bls12_381_bandersnatch_te_mul_projective(base, scalar).unwrap_or_default()
+        H::ed_on_bls12_381_bandersnatch_te_mul_projective(base, scalar)
     }
 
     /// Affine multiplication jumping into the user-defined `te_mul_projective` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_affine(base: &EdwardsAffine<H>, scalar: &[u64]) -> EdwardsProjective<H> {
         <Self as TECurveConfig>::mul_projective(&(*base).into(), scalar)
@@ -129,7 +108,10 @@ impl<H: CurveHooks> SWCurveConfig for BandersnatchConfig<H> {
     /// On any internal error returns `Err(0)`.
     #[inline(always)]
     fn msm(bases: &[SWAffine<H>], scalars: &[Self::ScalarField]) -> Result<SWProjective<H>, usize> {
-        H::ed_on_bls12_381_bandersnatch_sw_msm(bases, scalars).map_err(|_| 0)
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        Ok(H::ed_on_bls12_381_bandersnatch_sw_msm(bases, scalars))
     }
 
     /// Projective multiplication jumping into the user-defined `sw_mul_projective` hook.
@@ -137,12 +119,10 @@ impl<H: CurveHooks> SWCurveConfig for BandersnatchConfig<H> {
     /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &SWProjective<H>, scalar: &[u64]) -> SWProjective<H> {
-        H::ed_on_bls12_381_bandersnatch_sw_mul_projective(base, scalar).unwrap_or_default()
+        H::ed_on_bls12_381_bandersnatch_sw_mul_projective(base, scalar)
     }
 
     /// Affine multiplication jumping into the user-defined `sw_mul_projective` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_affine(base: &SWAffine<H>, scalar: &[u64]) -> SWProjective<H> {
         <Self as SWCurveConfig>::mul_projective(&(*base).into(), scalar)
