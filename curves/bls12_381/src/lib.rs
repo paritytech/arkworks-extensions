@@ -15,6 +15,7 @@
 //! * G2 curve equation: y^2 = x^3 + Fq2(4, 4)
 
 #![cfg_attr(not(feature = "std"), no_std)]
+#![allow(clippy::result_unit_err)]
 
 mod curves;
 

@@ -32,4 +32,8 @@ std = [
   "ark-serialize/std",
   "ark-std/std",
 ]
-parallel = [ "ark-ec/parallel", "ark-ff/parallel", "ark-std/parallel" ]
+parallel = [
+  "ark-ec/parallel",
+  "ark-ff/parallel",
+  "ark-std/parallel"
+]
