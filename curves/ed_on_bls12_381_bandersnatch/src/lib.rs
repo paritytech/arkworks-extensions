@@ -19,15 +19,6 @@
 //!    * d = 45022363124591815672509500913686876175488063829319466900776701791074614335719
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![deny(
-    warnings,
-    unused,
-    future_incompatible,
-    nonstandard_style,
-    rust_2018_idioms,
-    unsafe_code
-)]
-#![allow(clippy::result_unit_err)]
 
 pub mod curves;
 
