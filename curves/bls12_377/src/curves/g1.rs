@@ -39,8 +39,6 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     const GENERATOR: G1SWAffine<H> = G1SWAffine::<H>::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
 
     /// Multi scalar multiplication jumping into the user-defined `msm_g1` hook.
-    ///
-    /// On any external error returns `Err(0)`.
     #[inline(always)]
     fn msm(
         bases: &[G1SWAffine<H>],
@@ -49,20 +47,16 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         if bases.len() != scalars.len() {
             return Err(bases.len().min(scalars.len()));
         }
-        H::bls12_377_msm_g1(bases, scalars).map_err(|_| 0)
+        Ok(H::msm_g1(bases, scalars))
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective_g1` hook.
-    ///
-    /// On any external error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &G1SWProjective<H>, scalar: &[u64]) -> G1SWProjective<H> {
-        H::bls12_377_mul_projective_g1(base, scalar).unwrap_or_default()
+        H::mul_projective_g1(base, scalar)
     }
 
     /// Affine multiplication jumping into the user-defined `mul_projective_g1` hook.
-    ///
-    /// On any external error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_affine(base: &G1SWAffine<H>, scalar: &[u64]) -> G1SWProjective<H> {
         <Self as SWCurveConfig>::mul_projective(&(*base).into(), scalar)
@@ -78,7 +72,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         if Self::cofactor_is_one() {
             true
         } else {
-            // https://github.com/arkworks-rs/algebra/issues/948
+            // Workaround for: https://github.com/arkworks-rs/algebra/issues/948
             use ark_ff::Field;
             use ark_std::Zero;
             let char = Self::ScalarField::characteristic();

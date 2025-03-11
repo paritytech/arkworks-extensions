@@ -37,7 +37,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
         if bases.len() != scalars.len() {
             return Err(bases.len().min(scalars.len()));
         }
-        H::bls12_377_msm_g2(bases, scalars).map_err(|_| 0)
+        Ok(H::msm_g2(bases, scalars))
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective_g2` hook.
@@ -45,7 +45,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &G2Projective<H>, scalar: &[u64]) -> G2Projective<H> {
-        H::bls12_377_mul_projective_g2(base, scalar).unwrap_or_default()
+        H::mul_projective_g2(base, scalar)
     }
 
     /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
