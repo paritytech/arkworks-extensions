@@ -19,44 +19,38 @@ type G1Config = crate::g1::Config<TestHooks>;
 type G2Config = crate::g2::Config<TestHooks>;
 
 impl CurveHooks for TestHooks {
-    fn bls12_377_multi_miller_loop(
+    fn multi_miller_loop(
         g1: impl Iterator<Item = <Bls12_377 as Pairing>::G1Prepared>,
         g2: impl Iterator<Item = <Bls12_377 as Pairing>::G2Prepared>,
-    ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
+    ) -> <Bls12_377 as Pairing>::TargetField {
         test_utils::multi_miller_loop_generic::<Bls12_377, ArkBls12_377>(g1, g2)
     }
 
-    fn bls12_377_final_exponentiation(
+    fn final_exponentiation(
         target: <Bls12_377 as Pairing>::TargetField,
-    ) -> Result<<Bls12_377 as Pairing>::TargetField, ()> {
+    ) -> <Bls12_377 as Pairing>::TargetField {
         test_utils::final_exponentiation_generic::<Bls12_377, ArkBls12_377>(target)
     }
 
-    fn bls12_377_msm_g1(
+    fn msm_g1(
         bases: &[G1Affine],
         scalars: &[<G1Config as CurveConfig>::ScalarField],
-    ) -> Result<G1Projective, ()> {
+    ) -> G1Projective {
         test_utils::msm_sw_generic::<G1Config, ArkG1Config>(bases, scalars)
     }
 
-    fn bls12_377_msm_g2(
+    fn msm_g2(
         bases: &[G2Affine],
         scalars: &[<G2Config as CurveConfig>::ScalarField],
-    ) -> Result<G2Projective, ()> {
+    ) -> G2Projective {
         test_utils::msm_sw_generic::<G2Config, ArkG2Config>(bases, scalars)
     }
 
-    fn bls12_377_mul_projective_g1(
-        base: &G1Projective,
-        scalar: &[u64],
-    ) -> Result<G1Projective, ()> {
+    fn mul_projective_g1(base: &G1Projective, scalar: &[u64]) -> G1Projective {
         test_utils::mul_projective_sw_generic::<G1Config, ArkG1Config>(base, scalar)
     }
 
-    fn bls12_377_mul_projective_g2(
-        base: &G2Projective,
-        scalar: &[u64],
-    ) -> Result<G2Projective, ()> {
+    fn mul_projective_g2(base: &G2Projective, scalar: &[u64]) -> G2Projective {
         test_utils::mul_projective_sw_generic::<G2Config, ArkG2Config>(base, scalar)
     }
 }

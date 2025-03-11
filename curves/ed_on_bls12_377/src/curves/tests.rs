@@ -11,14 +11,11 @@ type Affine = crate::EdwardsAffine<TestHooks>;
 type Projective = crate::EdwardsProjective<TestHooks>;
 
 impl CurveHooks for TestHooks {
-    fn ed_on_bls12_377_msm(
-        bases: &[Affine],
-        scalars: &[<Config as CurveConfig>::ScalarField],
-    ) -> Result<Projective, ()> {
+    fn msm(bases: &[Affine], scalars: &[<Config as CurveConfig>::ScalarField]) -> Projective {
         test_utils::msm_te_generic::<Config, ArkConfig>(bases, scalars)
     }
 
-    fn ed_on_bls12_377_mul_projective(base: &Projective, scalar: &[u64]) -> Result<Projective, ()> {
+    fn mul_projective(base: &Projective, scalar: &[u64]) -> Projective {
         test_utils::mul_projective_te_generic::<Config, ArkConfig>(base, scalar)
     }
 }

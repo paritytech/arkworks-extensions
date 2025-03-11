@@ -15,18 +15,8 @@
 //! * G2 curve equation: y^2 = x^3 + Fq2(4, 4)
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![deny(
-    warnings,
-    unused,
-    future_incompatible,
-    nonstandard_style,
-    rust_2018_idioms,
-    unsafe_code
-)]
-#![allow(clippy::result_unit_err)]
 
 mod curves;
 
 pub use ark_bls12_381::{fq, fq::*, fq12, fq12::*, fq2, fq2::*, fq6, fq6::*, fr, fr::*};
-
 pub use curves::*;

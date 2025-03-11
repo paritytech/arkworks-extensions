@@ -13,31 +13,25 @@ type SWAffine = crate::SWAffine<TestHooks>;
 type SWProjective = crate::SWProjective<TestHooks>;
 
 impl CurveHooks for TestHooks {
-    fn ed_on_bls12_381_bandersnatch_te_msm(
+    fn msm_te(
         bases: &[EdwardsAffine],
         scalars: &[<Config as CurveConfig>::ScalarField],
-    ) -> Result<EdwardsProjective, ()> {
+    ) -> EdwardsProjective {
         test_utils::msm_te_generic::<Config, ArkConfig>(bases, scalars)
     }
 
-    fn ed_on_bls12_381_bandersnatch_te_mul_projective(
-        base: &EdwardsProjective,
-        scalar: &[u64],
-    ) -> Result<EdwardsProjective, ()> {
+    fn mul_projective_te(base: &EdwardsProjective, scalar: &[u64]) -> EdwardsProjective {
         test_utils::mul_projective_te_generic::<Config, ArkConfig>(base, scalar)
     }
 
-    fn ed_on_bls12_381_bandersnatch_sw_msm(
+    fn msm_sw(
         bases: &[SWAffine],
         scalars: &[<Config as CurveConfig>::ScalarField],
-    ) -> Result<SWProjective, ()> {
+    ) -> SWProjective {
         test_utils::msm_sw_generic::<Config, ArkConfig>(bases, scalars)
     }
 
-    fn ed_on_bls12_381_bandersnatch_sw_mul_projective(
-        base: &SWProjective,
-        scalar: &[u64],
-    ) -> Result<SWProjective, ()> {
+    fn mul_projective_sw(base: &SWProjective, scalar: &[u64]) -> SWProjective {
         test_utils::mul_projective_sw_generic::<Config, ArkConfig>(base, scalar)
     }
 }
