@@ -36,25 +36,19 @@ pub trait CurveHooks: 'static + Sized {
     fn msm_g1(
         bases: &[g1::G1Affine<Self>],
         scalars: &[<g1::Config<Self> as CurveConfig>::ScalarField],
-    ) -> Result<G1Projective<Self>, ()>;
+    ) -> G1Projective<Self>;
 
     /// Multi scalar multiplication on G2.
     fn msm_g2(
         bases: &[g2::G2Affine<Self>],
         scalars: &[<g2::Config<Self> as CurveConfig>::ScalarField],
-    ) -> Result<G2Projective<Self>, ()>;
+    ) -> G2Projective<Self>;
 
     /// Projective multiplication on G1.
-    fn mul_projective_g1(
-        base: &G1Projective<Self>,
-        scalar: &[u64],
-    ) -> Result<G1Projective<Self>, ()>;
+    fn mul_projective_g1(base: &G1Projective<Self>, scalar: &[u64]) -> G1Projective<Self>;
 
     /// Projective multiplication on G2.
-    fn mul_projective_g2(
-        base: &G2Projective<Self>,
-        scalar: &[u64],
-    ) -> Result<G2Projective<Self>, ()>;
+    fn mul_projective_g2(base: &G2Projective<Self>, scalar: &[u64]) -> G2Projective<Self>;
 }
 
 #[derive(Clone, Copy)]

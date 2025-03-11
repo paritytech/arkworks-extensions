@@ -4,7 +4,6 @@
 //! encoding and deconding and jump into the *Arkworks* upstream methods.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![allow(clippy::result_unit_err)]
 
 use ark_ec::{
     pairing::{MillerLoopOutput, Pairing},
@@ -27,32 +26,51 @@ impl<T: CanonicalSerialize> TryTransmute for T {
     }
 }
 
+macro_rules! default_on_fail {
+    ($($body:tt)*) => {
+        let fallible = || {
+            $($body)*
+        };
+        fallible().unwrap_or_default()
+    };
+}
+
+/// On any internal error returns `Pairing::TargetField::default()`.
 pub fn multi_miller_loop_generic<ExtPairing: Pairing, ArkPairing: Pairing>(
     g1: impl Iterator<Item = ExtPairing::G1Prepared>,
     g2: impl Iterator<Item = ExtPairing::G2Prepared>,
-) -> Result<ExtPairing::TargetField, ()> {
-    let g1: Vec<ArkPairing::G1Affine> = g1.collect::<Vec<_>>().try_transmute()?;
-    let g2: Vec<ArkPairing::G2Affine> = g2.collect::<Vec<_>>().try_transmute()?;
-    let res = ArkPairing::multi_miller_loop(g1, g2).0;
-    res.try_transmute()
+) -> ExtPairing::TargetField {
+    default_on_fail! {
+        let g1: Vec<ArkPairing::G1Affine> = g1.collect::<Vec<_>>().try_transmute()?;
+        let g2: Vec<ArkPairing::G2Affine> = g2.collect::<Vec<_>>().try_transmute()?;
+        let res = ArkPairing::multi_miller_loop(g1, g2).0;
+        res.try_transmute()
+    }
 }
 
+/// On any internal error returns `Pairing::TargetField::default()`.
 pub fn final_exponentiation_generic<ExtPairing: Pairing, ArkPairing: Pairing>(
     target: ExtPairing::TargetField,
-) -> Result<ExtPairing::TargetField, ()> {
-    let target: ArkPairing::TargetField = target.try_transmute()?;
-    let res = ArkPairing::final_exponentiation(MillerLoopOutput(target)).ok_or(())?;
-    res.try_transmute()
+) -> ExtPairing::TargetField {
+    default_on_fail! {
+        let target: ArkPairing::TargetField = target.try_transmute()?;
+        let res = ArkPairing::final_exponentiation(MillerLoopOutput(target)).ok_or(())?;
+        res.try_transmute()
+    }
 }
 
+/// On any internal error returns `SWProjective::default()`.
 pub fn msm_sw_generic<ExtCurve: SWCurveConfig, ArkCurve: SWCurveConfig>(
     bases: &[SWAffine<ExtCurve>],
     scalars: &[ExtCurve::ScalarField],
-) -> Result<SWProjective<ExtCurve>, ()> {
-    let bases: Vec<SWAffine<ArkCurve>> = bases.try_transmute()?;
-    let scalars: Vec<ArkCurve::ScalarField> = scalars.try_transmute()?;
-    let res = <SWProjective<ArkCurve> as VariableBaseMSM>::msm(&bases, &scalars).map_err(|_| ())?;
-    res.try_transmute()
+) -> SWProjective<ExtCurve> {
+    default_on_fail! {
+        let bases: Vec<SWAffine<ArkCurve>> = bases.try_transmute()?;
+        let scalars: Vec<ArkCurve::ScalarField> = scalars.try_transmute()?;
+        let res =
+            <SWProjective<ArkCurve> as VariableBaseMSM>::msm(&bases, &scalars).map_err(|_| ())?;
+        res.try_transmute()
+    }
 }
 
 pub fn msm_te_generic<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
@@ -66,15 +84,19 @@ pub fn msm_te_generic<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
     res.try_transmute()
 }
 
+/// On any internal error returns `SWProjective::default()`.
 pub fn mul_projective_sw_generic<ExtConfig: SWCurveConfig, ArkConfig: SWCurveConfig>(
     base: &SWProjective<ExtConfig>,
     scalar: &[u64],
-) -> Result<SWProjective<ExtConfig>, ()> {
-    let base: SWProjective<ArkConfig> = base.try_transmute()?;
-    let res = <ArkConfig as SWCurveConfig>::mul_projective(&base, scalar);
-    res.try_transmute()
+) -> SWProjective<ExtConfig> {
+    default_on_fail! {
+        let base: SWProjective<ArkConfig> = base.try_transmute()?;
+        let res = <ArkConfig as SWCurveConfig>::mul_projective(&base, scalar);
+        res.try_transmute()
+    }
 }
 
+/// On any internal error returns `TEProjective::default()`.
 pub fn mul_projective_te_generic<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
     base: &TEProjective<ExtConfig>,
     scalar: &[u64],
