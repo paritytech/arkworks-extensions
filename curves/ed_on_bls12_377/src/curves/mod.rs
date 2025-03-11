@@ -1,5 +1,4 @@
-use ark_ed_on_bls12_377::EdwardsConfig as ArkConfig;
-use ark_ff::MontFp;
+use ark_ed_on_bls12_377::{EdwardsConfig as ArkConfig, GENERATOR_X, GENERATOR_Y};
 use ark_models_ext::{
     twisted_edwards::{self, MontCurveConfig, TECurveConfig},
     CurveConfig,
@@ -8,19 +7,6 @@ use ark_std::marker::PhantomData;
 
 #[cfg(test)]
 mod tests;
-
-// TODO: use upstream generator values as soon as version > 0.4.0 is released.
-// Ref: https://github.com/arkworks-rs/curves/pull/150
-
-/// GENERATOR_X =
-/// 4497879464030519973909970603271755437257548612157028181994697785683032656389,
-const GENERATOR_X: <ArkConfig as CurveConfig>::BaseField =
-    MontFp!("4497879464030519973909970603271755437257548612157028181994697785683032656389");
-
-/// GENERATOR_Y =
-/// 4357141146396347889246900916607623952598927460421559113092863576544024487809
-const GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField =
-    MontFp!("4357141146396347889246900916607623952598927460421559113092863576544024487809");
 
 pub type EdwardsAffine<H> = twisted_edwards::Affine<EdwardsConfig<H>>;
 pub type EdwardsProjective<H> = twisted_edwards::Projective<EdwardsConfig<H>>;
@@ -31,16 +17,13 @@ pub struct EdwardsConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 /// Hooks for *Ed-on-BLS12-377*.
 pub trait CurveHooks: 'static + Sized {
     /// Twisted Edwards multi scalar multiplication.
-    fn ed_on_bls12_377_msm(
+    fn msm(
         bases: &[EdwardsAffine<Self>],
         scalars: &[<EdwardsConfig<Self> as CurveConfig>::ScalarField],
-    ) -> Result<EdwardsProjective<Self>, ()>;
+    ) -> EdwardsProjective<Self>;
 
     /// Twisted Edwards projective multiplication.
-    fn ed_on_bls12_377_mul_projective(
-        base: &EdwardsProjective<Self>,
-        scalar: &[u64],
-    ) -> Result<EdwardsProjective<Self>, ()>;
+    fn mul_projective(base: &EdwardsProjective<Self>, scalar: &[u64]) -> EdwardsProjective<Self>;
 }
 
 impl<H: CurveHooks> CurveConfig for EdwardsConfig<H> {
@@ -60,14 +43,15 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
     type MontCurveConfig = Self;
 
     /// Multi scalar multiplication jumping into the user-defined `msm` hook.
-    ///
-    /// On any *external* error returns `Err(0)`.
     #[inline(always)]
     fn msm(
         bases: &[EdwardsAffine<H>],
         scalars: &[Self::ScalarField],
     ) -> Result<EdwardsProjective<H>, usize> {
-        H::ed_on_bls12_377_msm(bases, scalars).map_err(|_| 0)
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        Ok(H::msm(bases, scalars))
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective` hook.
@@ -75,7 +59,7 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
     /// On any *external* error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &EdwardsProjective<H>, scalar: &[u64]) -> EdwardsProjective<H> {
-        H::ed_on_bls12_377_mul_projective(base, scalar).unwrap_or_default()
+        H::mul_projective(base, scalar)
     }
 
     /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
