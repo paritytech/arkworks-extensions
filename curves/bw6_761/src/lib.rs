@@ -19,7 +19,6 @@
 //! * B = 4
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![allow(clippy::result_unit_err)]
 
 pub mod curves;
 
