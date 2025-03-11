@@ -69,8 +69,6 @@ impl<H: CurveHooks> Bls12Config for Config<H> {
     type G2Config = g2::Config<H>;
 
     /// Multi Miller loop jumping into the user-defined `multi_miller_loop` hook.
-    ///
-    /// For any external error returns `MillerLoopOutput(TargetField::zero())`.
     #[inline(always)]
     fn multi_miller_loop(
         g1: impl IntoIterator<Item = impl Into<G1Prepared<Self>>>,
@@ -83,8 +81,6 @@ impl<H: CurveHooks> Bls12Config for Config<H> {
     }
 
     /// Final exponentiation jumping into the user-defined `final_exponentiation` hook.
-    ///
-    /// For any external error returns `None`.
     #[inline(always)]
     fn final_exponentiation(
         target: MillerLoopOutput<Bls12<Self>>,

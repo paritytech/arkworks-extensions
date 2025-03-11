@@ -55,16 +55,12 @@ impl<H: CurveHooks> TECurveConfig for EdwardsConfig<H> {
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective` hook.
-    ///
-    /// On any *external* error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &EdwardsProjective<H>, scalar: &[u64]) -> EdwardsProjective<H> {
         H::mul_projective(base, scalar)
     }
 
     /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_affine(base: &EdwardsAffine<H>, scalar: &[u64]) -> EdwardsProjective<H> {
         Self::mul_projective(&(*base).into(), scalar)

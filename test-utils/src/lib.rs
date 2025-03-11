@@ -35,7 +35,7 @@ macro_rules! default_on_fail {
     };
 }
 
-/// On any internal error returns `Pairing::TargetField::default()`.
+/// On any error returns `Pairing::TargetField::default()`.
 pub fn multi_miller_loop_generic<ExtPairing: Pairing, ArkPairing: Pairing>(
     g1: impl Iterator<Item = ExtPairing::G1Prepared>,
     g2: impl Iterator<Item = ExtPairing::G2Prepared>,
@@ -48,7 +48,7 @@ pub fn multi_miller_loop_generic<ExtPairing: Pairing, ArkPairing: Pairing>(
     }
 }
 
-/// On any internal error returns `Pairing::TargetField::default()`.
+/// On any error returns `Pairing::TargetField::default()`.
 pub fn final_exponentiation_generic<ExtPairing: Pairing, ArkPairing: Pairing>(
     target: ExtPairing::TargetField,
 ) -> ExtPairing::TargetField {
@@ -59,7 +59,7 @@ pub fn final_exponentiation_generic<ExtPairing: Pairing, ArkPairing: Pairing>(
     }
 }
 
-/// On any internal error returns `SWProjective::default()`.
+/// On any error returns `SWProjective::default()`.
 pub fn msm_sw_generic<ExtCurve: SWCurveConfig, ArkCurve: SWCurveConfig>(
     bases: &[SWAffine<ExtCurve>],
     scalars: &[ExtCurve::ScalarField],
@@ -86,7 +86,7 @@ pub fn msm_te_generic<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
     }
 }
 
-/// On any internal error returns `SWProjective::default()`.
+/// On any error returns `SWProjective::default()`.
 pub fn mul_projective_sw_generic<ExtConfig: SWCurveConfig, ArkConfig: SWCurveConfig>(
     base: &SWProjective<ExtConfig>,
     scalar: &[u64],
@@ -98,7 +98,7 @@ pub fn mul_projective_sw_generic<ExtConfig: SWCurveConfig, ArkConfig: SWCurveCon
     }
 }
 
-/// On any internal error returns `TEProjective::default()`.
+/// On any error returns `TEProjective::default()`.
 pub fn mul_projective_te_generic<ExtConfig: TECurveConfig, ArkConfig: TECurveConfig>(
     base: &TEProjective<ExtConfig>,
     scalar: &[u64],

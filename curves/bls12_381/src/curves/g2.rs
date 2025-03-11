@@ -72,16 +72,12 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     }
 
     /// Projective multiplication jumping into the user-defined `mul_projective_g2` hook.
-    ///
-    /// On any *external* error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &G2Projective<H>, scalar: &[u64]) -> G2Projective<H> {
         H::mul_projective_g2(base, scalar)
     }
 
     /// Affine multiplication jumping into the user-defined `mul_projective_g2` hook.
-    ///
-    /// On any *external* error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_affine(base: &G2Affine<H>, scalar: &[u64]) -> G2Projective<H> {
         Self::mul_projective(&(*base).into(), scalar)

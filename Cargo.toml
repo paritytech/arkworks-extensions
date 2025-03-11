@@ -18,7 +18,7 @@ authors = [
   "Parity Technologies <admin@parity.io>",
 ]
 repository = "https://github.com/paritytech/arkworks-extensions"
-keywords = ["cryptography", "elliptic-curves", "pairing"]
+keywords = ["cryptography", "elliptic-curves", "pairing", "arkworks"]
 categories = ["cryptography"]
 include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
