@@ -250,6 +250,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-pallas"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c676d42c65f0b2d334fc0ae72a422de2e62ed75beb3022050c0e8a81f6ccc0f"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-std",
+]
+
+[[package]]
+name = "ark-pallas-ext"
+version = "0.5.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-ec",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-pallas",
+ "ark-serialize",
+ "ark-std",
+ "test-utils",
+]
+
+[[package]]
 name = "ark-poly"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -293,6 +318,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-secp256k1"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8bd211c48debd3037b48873a7aa22c3aba034e83388aa4124795c9f220b88c7"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-std",
+]
+
+[[package]]
+name = "ark-secp256k1-ext"
+version = "0.5.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-ec",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-secp256k1",
+ "ark-serialize",
+ "ark-std",
+ "test-utils",
+]
+
+[[package]]
 name = "ark-serialize"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -326,6 +376,32 @@ dependencies = [
  "num-traits",
  "rand",
  "rayon",
+]
+
+[[package]]
+name = "ark-vesta"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a3a6d658e5e7380af710828550b2dc2c7b033c9f3103d2690711cb07d5a62df6"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-pallas",
+ "ark-std",
+]
+
+[[package]]
+name = "ark-vesta-ext"
+version = "0.5.0"
+dependencies = [
+ "ark-algebra-test-templates",
+ "ark-ec",
+ "ark-ff",
+ "ark-models-ext",
+ "ark-serialize",
+ "ark-std",
+ "ark-vesta",
+ "test-utils",
 ]
 
 [[package]]
