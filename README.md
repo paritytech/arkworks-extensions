@@ -5,7 +5,7 @@
 This library extends [arkworks-rs/algebra](https://github.com/arkworks-rs/algebra).
 
 We fork the popular elliptic curves `BLS12_381`, `BLS12_377`, `BW6_761`,
-`ED_ON_BLS12_381_BANDERSNATCH` and `ED_ON_BLS12_377` in a way which allows
+`ED_ON_BLS12_381_BANDERSNATCH`, `Pallas`, `Vesta`, `SECP256K1` and `ED_ON_BLS12_377` in a way which allows
 delegating some of the most computationally expensive operations to some user
 defined hooks.
 
