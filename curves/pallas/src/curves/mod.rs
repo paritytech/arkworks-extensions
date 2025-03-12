@@ -1,9 +1,9 @@
-use ark_pallas::PallasConfig as ArkConfig;
 use ark_ff::MontFp;
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
 };
+use ark_pallas::PallasConfig as ArkConfig;
 use ark_std::marker::PhantomData;
 
 /// G_GENERATOR_X = -1
@@ -41,13 +41,11 @@ impl<H: CurveHooks> CurveConfig for PallasConfig<H> {
     type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 }
 
-
 impl<H: CurveHooks> SWCurveConfig for PallasConfig<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
     const GENERATOR: Affine<H> = Affine::<H>::new_unchecked(G_GENERATOR_X, G_GENERATOR_Y);
-
 
     /// Multi scalar multiplication jumping into the user-defined `pallas_msm` hook.
     ///
@@ -65,4 +63,3 @@ impl<H: CurveHooks> SWCurveConfig for PallasConfig<H> {
         H::pallas_mul_projective(base, scalar).unwrap_or_default()
     }
 }
-

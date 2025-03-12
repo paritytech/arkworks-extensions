@@ -1,9 +1,9 @@
-use ark_secp256k1::Config as ArkConfig;
 use ark_ff::MontFp;
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
 };
+use ark_secp256k1::Config as ArkConfig;
 use ark_std::marker::PhantomData;
 
 /// G_GENERATOR_X =
@@ -15,7 +15,6 @@ pub const G_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField =
 /// 32670510020758816978083085130507043184471273380659243275938904335757337482424
 pub const G_GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField =
     MontFp!("32670510020758816978083085130507043184471273380659243275938904335757337482424");
-
 
 pub type Affine<H> = short_weierstrass::Affine<Secp256k1Config<H>>;
 pub type Projective<H> = short_weierstrass::Projective<Secp256k1Config<H>>;
@@ -46,13 +45,11 @@ impl<H: CurveHooks> CurveConfig for Secp256k1Config<H> {
     type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 }
 
-
 impl<H: CurveHooks> SWCurveConfig for Secp256k1Config<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
     const GENERATOR: Affine<H> = Affine::<H>::new_unchecked(G_GENERATOR_X, G_GENERATOR_Y);
-
 
     /// Multi scalar multiplication jumping into the user-defined `secp256k1_msm` hook.
     ///

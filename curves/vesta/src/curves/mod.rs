@@ -1,10 +1,10 @@
-use ark_vesta::VestaConfig as ArkConfig;
 use ark_ff::MontFp;
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
 };
 use ark_std::marker::PhantomData;
+use ark_vesta::VestaConfig as ArkConfig;
 
 /// G_GENERATOR_X = -1
 pub const G_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField = MontFp!("-1");
@@ -41,13 +41,11 @@ impl<H: CurveHooks> CurveConfig for VestaConfig<H> {
     type ScalarField = <ArkConfig as CurveConfig>::ScalarField;
 }
 
-
 impl<H: CurveHooks> SWCurveConfig for VestaConfig<H> {
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
     const GENERATOR: Affine<H> = Affine::<H>::new_unchecked(G_GENERATOR_X, G_GENERATOR_Y);
-
 
     /// Multi scalar multiplication jumping into the user-defined `vesta_msm` hook.
     ///
