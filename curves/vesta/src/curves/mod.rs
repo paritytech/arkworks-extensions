@@ -1,16 +1,12 @@
-use ark_ff::MontFp;
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
 };
 use ark_std::marker::PhantomData;
-use ark_vesta::VestaConfig as ArkConfig;
+use ark_vesta::{VestaConfig as ArkConfig, G_GENERATOR_X, G_GENERATOR_Y};
 
-/// G_GENERATOR_X = -1
-pub const G_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField = MontFp!("-1");
-
-/// G_GENERATOR_Y = 2
-pub const G_GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField = MontFp!("2");
+#[cfg(test)]
+mod tests;
 
 pub type Affine<H> = short_weierstrass::Affine<VestaConfig<H>>;
 pub type Projective<H> = short_weierstrass::Projective<VestaConfig<H>>;
@@ -21,16 +17,13 @@ pub struct VestaConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 /// Hooks for *Vesta*.
 pub trait CurveHooks: 'static + Sized {
     /// Short Weierstrass multi scalar multiplication.
-    fn vesta_msm(
+    fn msm(
         bases: &[Affine<Self>],
         scalars: &[<VestaConfig<Self> as CurveConfig>::ScalarField],
-    ) -> Result<Projective<Self>, ()>;
+    ) -> Projective<Self>;
 
     /// Short Weierstrass projective multiplication.
-    fn vesta_mul_projective(
-        base: &Projective<Self>,
-        scalar: &[u64],
-    ) -> Result<Projective<Self>, ()>;
+    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self>;
 }
 
 impl<H: CurveHooks> CurveConfig for VestaConfig<H> {
@@ -48,18 +41,17 @@ impl<H: CurveHooks> SWCurveConfig for VestaConfig<H> {
     const GENERATOR: Affine<H> = Affine::<H>::new_unchecked(G_GENERATOR_X, G_GENERATOR_Y);
 
     /// Multi scalar multiplication jumping into the user-defined `vesta_msm` hook.
-    ///
-    /// On any internal error returns `Err(0)`.
     #[inline(always)]
     fn msm(bases: &[Affine<H>], scalars: &[Self::ScalarField]) -> Result<Projective<H>, usize> {
-        H::vesta_msm(bases, scalars).map_err(|_| 0)
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        Ok(H::msm(bases, scalars))
     }
 
     /// Projective multiplication jumping into the user-defined `vesta_mul_projective` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
     #[inline(always)]
     fn mul_projective(base: &Projective<H>, scalar: &[u64]) -> Projective<H> {
-        H::vesta_mul_projective(base, scalar).unwrap_or_default()
+        H::mul_projective(base, scalar)
     }
 }
