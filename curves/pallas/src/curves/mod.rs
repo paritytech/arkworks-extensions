@@ -6,6 +6,9 @@ use ark_models_ext::{
 use ark_pallas::PallasConfig as ArkConfig;
 use ark_std::marker::PhantomData;
 
+#[cfg(test)]
+mod tests;
+
 /// G_GENERATOR_X = -1
 pub const G_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField = MontFp!("-1");
 
@@ -21,16 +24,13 @@ pub struct PallasConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 /// Hooks for *Pallas*.
 pub trait CurveHooks: 'static + Sized {
     /// Short Weierstrass multi scalar multiplication.
-    fn pallas_msm(
+    fn msm(
         bases: &[Affine<Self>],
         scalars: &[<PallasConfig<Self> as CurveConfig>::ScalarField],
-    ) -> Result<Projective<Self>, ()>;
+    ) -> Projective<Self>;
 
     /// Short Weierstrass projective multiplication.
-    fn pallas_mul_projective(
-        base: &Projective<Self>,
-        scalar: &[u64],
-    ) -> Result<Projective<Self>, ()>;
+    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self>;
 }
 
 impl<H: CurveHooks> CurveConfig for PallasConfig<H> {
@@ -47,19 +47,18 @@ impl<H: CurveHooks> SWCurveConfig for PallasConfig<H> {
 
     const GENERATOR: Affine<H> = Affine::<H>::new_unchecked(G_GENERATOR_X, G_GENERATOR_Y);
 
-    /// Multi scalar multiplication jumping into the user-defined `pallas_msm` hook.
-    ///
-    /// On any internal error returns `Err(0)`.
+    /// Multi scalar multiplication jumping into the user-defined `msm` hook.
     #[inline(always)]
     fn msm(bases: &[Affine<H>], scalars: &[Self::ScalarField]) -> Result<Projective<H>, usize> {
-        H::pallas_msm(bases, scalars).map_err(|_| 0)
+        if bases.len() != scalars.len() {
+            return Err(bases.len().min(scalars.len()));
+        }
+        Ok(H::msm(bases, scalars))
     }
 
-    /// Projective multiplication jumping into the user-defined `pallas_mul_projective` hook.
-    ///
-    /// On any internal error returns `Projective::zero()`.
+    /// Projective multiplication jumping into the user-defined `mul_projective` hook.
     #[inline(always)]
     fn mul_projective(base: &Projective<H>, scalar: &[u64]) -> Projective<H> {
-        H::pallas_mul_projective(base, scalar).unwrap_or_default()
+        H::mul_projective(base, scalar)
     }
 }
