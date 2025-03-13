@@ -1,19 +1,12 @@
-use ark_ff::MontFp;
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
 };
-use ark_pallas::PallasConfig as ArkConfig;
+use ark_pallas::{PallasConfig as ArkConfig, G_GENERATOR_X, G_GENERATOR_Y};
 use ark_std::marker::PhantomData;
 
 #[cfg(test)]
 mod tests;
-
-/// G_GENERATOR_X = -1
-pub const G_GENERATOR_X: <ArkConfig as CurveConfig>::BaseField = MontFp!("-1");
-
-/// G_GENERATOR_Y = 2
-pub const G_GENERATOR_Y: <ArkConfig as CurveConfig>::BaseField = MontFp!("2");
 
 pub type Affine<H> = short_weierstrass::Affine<PallasConfig<H>>;
 pub type Projective<H> = short_weierstrass::Projective<PallasConfig<H>>;
