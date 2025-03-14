@@ -87,4 +87,4 @@ jobs:
           profile: minimal
           toolchain: stable
       - name: Publish dry-run
-        run: bash scripts/crates_publish_dry_run.sh
+        run: bash scripts/publish.sh --dry-run
