@@ -1,5 +1,5 @@
 name: CI
-   
+
 on:
   # Run CI on push only for 'main' branch
   push:
@@ -10,10 +10,10 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  RUSTFLAGS: '-D warnings'
+  RUSTFLAGS: "-D warnings"
   RUST_BACKTRACE: 1
 
-jobs:   
+jobs:
   fmt:
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +39,7 @@ jobs:
           components: clippy
       - name: Clippy
         run: cargo clippy --all-targets --all-features
-       
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -77,3 +77,14 @@ jobs:
       - name: Run tests
         run: cargo test --release --all-features
 
+  publish-dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Publish dry-run
+        run: bash scripts/crates_publish_dry_run.sh

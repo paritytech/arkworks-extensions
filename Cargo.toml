@@ -29,18 +29,16 @@ ark-ec = { version = "0.5", default-features = false }
 ark-ff = { version = "0.5", default-features = false }
 ark-std = { version = "0.5", default-features = false }
 ark-serialize = { version = "0.5", default-features = false }
-ark-pallas = { version = "0.5.0", default-features = false , features = ["curve"]}
-ark-vesta = { version = "0.5.0", default-features = false }
-ark-secp256k1 = { version = "0.5.0", default-features = false }
+ark-pallas = { version = "0.5", default-features = false , features = ["curve"]}
+ark-vesta = { version = "0.5", default-features = false }
+ark-secp256k1 = { version = "0.5", default-features = false }
 ark-bls12-377 = { version = "0.5", default-features = false, features = ["curve"] }
 ark-bls12-381 = { version = "0.5", default-features = false, features = ["curve"] }
 ark-bw6-761 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-377 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-381-bandersnatch = { version = "0.5", default-features = false }
 ark-algebra-test-templates = { version = "0.5", default-features = false }
-
-ark-models-ext = { path = "./models", default-features = false }
+ark-models-ext = { version = "0.5", path = "./models", default-features = false }
 test-utils = { path = "./test-utils", default-features = false }
-
 derivative = { version = "2.2", default-features = false, features = ["use_core"] }
 num-traits = { version = "0.2", default-features = false }
