@@ -4,16 +4,30 @@
 
 This library extends [arkworks-rs/algebra](https://github.com/arkworks-rs/algebra).
 
-We fork the popular elliptic curves `BLS12_381`, `BLS12_377`, `BW6_761`,
-`ED_ON_BLS12_381_BANDERSNATCH`, `Pallas`, `Vesta`, `SECP256K1` and `ED_ON_BLS12_377` in a way which allows
-delegating some of the most computationally expensive operations to some user
-defined hooks.
+We fork the following elliptic curves in a way which allows delegating some of
+the most computationally expensive operations to user defined hooks:
 
-We also provide forks of the models `BW6` and `BLS12` to avoid the point
-preparation before the hooks calls during pairing operations. Therefore, we
-redefine the elliptic curve sub-groups `G2` for both models as thin wrappers
-around the affine points and move the point preparation procedure to the
-user defined hook.
+**Pairing-friendly curves:**
+- `bls12_377`
+- `bls12_381`
+- `bn254`
+- `bw6_761`
+
+**Twisted Edwards curves:**
+- `ed_on_bls12_377`
+- `ed_on_bls12_381_bandersnatch`
+- `ed_on_bn254`
+
+**Other curves:**
+- `pallas`
+- `vesta`
+- `secp256k1`
+
+We also provide forks of the pairing models (`bls12`, `bn`, `bw6`) to avoid
+point preparation before the hook calls during pairing operations. Therefore,
+we redefine the elliptic curve sub-groups `G2` for these models as thin wrappers
+around the affine points and move the point preparation procedure to the user
+defined hook.
 
 ## Usage
 
