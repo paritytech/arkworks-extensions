@@ -12,6 +12,7 @@ the most computationally expensive operations to user defined hooks:
 - `bls12_381`
 - `bn254`
 - `bw6_761`
+- `bw6_767`
 
 **Twisted Edwards curves:**
 - `ed_on_bls12_377`
