@@ -18,6 +18,7 @@ the most computationally expensive operations to user defined hooks:
 - `ed_on_bls12_377`
 - `ed_on_bls12_381_bandersnatch`
 - `ed_on_bn254`
+- `ed25519`
 
 **Other curves:**
 - `pallas`

@@ -13,6 +13,7 @@ ALL_CRATES=(
   ark-ed-on-bls12-377-ext
   ark-ed-on-bls12-381-bandersnatch-ext
   ark-ed-on-bn254-ext
+  ark-ed25519-ext
   ark-pallas-ext
   ark-vesta-ext
   ark-secp256k1-ext

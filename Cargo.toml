@@ -8,6 +8,7 @@ members = [
   "curves/ed_on_bls12_377",
   "curves/ed_on_bls12_381_bandersnatch",
   "curves/ed_on_bn254",
+  "curves/ed25519",
   "models",
   "test-utils", "curves/pallas", "curves/vesta", "curves/secp256k1",
 ]
@@ -43,6 +44,7 @@ ark-bw6-767 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-377 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-381-bandersnatch = { version = "0.5", default-features = false }
 ark-ed-on-bn254 = { version = "0.5", default-features = false }
+ark-ed25519 = { version = "0.5", default-features = false }
 ark-algebra-test-templates = { version = "0.5", default-features = false }
 ark-models-ext = { version = "0.5", path = "./models", default-features = false }
 test-utils = { path = "./test-utils", default-features = false }
