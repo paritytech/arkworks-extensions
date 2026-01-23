@@ -30,3 +30,5 @@ publish ark-ed-on-bls12-381-bandersnatch-ext
 publish ark-vesta-ext
 publish ark-pallas-ext
 publish ark-secp256k1-ext
+publish ark-bn254-ext
+publish ark-ed-on-bn254-ext
