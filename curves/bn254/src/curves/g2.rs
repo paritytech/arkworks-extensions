@@ -1,11 +1,7 @@
 use crate::CurveHooks;
 
 use ark_bn254::g2::Config as ArkConfig;
-use ark_models_ext::{
-    bn,
-    short_weierstrass::SWCurveConfig,
-    CurveConfig,
-};
+use ark_models_ext::{bn, short_weierstrass::SWCurveConfig, CurveConfig};
 use ark_std::marker::PhantomData;
 
 pub use ark_bn254::g2::{

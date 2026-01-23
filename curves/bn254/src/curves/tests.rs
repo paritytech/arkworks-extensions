@@ -1,9 +1,7 @@
 use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
-use ark_bn254::{
-    g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bn254 as ArkBn254,
-};
+use ark_bn254::{g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bn254 as ArkBn254};
 use ark_models_ext::{
     pairing::{Pairing, PairingOutput},
     CurveConfig,

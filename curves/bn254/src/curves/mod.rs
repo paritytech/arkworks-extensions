@@ -82,9 +82,7 @@ impl<H: CurveHooks> BnConfig for Config<H> {
 
     /// Final exponentiation jumping into the user-defined `final_exponentiation` hook.
     #[inline(always)]
-    fn final_exponentiation(
-        target: MillerLoopOutput<Bn<Self>>,
-    ) -> Option<PairingOutput<Bn<Self>>> {
+    fn final_exponentiation(target: MillerLoopOutput<Bn<Self>>) -> Option<PairingOutput<Bn<Self>>> {
         let res = H::final_exponentiation(target.0);
         Some(PairingOutput(res))
     }
