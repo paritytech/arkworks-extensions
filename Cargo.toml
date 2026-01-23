@@ -2,6 +2,7 @@
 members = [
   "curves/bls12_381",
   "curves/bls12_377",
+  "curves/bn254",
   "curves/bw6_761",
   "curves/ed_on_bls12_377",
   "curves/ed_on_bls12_381_bandersnatch",
@@ -34,6 +35,7 @@ ark-vesta = { version = "0.5", default-features = false }
 ark-secp256k1 = { version = "0.5", default-features = false }
 ark-bls12-377 = { version = "0.5", default-features = false, features = ["curve"] }
 ark-bls12-381 = { version = "0.5", default-features = false, features = ["curve"] }
+ark-bn254 = { version = "0.5", default-features = false, features = ["curve"] }
 ark-bw6-761 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-377 = { version = "0.5", default-features = false }
 ark-ed-on-bls12-381-bandersnatch = { version = "0.5", default-features = false }
