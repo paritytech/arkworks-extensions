@@ -1,6 +1,6 @@
 [package]
 name = "ark-models-ext"
-description = "Replacement models for BLS12 and BW6 of ark-ec"
+description = "Replacement models for BLS12, BN and BW6 of ark-ec"
 version.workspace = true
 authors.workspace = true
 repository.workspace = true
