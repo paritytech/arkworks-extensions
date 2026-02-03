@@ -1,21 +1,24 @@
 [workspace]
 members = [
-  "curves/bls12_381",
   "curves/bls12_377",
+  "curves/bls12_381",
   "curves/bn254",
   "curves/bw6_761",
   "curves/bw6_767",
+  "curves/ed25519",
   "curves/ed_on_bls12_377",
   "curves/ed_on_bls12_381_bandersnatch",
   "curves/ed_on_bn254",
-  "curves/ed25519",
+  "curves/pallas",
+  "curves/secp256k1",
+  "curves/vesta",
   "models",
-  "test-utils", "curves/pallas", "curves/vesta", "curves/secp256k1",
+  "test-utils",
 ]
 resolver = "2"
 
 [workspace.package]
-version = "0.5.0"
+version = "0.5.1"
 authors = [
   "Davide Galassi <davxy@datawok.net>",
   "Achim Schneider <achim@parity.io>",
