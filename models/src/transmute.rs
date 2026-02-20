@@ -118,6 +118,28 @@ where
     }
 }
 
+impl<S, D> TransmuteRef<sw::Affine<D>> for sw::Affine<S>
+where
+    S: sw::SWCurveConfig + CompatibleConfig<D>,
+    D: sw::SWCurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
+{
+    fn transmute_ref(&self) -> &sw::Affine<D> {
+        assert_eq!(size_of::<sw::Affine<S>>(), size_of::<sw::Affine<D>>());
+        unsafe { &*(self as *const _ as *const sw::Affine<D>) }
+    }
+}
+
+impl<S, D> TransmuteRef<te::Affine<D>> for te::Affine<S>
+where
+    S: te::TECurveConfig + CompatibleConfig<D>,
+    D: te::TECurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
+{
+    fn transmute_ref(&self) -> &te::Affine<D> {
+        assert_eq!(size_of::<te::Affine<S>>(), size_of::<te::Affine<D>>());
+        unsafe { &*(self as *const _ as *const te::Affine<D>) }
+    }
+}
+
 // --- TransmuteRef impls (slices) ---
 
 impl<S, D> TransmuteRef<[te::Affine<D>]> for [te::Affine<S>]

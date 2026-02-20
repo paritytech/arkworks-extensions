@@ -11,6 +11,7 @@ use ark_models_ext::{
     bls12,
     bls12::Bls12Config,
     short_weierstrass::{Affine, SWCurveConfig},
+    transmute::CompatibleConfig,
     AffineRepr, CurveConfig, PrimeGroup,
 };
 use ark_serialize::{Compress, SerializationError, Validate};
@@ -28,6 +29,8 @@ pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
+
+impl<H: CurveHooks> CompatibleConfig<ArkConfig> for Config<H> {}
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
     const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
