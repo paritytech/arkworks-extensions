@@ -1,6 +1,4 @@
-use ark_bls12_381::{
-    g1::Config as ArkG1Config, g2::Config as ArkG2Config, Config as ArkConfig,
-};
+use ark_bls12_381::{g1::Config as ArkG1Config, g2::Config as ArkG2Config, Config as ArkConfig};
 use ark_ec::bls12::Bls12Config as ArkBls12Config;
 use ark_models_ext::{
     bls12::{Bls12, Bls12Config, G1Prepared, G2Prepared, TwistType},

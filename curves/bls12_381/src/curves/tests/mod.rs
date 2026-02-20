@@ -3,9 +3,7 @@ use crate::{fq::Fq, fq2::Fq2, fr::Fr, CurveHooks};
 use ark_algebra_test_templates::*;
 use ark_ff::{fields::Field, One, Zero};
 use ark_models_ext::{
-    pairing::PairingOutput,
-    short_weierstrass::SWCurveConfig,
-    AffineRepr, CurveGroup, PrimeGroup,
+    pairing::PairingOutput, short_weierstrass::SWCurveConfig, AffineRepr, CurveGroup, PrimeGroup,
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, UniformRand};

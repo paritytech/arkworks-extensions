@@ -57,10 +57,8 @@ pub trait CurveHooks: 'static + Sized {
         scalars: &[<SWConfig<Self> as CurveConfig>::ScalarField],
     ) -> SWProjective<Self> {
         let bases: &[short_weierstrass::Affine<ArkConfig>] = bases.transmute_ref();
-        <short_weierstrass::Projective<ArkConfig> as VariableBaseMSM>::msm_unchecked(
-            bases, scalars,
-        )
-        .transmute_into()
+        <short_weierstrass::Projective<ArkConfig> as VariableBaseMSM>::msm_unchecked(bases, scalars)
+            .transmute_into()
     }
 
     /// Short Weierstrass projective multiplication.
