@@ -254,7 +254,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]

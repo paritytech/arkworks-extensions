@@ -4,7 +4,9 @@ use ark_ed_on_bls12_381_bandersnatch::{
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
+    transmute::{CompatibleConfig, TransmuteInto, TransmuteRef},
     twisted_edwards::{self, MontCurveConfig, TECurveConfig},
+    VariableBaseMSM,
 };
 use ark_std::marker::PhantomData;
 
@@ -23,26 +25,49 @@ pub struct BandersnatchConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 pub type EdwardsConfig<H> = BandersnatchConfig<H>;
 pub type SWConfig<H> = BandersnatchConfig<H>;
 
-/// Hooks for *Ed-on-BLS12-377-Bandernatch*.
+impl<H: CurveHooks> CompatibleConfig<ArkConfig> for BandersnatchConfig<H> {}
+
+/// Hooks for *Ed-on-BLS12-381-Bandersnatch*.
+///
+/// All methods have default implementations that delegate to the upstream arkworks
+/// operations via zero-cost transmutation.
 pub trait CurveHooks: 'static + Sized {
     /// Twisted Edwards multi scalar multiplication.
     fn msm_te(
         bases: &[EdwardsAffine<Self>],
         scalars: &[<EdwardsConfig<Self> as CurveConfig>::ScalarField],
-    ) -> EdwardsProjective<Self>;
+    ) -> EdwardsProjective<Self> {
+        let bases: &[twisted_edwards::Affine<ArkConfig>] = bases.transmute_ref();
+        <twisted_edwards::Projective<ArkConfig> as VariableBaseMSM>::msm_unchecked(bases, scalars)
+            .transmute_into()
+    }
 
     /// Twisted Edwards projective multiplication.
-    fn mul_projective_te(base: &EdwardsProjective<Self>, scalar: &[u64])
-        -> EdwardsProjective<Self>;
+    fn mul_projective_te(
+        base: &EdwardsProjective<Self>,
+        scalar: &[u64],
+    ) -> EdwardsProjective<Self> {
+        let base: &twisted_edwards::Projective<ArkConfig> = base.transmute_ref();
+        <ArkConfig as TECurveConfig>::mul_projective(base, scalar).transmute_into()
+    }
 
     /// Short Weierstrass multi scalar multiplication.
     fn msm_sw(
         bases: &[SWAffine<Self>],
         scalars: &[<SWConfig<Self> as CurveConfig>::ScalarField],
-    ) -> SWProjective<Self>;
+    ) -> SWProjective<Self> {
+        let bases: &[short_weierstrass::Affine<ArkConfig>] = bases.transmute_ref();
+        <short_weierstrass::Projective<ArkConfig> as VariableBaseMSM>::msm_unchecked(
+            bases, scalars,
+        )
+        .transmute_into()
+    }
 
     /// Short Weierstrass projective multiplication.
-    fn mul_projective_sw(base: &SWProjective<Self>, scalar: &[u64]) -> SWProjective<Self>;
+    fn mul_projective_sw(base: &SWProjective<Self>, scalar: &[u64]) -> SWProjective<Self> {
+        let base: &short_weierstrass::Projective<ArkConfig> = base.transmute_ref();
+        <ArkConfig as SWCurveConfig>::mul_projective(base, scalar).transmute_into()
+    }
 }
 
 impl<H: CurveHooks> CurveConfig for BandersnatchConfig<H> {

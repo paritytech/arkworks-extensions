@@ -8,4 +8,5 @@ pub use ark_ec::{
     PrimeGroup, VariableBaseMSM,
 };
 pub mod models;
+pub mod transmute;
 pub use models::*;
