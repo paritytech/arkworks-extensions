@@ -1,12 +1,10 @@
 use crate::{fq::Fq, fq12::Fq12, fq2::Fq2, fr::Fr, CurveHooks};
 
 use ark_algebra_test_templates::*;
-use ark_bls12_381::{g1::Config as ArkG1Config, g2::Config as ArkG2Config};
 use ark_ff::{fields::Field, One, Zero};
 use ark_models_ext::{
     pairing::PairingOutput,
-    short_weierstrass::{self, SWCurveConfig},
-    transmute::{TransmuteInto, TransmuteRef},
+    short_weierstrass::SWCurveConfig,
     AffineRepr, CurveGroup, PrimeGroup,
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};

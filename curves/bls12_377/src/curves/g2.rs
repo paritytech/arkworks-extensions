@@ -1,7 +1,9 @@
 use crate::CurveHooks;
 
 use ark_bls12_377::g2::Config as ArkConfig;
-use ark_models_ext::{bls12, short_weierstrass::SWCurveConfig, transmute::CompatibleConfig, CurveConfig};
+use ark_models_ext::{
+    bls12, short_weierstrass::SWCurveConfig, transmute::CompatibleConfig, CurveConfig,
+};
 use ark_std::marker::PhantomData;
 
 pub use ark_bls12_377::g2::{
