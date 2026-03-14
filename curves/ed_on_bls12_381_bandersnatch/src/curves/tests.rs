@@ -2,12 +2,10 @@ use crate::CurveHooks;
 
 use ark_algebra_test_templates::*;
 
-pub struct TestHooks;
+impl CurveHooks for () {}
 
-impl CurveHooks for TestHooks {}
-
-type EdwardsProjective = crate::EdwardsProjective<TestHooks>;
-type SWProjective = crate::SWProjective<TestHooks>;
+type EdwardsProjective = crate::EdwardsProjective<()>;
+type SWProjective = crate::SWProjective<()>;
 
 test_group!(te; EdwardsProjective; te);
 test_group!(sw; SWProjective; sw);

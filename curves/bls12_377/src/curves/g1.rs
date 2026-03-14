@@ -4,6 +4,7 @@ use ark_bls12_377::g1::Config as ArkConfig;
 use ark_models_ext::{
     bls12,
     short_weierstrass::{Affine as SWAffine, Projective as SWProjective, SWCurveConfig},
+    transmute::CompatibleConfig,
     twisted_edwards::{
         Affine as TEAffine, MontCurveConfig, Projective as TEProjective, TECurveConfig,
     },
@@ -18,6 +19,8 @@ pub type G1Projective<H> = bls12::G1Projective<crate::Config<H>>;
 
 #[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
+
+impl<H: CurveHooks> CompatibleConfig<ArkConfig> for Config<H> {}
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
     type BaseField = <ArkConfig as CurveConfig>::BaseField;

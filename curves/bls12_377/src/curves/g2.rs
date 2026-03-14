@@ -1,7 +1,7 @@
 use crate::CurveHooks;
 
 use ark_bls12_377::g2::Config as ArkConfig;
-use ark_models_ext::{bls12, short_weierstrass::SWCurveConfig, CurveConfig};
+use ark_models_ext::{bls12, short_weierstrass::SWCurveConfig, transmute::CompatibleConfig, CurveConfig};
 use ark_std::marker::PhantomData;
 
 pub use ark_bls12_377::g2::{
@@ -14,6 +14,8 @@ pub type G2Projective<H> = bls12::G2Projective<crate::curves::Config<H>>;
 
 #[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
+
+impl<H: CurveHooks> CompatibleConfig<ArkConfig> for Config<H> {}
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
     type BaseField = <ArkConfig as CurveConfig>::BaseField;

@@ -12,20 +12,18 @@ use ark_models_ext::{
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, UniformRand};
 
-struct TestHooks;
+impl CurveHooks for () {}
 
-impl CurveHooks for TestHooks {}
-
-type Bls12_381 = crate::Bls12_381<TestHooks>;
-type G1Projective = crate::G1Projective<TestHooks>;
-type G2Projective = crate::G2Projective<TestHooks>;
-type G1Affine = crate::G1Affine<TestHooks>;
-type G2Affine = crate::G2Affine<TestHooks>;
+type Bls12_381 = crate::Bls12_381<()>;
+type G1Projective = crate::G1Projective<()>;
+type G2Projective = crate::G2Projective<()>;
+type G1Affine = crate::G1Affine<()>;
+type G2Affine = crate::G2Affine<()>;
 
 test_group!(g1; G1Projective; sw);
 test_group!(g2; G2Projective; sw);
 test_group!(pairing_output; PairingOutput<Bls12_381>; msm);
-test_pairing!(ark_pairing; crate::Bls12_381<super::TestHooks>);
+test_pairing!(ark_pairing; crate::Bls12_381<()>);
 
 #[test]
 fn test_g1_endomorphism_beta() {
@@ -213,7 +211,7 @@ fn test_cofactor_clearing_g2() {
     for _ in 0..SAMPLES {
         let p = G2Affine::rand(&mut rng);
         let optimised = p.clear_cofactor().into_group();
-        let naive = crate::g2::Config::<TestHooks>::mul_affine(&p, h_eff);
+        let naive = crate::g2::Config::<()>::mul_affine(&p, h_eff);
         assert_eq!(optimised, naive);
     }
 }
