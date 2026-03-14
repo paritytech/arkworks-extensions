@@ -33,10 +33,7 @@ pub trait CurveHooks: 'static + Sized {
     }
 
     /// Twisted Edwards projective multiplication.
-    fn mul_projective(
-        base: &EdwardsProjective<Self>,
-        scalar: &[u64],
-    ) -> EdwardsProjective<Self> {
+    fn mul_projective(base: &EdwardsProjective<Self>, scalar: &[u64]) -> EdwardsProjective<Self> {
         let base: &twisted_edwards::Projective<ArkConfig> = base.transmute_ref();
         <ArkConfig as TECurveConfig>::mul_projective(base, scalar).transmute_into()
     }
