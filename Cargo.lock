@@ -113,7 +113,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -139,7 +138,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -165,7 +163,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -225,7 +222,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -278,7 +274,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -305,7 +300,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -385,7 +379,6 @@ dependencies = [
  "ark-pallas",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -454,7 +447,6 @@ dependencies = [
  "ark-secp256k1",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -516,7 +508,6 @@ dependencies = [
  "ark-serialize",
  "ark-std",
  "ark-vesta",
- "test-utils",
 ]
 
 [[package]]
@@ -901,15 +892,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "test-utils"
-version = "0.5.1"
-dependencies = [
- "ark-ec",
- "ark-serialize",
- "ark-std",
 ]
 
 [[package]]
