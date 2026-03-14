@@ -1,7 +1,8 @@
 use ark_ed25519::{EdwardsConfig as ArkConfig, GENERATOR_X, GENERATOR_Y};
 use ark_models_ext::{
+    transmute::{CompatibleConfig, TransmuteInto, TransmuteRef},
     twisted_edwards::{self, MontCurveConfig, TECurveConfig},
-    CurveConfig,
+    CurveConfig, VariableBaseMSM,
 };
 use ark_std::marker::PhantomData;
 
@@ -14,16 +15,31 @@ pub type EdwardsProjective<H> = twisted_edwards::Projective<EdwardsConfig<H>>;
 #[derive(Clone, Copy)]
 pub struct EdwardsConfig<H: CurveHooks>(PhantomData<fn() -> H>);
 
+impl<H: CurveHooks> CompatibleConfig<ArkConfig> for EdwardsConfig<H> {}
+
 /// Hooks for *Ed25519*.
+///
+/// All methods have default implementations that delegate to the upstream arkworks
+/// operations via zero-cost transmutation.
 pub trait CurveHooks: 'static + Sized {
     /// Twisted Edwards multi scalar multiplication.
     fn msm(
         bases: &[EdwardsAffine<Self>],
         scalars: &[<EdwardsConfig<Self> as CurveConfig>::ScalarField],
-    ) -> EdwardsProjective<Self>;
+    ) -> EdwardsProjective<Self> {
+        let bases: &[twisted_edwards::Affine<ArkConfig>] = bases.transmute_ref();
+        <twisted_edwards::Projective<ArkConfig> as VariableBaseMSM>::msm_unchecked(bases, scalars)
+            .transmute_into()
+    }
 
     /// Twisted Edwards projective multiplication.
-    fn mul_projective(base: &EdwardsProjective<Self>, scalar: &[u64]) -> EdwardsProjective<Self>;
+    fn mul_projective(
+        base: &EdwardsProjective<Self>,
+        scalar: &[u64],
+    ) -> EdwardsProjective<Self> {
+        let base: &twisted_edwards::Projective<ArkConfig> = base.transmute_ref();
+        <ArkConfig as TECurveConfig>::mul_projective(base, scalar).transmute_into()
+    }
 }
 
 impl<H: CurveHooks> CurveConfig for EdwardsConfig<H> {

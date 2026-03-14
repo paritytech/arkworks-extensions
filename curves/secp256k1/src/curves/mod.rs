@@ -1,6 +1,8 @@
 use ark_models_ext::{
     models::CurveConfig,
     short_weierstrass::{self, SWCurveConfig},
+    transmute::{CompatibleConfig, TransmuteInto, TransmuteRef},
+    VariableBaseMSM,
 };
 use ark_secp256k1::{Config as ArkConfig, G_GENERATOR_X, G_GENERATOR_Y};
 use ark_std::marker::PhantomData;
@@ -14,16 +16,30 @@ pub type Projective<H> = short_weierstrass::Projective<Secp256k1Config<H>>;
 #[derive(Clone, Copy)]
 pub struct Secp256k1Config<H: CurveHooks>(PhantomData<fn() -> H>);
 
+impl<H: CurveHooks> CompatibleConfig<ArkConfig> for Secp256k1Config<H> {}
+
 /// Hooks for *Secp256k1*.
+///
+/// All methods have default implementations that delegate to the upstream arkworks
+/// operations via zero-cost transmutation.
 pub trait CurveHooks: 'static + Sized {
     /// Short Weierstrass multi scalar multiplication.
     fn msm(
         bases: &[Affine<Self>],
         scalars: &[<Secp256k1Config<Self> as CurveConfig>::ScalarField],
-    ) -> Projective<Self>;
+    ) -> Projective<Self> {
+        let bases: &[short_weierstrass::Affine<ArkConfig>] = bases.transmute_ref();
+        <short_weierstrass::Projective<ArkConfig> as VariableBaseMSM>::msm_unchecked(
+            bases, scalars,
+        )
+        .transmute_into()
+    }
 
     /// Short Weierstrass projective multiplication.
-    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self>;
+    fn mul_projective(base: &Projective<Self>, scalar: &[u64]) -> Projective<Self> {
+        let base: &short_weierstrass::Projective<ArkConfig> = base.transmute_ref();
+        <ArkConfig as SWCurveConfig>::mul_projective(base, scalar).transmute_into()
+    }
 }
 
 impl<H: CurveHooks> CurveConfig for Secp256k1Config<H> {
