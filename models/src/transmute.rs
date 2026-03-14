@@ -34,6 +34,24 @@ pub trait TransmuteRef<T: ?Sized> {
     fn transmute_ref(&self) -> &T;
 }
 
+/// Reinterpret an owned value of type `S` as type `D`, with a compile-time size check.
+fn transmute_value<S, D>(src: S) -> D {
+    const { assert!(size_of::<S>() == size_of::<D>()) }
+    unsafe { core::ptr::read(&src as *const S as *const D) }
+}
+
+/// Reinterpret a reference from `&S` to `&D`, with a compile-time size check.
+fn transmute_ref<S, D>(src: &S) -> &D {
+    const { assert!(size_of::<S>() == size_of::<D>()) }
+    unsafe { &*(src as *const S as *const D) }
+}
+
+/// Reinterpret a slice `&[S]` as `&[D]`, with a compile-time element size check.
+fn transmute_slice<S, D>(src: &[S]) -> &[D] {
+    const { assert!(size_of::<S>() == size_of::<D>()) }
+    unsafe { core::slice::from_raw_parts(src.as_ptr() as *const D, src.len()) }
+}
+
 // --- TransmuteFrom impls (owned values) ---
 //
 // Bound: `D: CompatibleConfig<S>` — the destination config declares compatibility
@@ -46,8 +64,7 @@ where
     S: te::TECurveConfig<BaseField = D::BaseField, ScalarField = D::ScalarField>,
 {
     fn transmute_from(t: te::Projective<S>) -> Self {
-        assert_eq!(size_of::<te::Projective<S>>(), size_of::<Self>());
-        unsafe { core::ptr::read(&t as *const _ as *const Self) }
+        transmute_value(t)
     }
 }
 
@@ -57,8 +74,7 @@ where
     S: te::TECurveConfig<BaseField = D::BaseField, ScalarField = D::ScalarField>,
 {
     fn transmute_from(t: te::Affine<S>) -> Self {
-        assert_eq!(size_of::<te::Affine<S>>(), size_of::<Self>());
-        unsafe { core::ptr::read(&t as *const _ as *const Self) }
+        transmute_value(t)
     }
 }
 
@@ -68,8 +84,7 @@ where
     S: sw::SWCurveConfig<BaseField = D::BaseField, ScalarField = D::ScalarField>,
 {
     fn transmute_from(t: sw::Projective<S>) -> Self {
-        assert_eq!(size_of::<sw::Projective<S>>(), size_of::<Self>());
-        unsafe { core::ptr::read(&t as *const _ as *const Self) }
+        transmute_value(t)
     }
 }
 
@@ -79,8 +94,7 @@ where
     S: sw::SWCurveConfig<BaseField = D::BaseField, ScalarField = D::ScalarField>,
 {
     fn transmute_from(t: sw::Affine<S>) -> Self {
-        assert_eq!(size_of::<sw::Affine<S>>(), size_of::<Self>());
-        unsafe { core::ptr::read(&t as *const _ as *const Self) }
+        transmute_value(t)
     }
 }
 
@@ -96,11 +110,7 @@ where
     D: te::TECurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
 {
     fn transmute_ref(&self) -> &te::Projective<D> {
-        assert_eq!(
-            size_of::<te::Projective<S>>(),
-            size_of::<te::Projective<D>>()
-        );
-        unsafe { &*(self as *const _ as *const te::Projective<D>) }
+        transmute_ref(self)
     }
 }
 
@@ -110,11 +120,7 @@ where
     D: sw::SWCurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
 {
     fn transmute_ref(&self) -> &sw::Projective<D> {
-        assert_eq!(
-            size_of::<sw::Projective<S>>(),
-            size_of::<sw::Projective<D>>()
-        );
-        unsafe { &*(self as *const _ as *const sw::Projective<D>) }
+        transmute_ref(self)
     }
 }
 
@@ -124,8 +130,7 @@ where
     D: sw::SWCurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
 {
     fn transmute_ref(&self) -> &sw::Affine<D> {
-        assert_eq!(size_of::<sw::Affine<S>>(), size_of::<sw::Affine<D>>());
-        unsafe { &*(self as *const _ as *const sw::Affine<D>) }
+        transmute_ref(self)
     }
 }
 
@@ -135,8 +140,7 @@ where
     D: te::TECurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
 {
     fn transmute_ref(&self) -> &te::Affine<D> {
-        assert_eq!(size_of::<te::Affine<S>>(), size_of::<te::Affine<D>>());
-        unsafe { &*(self as *const _ as *const te::Affine<D>) }
+        transmute_ref(self)
     }
 }
 
@@ -148,8 +152,7 @@ where
     D: te::TECurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
 {
     fn transmute_ref(&self) -> &[te::Affine<D>] {
-        assert_eq!(size_of::<te::Affine<S>>(), size_of::<te::Affine<D>>());
-        unsafe { core::slice::from_raw_parts(self.as_ptr() as *const te::Affine<D>, self.len()) }
+        transmute_slice(self)
     }
 }
 
@@ -159,7 +162,8 @@ where
     D: sw::SWCurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
 {
     fn transmute_ref(&self) -> &[sw::Affine<D>] {
-        assert_eq!(size_of::<sw::Affine<S>>(), size_of::<sw::Affine<D>>());
-        unsafe { core::slice::from_raw_parts(self.as_ptr() as *const sw::Affine<D>, self.len()) }
+        transmute_slice(self)
     }
 }
+
+// TODO: add tests

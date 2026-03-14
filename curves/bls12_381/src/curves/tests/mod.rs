@@ -1,9 +1,13 @@
-use crate::{fq::Fq, fq2::Fq2, fr::Fr, CurveHooks};
+use crate::{fq::Fq, fq12::Fq12, fq2::Fq2, fr::Fr, CurveHooks};
 
 use ark_algebra_test_templates::*;
+use ark_bls12_381::{g1::Config as ArkG1Config, g2::Config as ArkG2Config};
 use ark_ff::{fields::Field, One, Zero};
 use ark_models_ext::{
-    pairing::PairingOutput, short_weierstrass::SWCurveConfig, AffineRepr, CurveGroup, PrimeGroup,
+    pairing::PairingOutput,
+    short_weierstrass::{self, SWCurveConfig},
+    transmute::{TransmuteInto, TransmuteRef},
+    AffineRepr, CurveGroup, PrimeGroup,
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, UniformRand};
@@ -84,6 +88,28 @@ fn test_g2_subgroup_non_membership_via_endomorphism() {
             }
         }
     }
+}
+
+#[test]
+fn encoding_sizes() {
+    let g1 = G1Affine::generator();
+    let g2 = G2Affine::generator();
+    let scalar = Fr::one();
+    let base = Fq::one();
+
+    assert_eq!(base.serialized_size(Compress::No), 48);
+    assert_eq!(scalar.serialized_size(Compress::No), 32);
+    assert_eq!(g1.serialized_size(Compress::No), 96);
+    assert_eq!(g2.serialized_size(Compress::No), 192);
+
+    let target = Fq12::one();
+    assert_eq!(target.serialized_size(Compress::No), 576);
+
+    let data = [1_u64, 2_u64];
+    let data = &data[..];
+    let mut buf = Vec::new();
+    data.serialize_uncompressed(&mut buf).unwrap();
+    println!("{buf:02x?}");
 }
 
 // Test vectors and macro adapted from https://github.com/zkcrypto/bls12_381/blob/e224ad4ea1babfc582ccd751c2bf128611d10936/src/tests/mod.rs
