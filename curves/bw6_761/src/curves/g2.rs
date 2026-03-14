@@ -2,10 +2,7 @@ use crate::CurveHooks;
 
 use ark_bw6_761::g2::Config as ArkConfig;
 use ark_models_ext::{
-    bw6,
-    short_weierstrass::SWCurveConfig,
-    transmute::CompatibleConfig,
-    CurveConfig,
+    bw6, short_weierstrass::SWCurveConfig, transmute::CompatibleConfig, CurveConfig,
 };
 use ark_std::marker::PhantomData;
 

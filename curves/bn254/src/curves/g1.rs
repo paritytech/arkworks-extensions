@@ -1,7 +1,9 @@
 use crate::CurveHooks;
 
 use ark_bn254::g1::Config as ArkConfig;
-use ark_models_ext::{bn, short_weierstrass::SWCurveConfig, transmute::CompatibleConfig, CurveConfig};
+use ark_models_ext::{
+    bn, short_weierstrass::SWCurveConfig, transmute::CompatibleConfig, CurveConfig,
+};
 use ark_std::marker::PhantomData;
 
 pub use ark_bn254::g1::{G1_GENERATOR_X, G1_GENERATOR_Y};
