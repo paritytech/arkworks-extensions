@@ -42,12 +42,16 @@ pub trait CurveHooks: 'static + Sized {
     }
 
     /// Pairing final exponentiation.
+    ///
+    /// The default delegates to upstream arkworks, which returns `None` when the
+    /// input is not invertible (zero). This cannot occur with a well-formed miller
+    /// loop output.
     fn final_exponentiation(
         target: <Bn254<Self> as Pairing>::TargetField,
     ) -> <Bn254<Self> as Pairing>::TargetField {
         <ArkConfig as ArkBnConfig>::final_exponentiation(MillerLoopOutput(target))
             .map(|po| po.0)
-            .unwrap_or_default()
+            .expect("final exponentiation: non-invertible element")
     }
 
     /// Multi scalar multiplication on G1.
