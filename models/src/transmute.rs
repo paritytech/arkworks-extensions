@@ -240,8 +240,11 @@ mod tests {
         #[test]
         fn sw_affine_slice_roundtrip() {
             let ark_points: Vec<sw::Affine<ArkG1Config>> = rand_points(5);
-            let ext_points: Vec<sw::Affine<ExtConfig>> =
-                ark_points.iter().copied().map(|p| p.transmute_into()).collect();
+            let ext_points: Vec<sw::Affine<ExtConfig>> = ark_points
+                .iter()
+                .copied()
+                .map(|p| p.transmute_into())
+                .collect();
             let back: &[sw::Affine<ArkG1Config>] = ext_points.as_slice().transmute_ref();
             assert_eq!(back, ark_points.as_slice());
         }
@@ -292,8 +295,11 @@ mod tests {
         #[test]
         fn te_affine_slice_roundtrip() {
             let ark_points: Vec<te::Affine<ArkTeConfig>> = rand_points(5);
-            let ext_points: Vec<te::Affine<ExtConfig>> =
-                ark_points.iter().copied().map(|p| p.transmute_into()).collect();
+            let ext_points: Vec<te::Affine<ExtConfig>> = ark_points
+                .iter()
+                .copied()
+                .map(|p| p.transmute_into())
+                .collect();
             let back: &[te::Affine<ArkTeConfig>] = ext_points.as_slice().transmute_ref();
             assert_eq!(back, ark_points.as_slice());
         }
