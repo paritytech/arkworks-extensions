@@ -182,13 +182,19 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ark_ec::AffineRepr;
+    use ark_std::{test_rng, UniformRand};
 
-    // Use two configs for the same curve with identical field types.
-    // ark_ed25519 provides a TE config, ark_bls12_381::g1 provides a SW config.
-    // We create minimal wrappers to get two distinct configs with CompatibleConfig between them.
+    fn rand_point<T: UniformRand>() -> T {
+        T::rand(&mut test_rng())
+    }
 
-    // --- SW roundtrip using BLS12-381 G1 fields ---
+    fn rand_points<T: UniformRand>(n: usize) -> Vec<T> {
+        let rng = &mut test_rng();
+        (0..n).map(|_| T::rand(rng)).collect()
+    }
+
+    // We create minimal config wrappers that mirror upstream ark configs,
+    // then verify that random points survive transmute roundtrips.
 
     mod sw_test {
         use super::*;
@@ -217,32 +223,29 @@ mod tests {
 
         #[test]
         fn sw_affine_roundtrip() {
-            let ark_gen = sw::Affine::<ArkG1Config>::generator();
-            let ext: sw::Affine<ExtConfig> = ark_gen.transmute_into();
+            let point: sw::Affine<ArkG1Config> = rand_point();
+            let ext: sw::Affine<ExtConfig> = point.transmute_into();
             let back: &sw::Affine<ArkG1Config> = ext.transmute_ref();
-            assert_eq!(*back, ark_gen);
+            assert_eq!(*back, point);
         }
 
         #[test]
         fn sw_projective_roundtrip() {
-            let ark_gen = sw::Projective::<ArkG1Config>::from(sw::Affine::<ArkG1Config>::generator());
-            let ext: sw::Projective<ExtConfig> = ark_gen.transmute_into();
+            let point: sw::Projective<ArkG1Config> = rand_point();
+            let ext: sw::Projective<ExtConfig> = point.transmute_into();
             let back: &sw::Projective<ArkG1Config> = ext.transmute_ref();
-            assert_eq!(*back, ark_gen);
+            assert_eq!(*back, point);
         }
 
         #[test]
         fn sw_affine_slice_roundtrip() {
-            let gen: sw::Affine<ExtConfig> =
-                sw::Affine::<ArkG1Config>::generator().transmute_into();
-            let ext_points = [gen; 3];
-            let ark_slice: &[sw::Affine<ArkG1Config>] = ext_points.as_slice().transmute_ref();
-            assert_eq!(ark_slice.len(), 3);
-            assert_eq!(ark_slice[0], sw::Affine::<ArkG1Config>::generator());
+            let ark_points: Vec<sw::Affine<ArkG1Config>> = rand_points(5);
+            let ext_points: Vec<sw::Affine<ExtConfig>> =
+                ark_points.iter().copied().map(|p| p.transmute_into()).collect();
+            let back: &[sw::Affine<ArkG1Config>] = ext_points.as_slice().transmute_ref();
+            assert_eq!(back, ark_points.as_slice());
         }
     }
-
-    // --- TE roundtrip using Ed25519 fields ---
 
     mod te_test {
         use super::*;
@@ -272,28 +275,27 @@ mod tests {
 
         #[test]
         fn te_affine_roundtrip() {
-            let ark_gen = te::Affine::<ArkTeConfig>::generator();
-            let ext: te::Affine<ExtConfig> = ark_gen.transmute_into();
+            let point: te::Affine<ArkTeConfig> = rand_point();
+            let ext: te::Affine<ExtConfig> = point.transmute_into();
             let back: &te::Affine<ArkTeConfig> = ext.transmute_ref();
-            assert_eq!(*back, ark_gen);
+            assert_eq!(*back, point);
         }
 
         #[test]
         fn te_projective_roundtrip() {
-            let ark_gen = te::Projective::<ArkTeConfig>::from(te::Affine::<ArkTeConfig>::generator());
-            let ext: te::Projective<ExtConfig> = ark_gen.transmute_into();
+            let point: te::Projective<ArkTeConfig> = rand_point();
+            let ext: te::Projective<ExtConfig> = point.transmute_into();
             let back: &te::Projective<ArkTeConfig> = ext.transmute_ref();
-            assert_eq!(*back, ark_gen);
+            assert_eq!(*back, point);
         }
 
         #[test]
         fn te_affine_slice_roundtrip() {
-            let gen: te::Affine<ExtConfig> =
-                te::Affine::<ArkTeConfig>::generator().transmute_into();
-            let ext_points = [gen; 3];
-            let ark_slice: &[te::Affine<ArkTeConfig>] = ext_points.as_slice().transmute_ref();
-            assert_eq!(ark_slice.len(), 3);
-            assert_eq!(ark_slice[0], te::Affine::<ArkTeConfig>::generator());
+            let ark_points: Vec<te::Affine<ArkTeConfig>> = rand_points(5);
+            let ext_points: Vec<te::Affine<ExtConfig>> =
+                ark_points.iter().copied().map(|p| p.transmute_into()).collect();
+            let back: &[te::Affine<ArkTeConfig>] = ext_points.as_slice().transmute_ref();
+            assert_eq!(back, ark_points.as_slice());
         }
     }
 }
