@@ -1,12 +1,18 @@
 //! Zero-cost transmutation between curve points parameterized by compatible configs.
 
 use ark_ec::{short_weierstrass as sw, twisted_edwards as te, CurveConfig};
-use core::mem::size_of;
+use core::mem::{align_of, size_of};
 
 /// Marker: `Self` and `T` are curve configs for the same curve with identical field types.
 ///
-/// `BaseField` and `ScalarField` equality is enforced by the type system, guaranteeing
-/// that point types parameterized by either config have identical memory layouts.
+/// `BaseField` and `ScalarField` equality is enforced by the type system. Because point
+/// types (e.g. `sw::Affine<C>`) are generic structs whose fields depend only on these
+/// associated types, two instantiations with identical field types have identical layouts.
+///
+/// Strictly speaking, `#[repr(Rust)]` does not formally guarantee layout equivalence
+/// across monomorphizations, but in practice rustc lays out structs deterministically
+/// based on their field types. The compile-time size and alignment assertions in the
+/// transmute helpers provide an additional safety net.
 pub trait CompatibleConfig<T>: CurveConfig
 where
     T: CurveConfig<BaseField = Self::BaseField, ScalarField = Self::ScalarField>,
@@ -34,21 +40,28 @@ pub trait TransmuteRef<T: ?Sized> {
     fn transmute_ref(&self) -> &T;
 }
 
-/// Reinterpret an owned value of type `S` as type `D`, with a compile-time size check.
-fn transmute_value<S, D>(src: S) -> D {
-    const { assert!(size_of::<S>() == size_of::<D>()) }
-    unsafe { core::ptr::read(&src as *const S as *const D) }
+/// Compile-time assertion that `S` and `D` have identical size and alignment.
+const fn assert_layout_compatible<S, D>() {
+    assert!(size_of::<S>() == size_of::<D>());
+    assert!(align_of::<S>() == align_of::<D>());
 }
 
-/// Reinterpret a reference from `&S` to `&D`, with a compile-time size check.
+/// Reinterpret an owned value of type `S` as type `D`, with a compile-time layout check.
+fn transmute_value<S, D>(src: S) -> D {
+    const { assert_layout_compatible::<S, D>() }
+    let src = core::mem::ManuallyDrop::new(src);
+    unsafe { core::ptr::read(&*src as *const S as *const D) }
+}
+
+/// Reinterpret a reference from `&S` to `&D`, with a compile-time layout check.
 fn transmute_ref<S, D>(src: &S) -> &D {
-    const { assert!(size_of::<S>() == size_of::<D>()) }
+    const { assert_layout_compatible::<S, D>() }
     unsafe { &*(src as *const S as *const D) }
 }
 
-/// Reinterpret a slice `&[S]` as `&[D]`, with a compile-time element size check.
+/// Reinterpret a slice `&[S]` as `&[D]`, with a compile-time element layout check.
 fn transmute_slice<S, D>(src: &[S]) -> &[D] {
-    const { assert!(size_of::<S>() == size_of::<D>()) }
+    const { assert_layout_compatible::<S, D>() }
     unsafe { core::slice::from_raw_parts(src.as_ptr() as *const D, src.len()) }
 }
 
