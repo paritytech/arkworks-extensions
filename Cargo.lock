@@ -350,7 +350,9 @@ dependencies = [
 name = "ark-models-ext"
 version = "0.5.1"
 dependencies = [
+ "ark-bls12-381",
  "ark-ec",
+ "ark-ed25519",
  "ark-ff",
  "ark-serialize",
  "ark-std",

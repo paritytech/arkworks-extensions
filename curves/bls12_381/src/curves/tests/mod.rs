@@ -98,12 +98,6 @@ fn encoding_sizes() {
 
     let target = Fq12::one();
     assert_eq!(target.serialized_size(Compress::No), 576);
-
-    let data = [1_u64, 2_u64];
-    let data = &data[..];
-    let mut buf = Vec::new();
-    data.serialize_uncompressed(&mut buf).unwrap();
-    println!("{buf:02x?}");
 }
 
 // Test vectors and macro adapted from https://github.com/zkcrypto/bls12_381/blob/e224ad4ea1babfc582ccd751c2bf128611d10936/src/tests/mod.rs

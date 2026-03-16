@@ -179,4 +179,121 @@ where
     }
 }
 
-// TODO: add tests
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ark_ec::AffineRepr;
+
+    // Use two configs for the same curve with identical field types.
+    // ark_ed25519 provides a TE config, ark_bls12_381::g1 provides a SW config.
+    // We create minimal wrappers to get two distinct configs with CompatibleConfig between them.
+
+    // --- SW roundtrip using BLS12-381 G1 fields ---
+
+    mod sw_test {
+        use super::*;
+        use ark_bls12_381::g1::Config as ArkG1Config;
+
+        #[derive(Clone, Copy)]
+        struct ExtConfig;
+
+        impl CurveConfig for ExtConfig {
+            type BaseField = <ArkG1Config as CurveConfig>::BaseField;
+            type ScalarField = <ArkG1Config as CurveConfig>::ScalarField;
+            const COFACTOR: &'static [u64] = <ArkG1Config as CurveConfig>::COFACTOR;
+            const COFACTOR_INV: Self::ScalarField = <ArkG1Config as CurveConfig>::COFACTOR_INV;
+        }
+
+        impl sw::SWCurveConfig for ExtConfig {
+            const COEFF_A: Self::BaseField = <ArkG1Config as sw::SWCurveConfig>::COEFF_A;
+            const COEFF_B: Self::BaseField = <ArkG1Config as sw::SWCurveConfig>::COEFF_B;
+            const GENERATOR: sw::Affine<Self> = sw::Affine::new_unchecked(
+                <ArkG1Config as sw::SWCurveConfig>::GENERATOR.x,
+                <ArkG1Config as sw::SWCurveConfig>::GENERATOR.y,
+            );
+        }
+
+        impl CompatibleConfig<ArkG1Config> for ExtConfig {}
+
+        #[test]
+        fn sw_affine_roundtrip() {
+            let ark_gen = sw::Affine::<ArkG1Config>::generator();
+            let ext: sw::Affine<ExtConfig> = ark_gen.transmute_into();
+            let back: &sw::Affine<ArkG1Config> = ext.transmute_ref();
+            assert_eq!(*back, ark_gen);
+        }
+
+        #[test]
+        fn sw_projective_roundtrip() {
+            let ark_gen = sw::Projective::<ArkG1Config>::from(sw::Affine::<ArkG1Config>::generator());
+            let ext: sw::Projective<ExtConfig> = ark_gen.transmute_into();
+            let back: &sw::Projective<ArkG1Config> = ext.transmute_ref();
+            assert_eq!(*back, ark_gen);
+        }
+
+        #[test]
+        fn sw_affine_slice_roundtrip() {
+            let gen: sw::Affine<ExtConfig> =
+                sw::Affine::<ArkG1Config>::generator().transmute_into();
+            let ext_points = [gen; 3];
+            let ark_slice: &[sw::Affine<ArkG1Config>] = ext_points.as_slice().transmute_ref();
+            assert_eq!(ark_slice.len(), 3);
+            assert_eq!(ark_slice[0], sw::Affine::<ArkG1Config>::generator());
+        }
+    }
+
+    // --- TE roundtrip using Ed25519 fields ---
+
+    mod te_test {
+        use super::*;
+        use ark_ed25519::EdwardsConfig as ArkTeConfig;
+
+        #[derive(Clone, Copy)]
+        struct ExtConfig;
+
+        impl CurveConfig for ExtConfig {
+            type BaseField = <ArkTeConfig as CurveConfig>::BaseField;
+            type ScalarField = <ArkTeConfig as CurveConfig>::ScalarField;
+            const COFACTOR: &'static [u64] = <ArkTeConfig as CurveConfig>::COFACTOR;
+            const COFACTOR_INV: Self::ScalarField = <ArkTeConfig as CurveConfig>::COFACTOR_INV;
+        }
+
+        impl te::TECurveConfig for ExtConfig {
+            const COEFF_A: Self::BaseField = <ArkTeConfig as te::TECurveConfig>::COEFF_A;
+            const COEFF_D: Self::BaseField = <ArkTeConfig as te::TECurveConfig>::COEFF_D;
+            const GENERATOR: te::Affine<Self> = te::Affine::new_unchecked(
+                <ArkTeConfig as te::TECurveConfig>::GENERATOR.x,
+                <ArkTeConfig as te::TECurveConfig>::GENERATOR.y,
+            );
+            type MontCurveConfig = ArkTeConfig;
+        }
+
+        impl CompatibleConfig<ArkTeConfig> for ExtConfig {}
+
+        #[test]
+        fn te_affine_roundtrip() {
+            let ark_gen = te::Affine::<ArkTeConfig>::generator();
+            let ext: te::Affine<ExtConfig> = ark_gen.transmute_into();
+            let back: &te::Affine<ArkTeConfig> = ext.transmute_ref();
+            assert_eq!(*back, ark_gen);
+        }
+
+        #[test]
+        fn te_projective_roundtrip() {
+            let ark_gen = te::Projective::<ArkTeConfig>::from(te::Affine::<ArkTeConfig>::generator());
+            let ext: te::Projective<ExtConfig> = ark_gen.transmute_into();
+            let back: &te::Projective<ArkTeConfig> = ext.transmute_ref();
+            assert_eq!(*back, ark_gen);
+        }
+
+        #[test]
+        fn te_affine_slice_roundtrip() {
+            let gen: te::Affine<ExtConfig> =
+                te::Affine::<ArkTeConfig>::generator().transmute_into();
+            let ext_points = [gen; 3];
+            let ark_slice: &[te::Affine<ArkTeConfig>] = ext_points.as_slice().transmute_ref();
+            assert_eq!(ark_slice.len(), 3);
+            assert_eq!(ark_slice[0], te::Affine::<ArkTeConfig>::generator());
+        }
+    }
+}
