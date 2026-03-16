@@ -13,12 +13,11 @@ members = [
   "curves/secp256k1",
   "curves/vesta",
   "models",
-  "test-utils",
 ]
 resolver = "2"
 
 [workspace.package]
-version = "0.5.1"
+version = "0.5.2"
 authors = [
   "Davide Galassi <davxy@datawok.net>",
   "Achim Schneider <achim@parity.io>",
@@ -50,6 +49,5 @@ ark-ed-on-bn254 = { version = "0.5", default-features = false }
 ark-ed25519 = { version = "0.5", default-features = false }
 ark-algebra-test-templates = { version = "0.5", default-features = false }
 ark-models-ext = { version = "0.5", path = "./models", default-features = false }
-test-utils = { path = "./test-utils", default-features = false }
 derivative = { version = "2.2", default-features = false, features = ["use_core"] }
 num-traits = { version = "0.2", default-features = false }

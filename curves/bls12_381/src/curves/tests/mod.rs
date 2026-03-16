@@ -1,69 +1,25 @@
-use crate::{fq::Fq, fq2::Fq2, fr::Fr, CurveHooks};
+use crate::{fq::Fq, fq12::Fq12, fq2::Fq2, fr::Fr, CurveHooks};
 
 use ark_algebra_test_templates::*;
-use ark_bls12_381::{
-    g1::Config as ArkG1Config, g2::Config as ArkG2Config, Bls12_381 as ArkBls12_381,
-};
 use ark_ff::{fields::Field, One, Zero};
 use ark_models_ext::{
-    pairing::{Pairing, PairingOutput},
-    short_weierstrass::SWCurveConfig,
-    AffineRepr, CurveConfig, CurveGroup, PrimeGroup,
+    pairing::PairingOutput, short_weierstrass::SWCurveConfig, AffineRepr, CurveGroup, PrimeGroup,
 };
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::{rand::Rng, test_rng, vec, UniformRand};
 
-struct TestHooks;
+impl CurveHooks for () {}
 
-type Bls12_381 = crate::Bls12_381<TestHooks>;
-type G1Projective = crate::G1Projective<TestHooks>;
-type G2Projective = crate::G2Projective<TestHooks>;
-type G1Affine = crate::G1Affine<TestHooks>;
-type G2Affine = crate::G2Affine<TestHooks>;
-type G1Config = crate::g1::Config<TestHooks>;
-type G2Config = crate::g2::Config<TestHooks>;
-
-impl CurveHooks for TestHooks {
-    fn multi_miller_loop(
-        g1: impl Iterator<Item = <Bls12_381 as Pairing>::G1Prepared>,
-        g2: impl Iterator<Item = <Bls12_381 as Pairing>::G2Prepared>,
-    ) -> <Bls12_381 as Pairing>::TargetField {
-        test_utils::multi_miller_loop_generic::<Bls12_381, ArkBls12_381>(g1, g2)
-    }
-
-    fn final_exponentiation(
-        target: <Bls12_381 as Pairing>::TargetField,
-    ) -> <Bls12_381 as Pairing>::TargetField {
-        test_utils::final_exponentiation_generic::<Bls12_381, ArkBls12_381>(target)
-    }
-
-    fn msm_g1(
-        bases: &[G1Affine],
-        scalars: &[<G1Config as CurveConfig>::ScalarField],
-    ) -> G1Projective {
-        test_utils::msm_sw_generic::<G1Config, ArkG1Config>(bases, scalars)
-    }
-
-    fn msm_g2(
-        bases: &[G2Affine],
-        scalars: &[<G2Config as CurveConfig>::ScalarField],
-    ) -> G2Projective {
-        test_utils::msm_sw_generic::<G2Config, ArkG2Config>(bases, scalars)
-    }
-
-    fn mul_projective_g1(base: &G1Projective, scalar: &[u64]) -> G1Projective {
-        test_utils::mul_projective_sw_generic::<G1Config, ArkG1Config>(base, scalar)
-    }
-
-    fn mul_projective_g2(base: &G2Projective, scalar: &[u64]) -> G2Projective {
-        test_utils::mul_projective_sw_generic::<G2Config, ArkG2Config>(base, scalar)
-    }
-}
+type Bls12_381 = crate::Bls12_381<()>;
+type G1Projective = crate::G1Projective<()>;
+type G2Projective = crate::G2Projective<()>;
+type G1Affine = crate::G1Affine<()>;
+type G2Affine = crate::G2Affine<()>;
 
 test_group!(g1; G1Projective; sw);
 test_group!(g2; G2Projective; sw);
 test_group!(pairing_output; PairingOutput<Bls12_381>; msm);
-test_pairing!(ark_pairing; crate::Bls12_381<super::TestHooks>);
+test_pairing!(ark_pairing; crate::Bls12_381<()>);
 
 #[test]
 fn test_g1_endomorphism_beta() {
@@ -126,6 +82,22 @@ fn test_g2_subgroup_non_membership_via_endomorphism() {
             }
         }
     }
+}
+
+#[test]
+fn encoding_sizes() {
+    let g1 = G1Affine::generator();
+    let g2 = G2Affine::generator();
+    let scalar = Fr::one();
+    let base = Fq::one();
+
+    assert_eq!(base.serialized_size(Compress::No), 48);
+    assert_eq!(scalar.serialized_size(Compress::No), 32);
+    assert_eq!(g1.serialized_size(Compress::No), 96);
+    assert_eq!(g2.serialized_size(Compress::No), 192);
+
+    let target = Fq12::one();
+    assert_eq!(target.serialized_size(Compress::No), 576);
 }
 
 // Test vectors and macro adapted from https://github.com/zkcrypto/bls12_381/blob/e224ad4ea1babfc582ccd751c2bf128611d10936/src/tests/mod.rs
@@ -229,7 +201,7 @@ fn test_cofactor_clearing_g2() {
     for _ in 0..SAMPLES {
         let p = G2Affine::rand(&mut rng);
         let optimised = p.clear_cofactor().into_group();
-        let naive = crate::g2::Config::<TestHooks>::mul_affine(&p, h_eff);
+        let naive = crate::g2::Config::<()>::mul_affine(&p, h_eff);
         assert_eq!(optimised, naive);
     }
 }

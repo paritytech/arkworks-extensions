@@ -1,10 +1,12 @@
-use ark_bw6_761::Config as ArkConfig;
+use ark_bw6_761::{g1::Config as ArkG1Config, g2::Config as ArkG2Config, Config as ArkConfig};
 use ark_ec::bw6::BW6Config as ArkBW6Config;
 use ark_ff::PrimeField;
 use ark_models_ext::{
     bw6::{BW6Config, G1Prepared, G2Prepared, TwistType, BW6},
     pairing::{MillerLoopOutput, Pairing, PairingOutput},
-    CurveConfig,
+    short_weierstrass::{self, SWCurveConfig},
+    transmute::{TransmuteInto, TransmuteRef},
+    CurveConfig, VariableBaseMSM,
 };
 use ark_std::marker::PhantomData;
 
@@ -20,35 +22,74 @@ pub use self::{
 };
 
 /// Hooks for *BW6-761* curve.
+///
+/// All methods have default implementations that delegate to the upstream arkworks
+/// operations via zero-cost transmutation.
 pub trait CurveHooks: 'static + Sized {
     /// Pairing multi Miller loop.
     fn multi_miller_loop(
         g1: impl Iterator<Item = <BW6_761<Self> as Pairing>::G1Prepared>,
         g2: impl Iterator<Item = <BW6_761<Self> as Pairing>::G2Prepared>,
-    ) -> <BW6_761<Self> as Pairing>::TargetField;
+    ) -> <BW6_761<Self> as Pairing>::TargetField {
+        let g1 = g1.map(|p| {
+            let affine: &short_weierstrass::Affine<ArkG1Config> = p.0.transmute_ref();
+            *affine
+        });
+        let g2 = g2.map(|p| {
+            let affine: &short_weierstrass::Affine<ArkG2Config> = p.0.transmute_ref();
+            *affine
+        });
+        <ArkConfig as ArkBW6Config>::multi_miller_loop(g1, g2).0
+    }
 
     /// Pairing final exponentiation.
+    ///
+    /// The default delegates to upstream arkworks, which returns `None` when the
+    /// input is not invertible (zero). This cannot occur with a well-formed miller
+    /// loop output.
     fn final_exponentiation(
         target: <BW6_761<Self> as Pairing>::TargetField,
-    ) -> <BW6_761<Self> as Pairing>::TargetField;
+    ) -> <BW6_761<Self> as Pairing>::TargetField {
+        <ArkConfig as ArkBW6Config>::final_exponentiation(MillerLoopOutput(target))
+            .map(|po| po.0)
+            .expect("final exponentiation: non-invertible element")
+    }
 
     /// Multi scalar multiplication on G1.
     fn msm_g1(
         bases: &[g1::G1Affine<Self>],
         scalars: &[<g1::Config<Self> as CurveConfig>::ScalarField],
-    ) -> g1::G1Projective<Self>;
+    ) -> g1::G1Projective<Self> {
+        let bases: &[short_weierstrass::Affine<ArkG1Config>] = bases.transmute_ref();
+        <short_weierstrass::Projective<ArkG1Config> as VariableBaseMSM>::msm_unchecked(
+            bases, scalars,
+        )
+        .transmute_into()
+    }
 
     /// Multi scalar multiplication on G2.
     fn msm_g2(
         bases: &[g2::G2Affine<Self>],
         scalars: &[<g2::Config<Self> as CurveConfig>::ScalarField],
-    ) -> g2::G2Projective<Self>;
+    ) -> g2::G2Projective<Self> {
+        let bases: &[short_weierstrass::Affine<ArkG2Config>] = bases.transmute_ref();
+        <short_weierstrass::Projective<ArkG2Config> as VariableBaseMSM>::msm_unchecked(
+            bases, scalars,
+        )
+        .transmute_into()
+    }
 
     /// Projective multiplication on G1.
-    fn mul_projective_g1(base: &g1::G1Projective<Self>, scalar: &[u64]) -> g1::G1Projective<Self>;
+    fn mul_projective_g1(base: &g1::G1Projective<Self>, scalar: &[u64]) -> g1::G1Projective<Self> {
+        let base: &short_weierstrass::Projective<ArkG1Config> = base.transmute_ref();
+        <ArkG1Config as SWCurveConfig>::mul_projective(base, scalar).transmute_into()
+    }
 
     /// Projective multiplication on G2.
-    fn mul_projective_g2(base: &g2::G2Projective<Self>, scalar: &[u64]) -> g2::G2Projective<Self>;
+    fn mul_projective_g2(base: &g2::G2Projective<Self>, scalar: &[u64]) -> g2::G2Projective<Self> {
+        let base: &short_weierstrass::Projective<ArkG2Config> = base.transmute_ref();
+        <ArkG2Config as SWCurveConfig>::mul_projective(base, scalar).transmute_into()
+    }
 }
 
 #[derive(Clone, Copy)]

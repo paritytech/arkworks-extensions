@@ -43,8 +43,16 @@ function show_help() {
 
 function publish() {
   local crate=$1
-  echo "Publishing $crate (cargo args: $CARGO_ARGS)"
-  cargo publish -p "$crate" $CARGO_ARGS
+  if [[ -n "$DRY_RUN" ]]; then
+    # In dry-run mode use `cargo package --no-verify` to avoid registry resolution
+    # failures for workspace crates that depend on other not-yet-published workspace
+    # crates. Build correctness is already covered by the build/test CI jobs.
+    echo "Packaging $crate (dry-run)"
+    cargo package -p "$crate" --no-verify --allow-dirty
+  else
+    echo "Publishing $crate"
+    cargo publish -p "$crate"
+  fi
 }
 
 # Parse arguments

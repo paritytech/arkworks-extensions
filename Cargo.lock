@@ -54,7 +54,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bls12-377-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-377",
@@ -63,7 +63,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -80,7 +79,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bls12-381-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bls12-381",
@@ -89,7 +88,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -106,7 +104,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bn254-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bn254",
@@ -115,7 +113,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -132,7 +129,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bw6-761-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bw6-761",
@@ -141,7 +138,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -158,7 +154,7 @@ dependencies = [
 
 [[package]]
 name = "ark-bw6-767-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-bw6-767",
@@ -167,7 +163,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -218,7 +213,7 @@ dependencies = [
 
 [[package]]
 name = "ark-ed-on-bls12-377-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -227,7 +222,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -245,7 +239,7 @@ dependencies = [
 
 [[package]]
 name = "ark-ed-on-bls12-381-bandersnatch-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -254,7 +248,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -272,7 +265,7 @@ dependencies = [
 
 [[package]]
 name = "ark-ed-on-bn254-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -281,7 +274,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -299,7 +291,7 @@ dependencies = [
 
 [[package]]
 name = "ark-ed25519-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -308,7 +300,6 @@ dependencies = [
  "ark-models-ext",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -357,9 +348,11 @@ dependencies = [
 
 [[package]]
 name = "ark-models-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
+ "ark-bls12-381",
  "ark-ec",
+ "ark-ed25519",
  "ark-ff",
  "ark-serialize",
  "ark-std",
@@ -379,7 +372,7 @@ dependencies = [
 
 [[package]]
 name = "ark-pallas-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -388,7 +381,6 @@ dependencies = [
  "ark-pallas",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -448,7 +440,7 @@ dependencies = [
 
 [[package]]
 name = "ark-secp256k1-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -457,7 +449,6 @@ dependencies = [
  "ark-secp256k1",
  "ark-serialize",
  "ark-std",
- "test-utils",
 ]
 
 [[package]]
@@ -510,7 +501,7 @@ dependencies = [
 
 [[package]]
 name = "ark-vesta-ext"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "ark-algebra-test-templates",
  "ark-ec",
@@ -519,7 +510,6 @@ dependencies = [
  "ark-serialize",
  "ark-std",
  "ark-vesta",
- "test-utils",
 ]
 
 [[package]]
@@ -904,15 +894,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "test-utils"
-version = "0.5.1"
-dependencies = [
- "ark-ec",
- "ark-serialize",
- "ark-std",
 ]
 
 [[package]]

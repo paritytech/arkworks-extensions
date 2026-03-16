@@ -18,9 +18,8 @@ ark-bls12-381.workspace = true
 ark-models-ext.workspace = true
 ark-serialize.workspace = true
 
-[dev-dependencies] 
+[dev-dependencies]
 ark-algebra-test-templates.workspace = true
-test-utils.workspace = true
 
 [features]
 default = [ "std" ]

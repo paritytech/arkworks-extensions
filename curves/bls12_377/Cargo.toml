@@ -21,7 +21,6 @@ ark-models-ext.workspace = true
 ark-serialize.workspace = true
 ark-algebra-test-templates.workspace = true
 ark-ff.workspace = true
-test-utils.workspace = true
 
 [features]
 default = [ "std" ]

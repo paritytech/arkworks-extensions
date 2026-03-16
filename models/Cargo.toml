@@ -18,6 +18,10 @@ ark-serialize.workspace = true
 
 derivative.workspace = true
 
+[dev-dependencies]
+ark-bls12-381.workspace = true
+ark-ed25519.workspace = true
+
 [features]
 default = [ "std" ]
 std = [ "ark-ff/std", "ark-serialize/std", "ark-std/std" ]

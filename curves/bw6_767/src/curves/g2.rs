@@ -1,7 +1,9 @@
 use crate::CurveHooks;
 
 use ark_bw6_767::g2::Config as ArkConfig;
-use ark_models_ext::{bw6, short_weierstrass::SWCurveConfig, CurveConfig};
+use ark_models_ext::{
+    bw6, short_weierstrass::SWCurveConfig, transmute::CompatibleConfig, CurveConfig,
+};
 use ark_std::marker::PhantomData;
 
 pub use ark_bw6_767::g2::{G2_GENERATOR_X, G2_GENERATOR_Y};
@@ -11,6 +13,8 @@ pub type G2Projective<H> = bw6::G2Projective<crate::Config<H>>;
 
 #[derive(Clone, Copy)]
 pub struct Config<H: CurveHooks>(PhantomData<fn() -> H>);
+
+impl<H: CurveHooks> CompatibleConfig<ArkConfig> for Config<H> {}
 
 impl<H: CurveHooks> CurveConfig for Config<H> {
     const COFACTOR: &'static [u64] = <ArkConfig as CurveConfig>::COFACTOR;
