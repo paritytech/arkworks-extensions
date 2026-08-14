@@ -41,6 +41,8 @@ impl<H: CurveHooks> CurveConfig for Config<H> {
 }
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
+    type ZeroFlag = <ArkConfig as SWCurveConfig>::ZeroFlag;
+
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
@@ -78,7 +80,7 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     #[inline(always)]
     fn is_in_correct_subgroup_assuming_on_curve(p: &G1Affine<H>) -> bool {
         let x_times_p = p.mul_bigint(crate::Config::<H>::X);
-        if x_times_p.eq(p) && !p.infinity {
+        if x_times_p.eq(p) && !p.is_zero() {
             return false;
         }
 

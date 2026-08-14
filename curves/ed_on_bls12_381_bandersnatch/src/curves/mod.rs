@@ -116,6 +116,8 @@ impl<H: CurveHooks> TECurveConfig for BandersnatchConfig<H> {
 }
 
 impl<H: CurveHooks> SWCurveConfig for BandersnatchConfig<H> {
+    type ZeroFlag = <ArkConfig as SWCurveConfig>::ZeroFlag;
+
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 

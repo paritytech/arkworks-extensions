@@ -43,16 +43,21 @@ function show_help() {
 
 function publish() {
   local crate=$1
-  if [[ -n "$DRY_RUN" ]]; then
-    # In dry-run mode use `cargo package --no-verify` to avoid registry resolution
-    # failures for workspace crates that depend on other not-yet-published workspace
-    # crates. Build correctness is already covered by the build/test CI jobs.
-    echo "Packaging $crate (dry-run)"
-    cargo package -p "$crate" --no-verify --allow-dirty
-  else
-    echo "Publishing $crate"
-    cargo publish -p "$crate"
-  fi
+  echo "Publishing $crate"
+  cargo publish -p "$crate"
+}
+
+function package_dry_run() {
+  # Package all selected crates in a single `cargo package` invocation.
+  # Cargo then resolves in-workspace dependencies locally, so the dry run
+  # works also when the required versions are not on crates.io yet.
+  # Build correctness is already covered by the build/test CI jobs.
+  local args=()
+  for crate in "$@"; do
+    args+=(-p "$crate")
+  done
+  echo "Packaging $* (dry-run)"
+  cargo package "${args[@]}" --no-verify --allow-dirty
 }
 
 # Parse arguments
@@ -100,8 +105,9 @@ else
 fi
 
 # Validate selected crates
-for crate in "${SELECTED_CRATES[@]}"; do
-  crate=$(echo "$crate" | xargs)  # trim whitespace
+for i in "${!SELECTED_CRATES[@]}"; do
+  crate=$(echo "${SELECTED_CRATES[$i]}" | xargs)  # trim whitespace
+  SELECTED_CRATES[$i]="$crate"
   valid=0
   for all_crate in "${ALL_CRATES[@]}"; do
     if [[ "$crate" == "$all_crate" ]]; then
@@ -120,10 +126,13 @@ done
 echo "Publishing ${#SELECTED_CRATES[@]} crate(s)..."
 echo ""
 
-for crate in "${SELECTED_CRATES[@]}"; do
-  crate=$(echo "$crate" | xargs)  # trim whitespace
-  publish "$crate"
-done
+if [[ -n "$DRY_RUN" ]]; then
+  package_dry_run "${SELECTED_CRATES[@]}"
+else
+  for crate in "${SELECTED_CRATES[@]}"; do
+    publish "$crate"
+  done
+fi
 
 echo ""
 echo "Done!"

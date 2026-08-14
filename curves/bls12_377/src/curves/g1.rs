@@ -36,6 +36,8 @@ pub type G1TEAffine<H> = TEAffine<Config<H>>;
 pub type G1TEProjective<H> = TEProjective<Config<H>>;
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
+    type ZeroFlag = <ArkConfig as SWCurveConfig>::ZeroFlag;
+
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 
@@ -68,22 +70,6 @@ impl<H: CurveHooks> SWCurveConfig for Config<H> {
     #[inline(always)]
     fn mul_by_a(elem: Self::BaseField) -> Self::BaseField {
         <ArkConfig as SWCurveConfig>::mul_by_a(elem)
-    }
-
-    #[inline(always)]
-    fn is_in_correct_subgroup_assuming_on_curve(item: &G1SWAffine<H>) -> bool {
-        if Self::cofactor_is_one() {
-            true
-        } else {
-            // Workaround for: https://github.com/arkworks-rs/algebra/issues/948
-            // Keep until https://github.com/arkworks-rs/algebra/pull/1046 is not published (arkworks > 0.5)
-            use ark_ff::Field;
-            use ark_ff::Zero;
-            // Directly use `double_and_add_affine` to avoid incorrect zero results from
-            // custom `mul_affine` implementations that reduce scalars modulo the group order.
-            ark_ec::scalar_mul::sw_double_and_add_affine(item, Self::ScalarField::characteristic())
-                .is_zero()
-        }
     }
 }
 
