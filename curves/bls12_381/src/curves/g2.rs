@@ -59,6 +59,8 @@ impl<H: CurveHooks> CurveConfig for Config<H> {
 }
 
 impl<H: CurveHooks> SWCurveConfig for Config<H> {
+    type ZeroFlag = <ArkConfig as SWCurveConfig>::ZeroFlag;
+
     const COEFF_A: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_A;
     const COEFF_B: Self::BaseField = <ArkConfig as SWCurveConfig>::COEFF_B;
 

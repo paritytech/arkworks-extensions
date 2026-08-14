@@ -8,6 +8,8 @@ use core::mem::{align_of, size_of};
 /// `BaseField` and `ScalarField` equality is enforced by the type system. Because point
 /// types (e.g. `sw::Affine<C>`) are generic structs whose fields depend only on these
 /// associated types, two instantiations with identical field types have identical layouts.
+/// `sw::Affine<C>` additionally depends on `C::ZeroFlag`; its transmute impls require
+/// `ZeroFlag` equality as well.
 ///
 /// Strictly speaking, `#[repr(Rust)]` does not formally guarantee layout equivalence
 /// across monomorphizations, but in practice rustc lays out structs deterministically
@@ -104,7 +106,11 @@ where
 impl<S, D> TransmuteFrom<sw::Affine<S>> for sw::Affine<D>
 where
     D: sw::SWCurveConfig + CompatibleConfig<S>,
-    S: sw::SWCurveConfig<BaseField = D::BaseField, ScalarField = D::ScalarField>,
+    S: sw::SWCurveConfig<
+        BaseField = D::BaseField,
+        ScalarField = D::ScalarField,
+        ZeroFlag = D::ZeroFlag,
+    >,
 {
     fn transmute_from(t: sw::Affine<S>) -> Self {
         transmute_value(t)
@@ -140,7 +146,11 @@ where
 impl<S, D> TransmuteRef<sw::Affine<D>> for sw::Affine<S>
 where
     S: sw::SWCurveConfig + CompatibleConfig<D>,
-    D: sw::SWCurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
+    D: sw::SWCurveConfig<
+        BaseField = S::BaseField,
+        ScalarField = S::ScalarField,
+        ZeroFlag = S::ZeroFlag,
+    >,
 {
     fn transmute_ref(&self) -> &sw::Affine<D> {
         transmute_ref(self)
@@ -172,7 +182,11 @@ where
 impl<S, D> TransmuteRef<[sw::Affine<D>]> for [sw::Affine<S>]
 where
     S: sw::SWCurveConfig + CompatibleConfig<D>,
-    D: sw::SWCurveConfig<BaseField = S::BaseField, ScalarField = S::ScalarField>,
+    D: sw::SWCurveConfig<
+        BaseField = S::BaseField,
+        ScalarField = S::ScalarField,
+        ZeroFlag = S::ZeroFlag,
+    >,
 {
     fn transmute_ref(&self) -> &[sw::Affine<D>] {
         transmute_slice(self)
@@ -211,6 +225,8 @@ mod tests {
         }
 
         impl sw::SWCurveConfig for ExtConfig {
+            type ZeroFlag = <ArkG1Config as sw::SWCurveConfig>::ZeroFlag;
+
             const COEFF_A: Self::BaseField = <ArkG1Config as sw::SWCurveConfig>::COEFF_A;
             const COEFF_B: Self::BaseField = <ArkG1Config as sw::SWCurveConfig>::COEFF_B;
             const GENERATOR: sw::Affine<Self> = sw::Affine::new_unchecked(
